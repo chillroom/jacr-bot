@@ -1,5 +1,7 @@
 #BETA BOT#
 
+[![Join the JACR Community on Slack](https://betabot-nitroghost.rhcloud.com/badge.svg)](http://justachillroom.slack.com)
+
 The best freaking [dubtrack.fm](https://dubtrack.fm) bot in the world.
 
 #IMPORTANT NOTICE#
