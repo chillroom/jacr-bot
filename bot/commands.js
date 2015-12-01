@@ -622,17 +622,6 @@ module.exports = {
 			}
 		}
 	},
-	restart: function (data) {
-		self = this;
-		var user = data.user.username;
-		var rank = data.user.role;
-		//if the user has name in the self.devs array, or their role is one from self.rank
-		if (self.devs.indexOf(user) > -1 || self.ranks.indexOf(rank) > -1) {
-			self.sendChat(self.identifier + "restarting, brb");
-			console.log("r3st4rt");
-			console.log("Restarted by: " + user);
-		}
-	},
 	whois: function (data) {
 		self = this;
 		var user = data.user.username;
@@ -781,71 +770,59 @@ module.exports = {
 	},
 	//oh god, dis command is scary;
 	clearchat: function (data) {
-		self = this;
-		var user = data.user.username;
-		var rank = data.user.role;
-		if (self.devs.indexOf(user) > -1 || self.ranks.indexOf(rank) > -1) {
-			if (typeof (data.params) !== 'undefined' && data.params.length > 0) {
-				if (data.params.length === 1) {
-					username = data.params[0];
-					if (username.substr(0, 1) === "@") {
-						username = username.substr(1);
+			self = this;
+			var user = data.user.username;
+			var rank = data.user.role;
+			if (self.devs.indexOf(user) > -1 || self.ranks.indexOf(rank) > -1) {
+				if (typeof (data.params) !== 'undefined' && data.params.length > 0) {
+					if (data.params.length === 1) {
+						username = data.params[0];
+						if (username.substr(0, 1) === "@") {
+							username = username.substr(1);
+						}
+						self.db.chat.find({
+							username: username
+						}, function (err, docs) {
+							if (err) {
+								console.log(err);
+							}
+							for (var i = 0; i < docs.length; i++) {
+								self.moderateDeleteChat(docs[i].chatid);
+								self.db.chat.remove({
+									chatid: docs[i].chatid
+								}, function (err, removed) {
+									if (err) {
+										console.log(err);
+									}
+								});
+							}
+						});
 					}
-					self.db.chat.find({
-						username: username
-					}, function (err, docs) {
-						if (err) {
-							console.log(err);
-						}
-						for (var i = 0; i < docs.length; i++) {
-							self.moderateDeleteChat(docs[i].chatid);
-							self.db.chat.remove({
-								chatid: docs[i].chatid
-							}, function (err, removed) {
-								if (err) {
-									console.log(err);
-								}
-							});
-						}
-					});
 				}
 			}
 		}
-	},
-	//dev only commands
-	kill: function (data) {
-		self = this;
-		var user = data.user.username;
-		var rank = data.user.role;
-		//if the user has name in the self.devs array
-		if (self.devs.indexOf(user) > -1) {
-			self.sendChat(self.identifier + "NO! don't kill me :'(");
-			console.log("k177");
-			console.log("Killed by: " + user);
-		}
-	},
-	//TODO/complete:
-	/*
-		I really should do this shit but lazy
-		die: function (data) {
+		//TODO/complete:
+		/*
+			I really should do this shit but lazy
+			die: function (data) {
 	
-		},
-		revive: function (data) {
+			},
+			revive: function (data) {
 	
-		},
-		english: function (data) {
-			var recipient = data.message.toLowerCase().substr(data.message.toLowerCase().indexOf(' ') + 1);
-			var languser = recipient.substr(0, recipient.indexOf(', '));
-			var language = data.message.toLowerCase().substr(data.message.toLowerCase().indexOf(', ') + 1);
-			if (language.trim() == "fr") { //4:49
-				self.sendChat("/me " + languser + " Parlez anglais s'il vous plait");
-			} else if (language.trim() == "sp") {
-				self.sendChat("/me " + languser + " Habla en inglés por favor");
-			} else if (language.trim() == "ge") {
-				self.sendChat("/me " + languser + " Englisch sprechen bitte");
-			} else {
-				self.sendChat("/me " + languser + " Speak english please");
-			}
-		},
-		*/
+			},
+			english: function (data) {
+				var recipient = data.message.toLowerCase().substr(data.message.toLowerCase().indexOf(' ') + 1);
+				var languser = recipient.substr(0, recipient.indexOf(', '));
+				var language = data.message.toLowerCase().substr(data.message.toLowerCase().indexOf(', ') + 1);
+				if (language.trim() == "fr") { //4:49
+					self.sendChat("/me " + languser + " Parlez anglais s'il vous plait");
+				} else if (language.trim() == "sp") {
+					self.sendChat("/me " + languser + " Habla en inglés por favor");
+				} else if (language.trim() == "ge") {
+					self.sendChat("/me " + languser + " Englisch sprechen bitte");
+				} else {
+					self.sendChat("/me " + languser + " Speak english please");
+				}
+			},
+			*/
 }
