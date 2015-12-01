@@ -29,3 +29,4 @@ node_modules
 db
 #ignore jenkins server files
 jenkins
+shh.txt
