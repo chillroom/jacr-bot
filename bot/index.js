@@ -4,8 +4,8 @@ var DubAPI = require('dubapi'),
 	commands = require('./commands');
 
 new DubAPI({
-	username: 'nitrowhore',
-	password: 'Fedora1502'
+	username: 'betabot',
+	password: 'mickierocks'
 }, function (err, bot) {
 	if (err) {
 		return console.error(err);
@@ -302,7 +302,7 @@ new DubAPI({
 	console.log('DubAPI Version: ' + bot.version);
 
 	function connect() {
-		bot.connect('nitrowhore');
+		bot.connect('just-a-chill-room');
 	}
 
 	bot.on('connected', function (name) {
