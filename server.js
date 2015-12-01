@@ -3,7 +3,7 @@ var restify = require('restify'),
 	config = require('./config'),
 	pkg = require('./package.json');
 
-require('./bot');
+require('./bot/index.js');
 
 var server = restify.createServer({
 	name: 'Betabot Server',

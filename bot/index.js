@@ -1,6 +1,6 @@
 var DubAPI = require('dubapi'),
 	Datastore = require('nedb'),
-	pkg = require('./package.json'),
+	pkg = require('../package.json'),
 	commands = require('./commands');
 
 new DubAPI({

@@ -27,3 +27,5 @@ build/Release
 node_modules
 #ignore DB files
 db
+#ignore jenkins server files
+jenkins
