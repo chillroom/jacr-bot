@@ -3,6 +3,19 @@ var DubAPI = require('dubapi'),
 	pkg = require('../package.json'),
 	commands = require('./commands');
 
+require('../config');
+
+if (typeof config.botName === "undefined") {
+	throw Error("Please set the BOT_NAME evironment variable or add bot username to the config.js file");
+}
+
+if (typeof config.botPass === "undefined") {
+	throw Error("Please set the BOT_PASS evironment variable or add bot password to the config.js file");
+}
+if (typeof config.roomURL === "undefined") {
+	throw Error("Please set the ROOM_URL environment variable or add the room URL to the config.js file");
+}
+
 var mongoose = require('mongoose');
 
 mongoose.connect(process.env.MONGO || "mongodb://betabot:MickieRocks123@linus.mongohq.com:10016/chill_bot", {
@@ -12,8 +25,8 @@ mongoose.connect(process.env.MONGO || "mongodb://betabot:MickieRocks123@linus.mo
 });
 
 new DubAPI({
-	username: 'betabot',
-	password: 'mickierocks'
+	username: config.botName,
+	password: config.botPass
 }, function (err, bot) {
 	if (err) {
 		return console.error(err);
@@ -344,7 +357,7 @@ new DubAPI({
 	console.log('DubAPI Version: ' + bot.version);
 
 	function connect() {
-		bot.connect('just-a-chill-room');
+		bot.connect(config.roomURL);
 	}
 
 	bot.on('connected', function (name) {

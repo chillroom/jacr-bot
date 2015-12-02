@@ -5,6 +5,31 @@ var restify = require('restify'),
 
 require('./bot/index.js');
 
+if (typeof config.slackToken === "undefined") {
+	throw Error("Please set the SLACK_TOKEN evironment variable");
+}
+
+if (typeof config.slackUrl === "undefined") {
+	throw Error("Please set the SLACK_URL evironment variable");
+}
+if (typeof config.origins === "undefined") {
+	throw Error("Please set the SITE_ORIGINS environment variable")
+}
+if (typeof config.slackChannels === "undefined") {
+	console.warn("No SLACK_CHANNELS var, ommiting from post");
+	config.slackChannels = "";
+}
+
+if (typeof config.slackMessage === "undefined") {
+	console.warn("No SLACK_MESSAGE var, ommiting from post");
+	config.slackMessage = "";
+}
+
+if (typeof config.ipaddress === "undefined") {
+	console.warn('No OPENSHIFT_NODEJS_IP var, using 127.0.0.1');
+	config.ipaddress = "127.0.0.1";
+};
+
 var server = restify.createServer({
 	name: 'Betabot Server',
 	version: pkg.version
