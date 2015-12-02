@@ -704,7 +704,7 @@ module.exports = {
 			}
 		}
 	},
-	/*ban: function (data) {
+	ban: function (data) {
 		self = this;
 		var user = data.user.username;
 		var rank = data.user.role;
@@ -723,7 +723,7 @@ module.exports = {
 					}
 					var person = self.getUserByName(username);
 					self.moderateBanUser(person.id, time);
-					self.db.chat.find({
+					self.db.models.Chat.find({
 						username: username
 					}, function (err, docs) {
 						if (err) {
@@ -747,7 +747,7 @@ module.exports = {
 					}
 					var person = self.getUserByName(username);
 					self.moderateBanUser(person.id, time);
-					self.db.chat.find({
+					self.db.models.Chat.find({
 						username: username
 					}, function (err, docs) {
 						if (err) {
@@ -755,7 +755,7 @@ module.exports = {
 						}
 						for (var i = 0; i < docs.length; i++) {
 							self.moderateDeleteChat(docs[i].chatid);
-							self.db.chat.remove({
+							self.db.models.Chat.remove({
 								chatid: docs[i].chatid
 							}, function (err, removed) {
 								if (err) {
@@ -767,7 +767,7 @@ module.exports = {
 				}
 			}
 		}
-	},*/
+	},
 	//oh god, dis command is scary;
 	clearchat: function (data) {
 		self = this;
