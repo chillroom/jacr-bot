@@ -84,6 +84,7 @@ new DubAPI({
 					},
 					songCount: 0
 				};
+				doc.songCount++;
 				bot.db.models.Settings.create(doc, function (err, doc) {
 					if (err) {
 						console.log(err);
@@ -138,6 +139,7 @@ new DubAPI({
 							emoji: token,
 							count: 0
 						};
+						doc.count++;
 						bot.db.models.EmojiCount.create(doc, function (err, doc) {
 							if (err) {
 								console.log(err);
