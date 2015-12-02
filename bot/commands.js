@@ -376,7 +376,7 @@ module.exports = {
 		}
 	},
 	//MOD COMMANDS YO!
-	/*motd: function (data) {
+	motd: function (data) {
 		self = this;
 		var user = data.user.username;
 		var rank = data.user.role;
@@ -393,54 +393,30 @@ module.exports = {
 						// the rest to set the motd
 						if (firstParam === "set") {
 							var motd = data.params.slice(1).join(" ");
-							self.db.motd.findOne({
-								_id: 1
+							self.db.models.Settings.findOne({
+								id: "s3tt1ng5"
 							}, function (err, doc) {
-								doc = doc || {
-									_id: 1,
-									enabled: false,
-									songCount: 0,
-									interval: 15,
-									motd: ""
-								};
-								doc.enabled = true;
-								doc.motd = motd;
-								self.sendChat(self.identifier + "MOTD has been set to: " + doc.motd);
-								self.db.motd.update({
-									_id: 1
-								}, doc, {
-									upsert: true
-								}, function (err, num) {
-									if (err) {
-										console.log(err);
-									}
-								});
+								if (err) {
+									console.log(err);
+								}
+								doc.motd.enabled = true;
+								doc.motd.msg = motd;
+								doc.save();
+								self.sendChat(self.identifier + "MOTD has been set to: " + motd);
 							});
 							//if it doesn't join the params together to set the motd
 						} else {
 							var motd = data.params.join(" ");
-							self.db.motd.findOne({
-								_id: 1
+							self.db.models.Settings.findOne({
+								id: "s3tt1ng5"
 							}, function (err, doc) {
-								doc = doc || {
-									_id: 1,
-									enabled: false,
-									songCount: 0,
-									interval: 15,
-									motd: ""
-								};
-								doc.enabled = true;
-								doc.motd = motd;
-								self.sendChat(self.identifier + "MOTD has been set to: " + doc.motd);
-								self.db.motd.update({
-									_id: 1
-								}, doc, {
-									upsert: true
-								}, function (err, num) {
-									if (err) {
-										console.log(err);
-									}
-								});
+								if (err) {
+									console.log(err);
+								}
+								doc.motd.enabled = true;
+								doc.motd.msg = motd;
+								doc.save();
+								self.sendChat(self.identifier + "MOTD has been set to: " + motd);
 							});
 						}
 						//if the first param is a number
@@ -453,53 +429,26 @@ module.exports = {
 							self.db.motd.findOne({
 								_id: 1
 							}, function (err, doc) {
-								doc = doc || {
-									_id: 1,
-									enabled: false,
-									songCount: 0,
-									interval: 15,
-									motd: ""
-								};
-								doc.enabled = true;
-								doc.motd = motd;
-								doc.interval = parseInt(firstParam);
-								self.sendChat(self.identifier + "MOTD has been set to: " + doc.motd + " with interval of: " + doc.interval + " songs");
-								self.db.motd.update({
-									_id: 1
-								}, doc, {
-									upsert: true
-								}, function (err, num) {
-									if (err) {
-										console.log(err);
-									}
-								});
+								doc.motd.enabled = true;
+								doc.motd.interval = parseInt(firstParam);
+								doc.motd.msg = motd;
+								doc.save();
+								self.sendChat(self.identifier + "MOTD has been set to: '" + motd + "' with interval of: " + parseInt(firstParam) + " songs");
 							});
 							//if it doesn't, just remove the interval from the params, then join them together to set the motd
 						} else {
 							var motd = data.params.slice(1).join(" ");
-							self.db.motd.findOne({
-								_id: 1
+							self.db.models.Settings.findOne({
+								id: "s3tt1ng5"
 							}, function (err, doc) {
-								doc = doc || {
-									_id: 1,
-									enabled: false,
-									songCount: 0,
-									interval: 15,
-									motd: ""
-								};
-								doc.enabled = true;
-								doc.motd = motd;
-								doc.interval = parseInt(firstParam);
-								self.sendChat(self.identifier + "MOTD has been set to: " + doc.motd + " with interval of: " + doc.interval + " songs");
-								self.db.motd.update({
-									_id: 1
-								}, doc, {
-									upsert: true
-								}, function (err, num) {
-									if (err) {
-										console.log(err);
-									}
-								});
+								if (err) {
+									console.log(err);
+								}
+								doc.motd.enabled = true;
+								doc.motd.interval = parseInt(firstParam);
+								doc.motd.msg = motd;
+								doc.save();
+								self.sendChat(self.identifier + "MOTD has been set to: '" + motd + "' with interval of: " + parseInt(firstParam) + " songs");
 							});
 						}
 					}
@@ -510,118 +459,72 @@ module.exports = {
 						self.sendChat(self.identifier + "to set MOTD do: !motd [interval] set [motd message]");
 						//checks to se if the only param is interval, to see the current interval set
 					} else if (data.params[0] === "interval") {
-						self.db.motd.findOne({
-							_id: 1
+						self.db.models.Settings.findOne({
+							id: "s3tt1ng5"
 						}, function (err, doc) {
-							doc = doc || {
-								_id: 1,
-								enabled: false,
-								songCount: 0,
-								interval: 15,
-								motd: ""
-							};
-							self.sendChat(self.identifier + "MOTD interval is currently set to: " + doc.interval + " songs");
+							if (err) {
+								console.log(err);
+							}
+							self.sendChat(self.identifier + "MOTD interval is currently set to: " + doc.motd.interval + " songs");
 						});
 						//checks to see if the only param is a number	
 					} else if (!isNaN(parseInt(data.params[0]))) {
 						var interval = parseInt(data.params[0]);
-						self.db.motd.findOne({
-							_id: 1
+						self.db.models.Settings.findOne({
+							id: "s3tt1ng5"
 						}, function (err, doc) {
-							doc = doc || {
-								_id: 1,
-								enabled: false,
-								songCount: 0,
-								interval: 15,
-								motd: ""
-							};
-							doc.interval = interval;
-							self.sendChat(self.identifier + "MOTD interval changed to " + doc.interval + " songs");
-							self.db.motd.update({
-								_id: 1
-							}, doc, {
-								upsert: true
-							}, function (err, num) {
-								if (err) {
-									console.log(err);
-								}
-							});
+							if (err) {
+								console.log(err);
+							}
+							doc.motd.interval = interval;
+							doc.save();
+							self.sendChat(self.identifier + "MOTD interval changed to " + interval + " songs");
 						});
 						//checks to see if the only param is clear, to remove the MOTD
 					} else if (data.params[0] === "clear") {
-						self.db.motd.findOne({
-							_id: 1
+						self.db.models.Settings.findOne({
+							id: "s3tt1ng5"
 						}, function (err, doc) {
-							doc = doc || {
-								_id: 1,
-								enabled: false,
-								songCount: 0,
-								interval: 15,
-								motd: ""
-							};
-							doc.motd = "";
-							doc.enabled = false;
+							if (err) {
+								console.log(err);
+							}
+							doc.motd.enabled = false;
+							doc.motd.msg = "";
+							doc.save();
 							self.sendChat(self.identifier + "MOTD cleared");
-							self.db.motd.update({
-								_id: 1
-							}, doc, {
-								upsert: true
-							}, function (err, num) {
-								if (err) {
-									console.log(err);
-								}
-							});
 						});
-						self.motd = "";
-						self.motdEnabled = false;
 					} else {
 						//single word motd (for that odd occasion when we might have just one word. who knows)
 						var motd = data.params[0];
-						self.db.motd.findOne({
-							_id: 1
+						self.db.models.Settings.findOne({
+							id: "s3tt1ng5"
 						}, function (err, doc) {
-							doc = doc || {
-								_id: 1,
-								enabled: false,
-								songCount: 0,
-								interval: 15,
-								motd: ""
-							};
-							doc.motd = motd;
-							self.sendChat(self.identifier + "MOTD has been set to: " + doc.motd);
-							self.db.motd.update({
-								_id: 1
-							}, doc, {
-								upsert: true
-							}, function (err, num) {
-								if (err) {
-									console.log(err);
-								}
-							});
+							if (err) {
+								console.log(err);
+							}
+							doc.motd.msg = motd;
+							doc.save();
+							self.sendChat(self.identifier + "MOTD has been set to: " + motd);
 						});
 					}
 				}
 				//if the command is on its lonesome
 			} else {
-				self.db.motd.findOne({
-					_id: 1
+				self.db.models.Settings.findOne({
+					id: "s3tt1ng5"
 				}, function (err, doc) {
-					doc = doc || {
-						_id: 1,
-						enabled: false,
-						songCount: 0,
-						interval: 15,
-						motd: ""
-					};
-					if (doc.motd === "") {
+					if (err) {
+						console.log(err);
+					}
+					if (doc.motd.msg === "") {
 						self.sendChat(self.identifier + "Motd not set. do '!motd [interval] set [motd message]' to set motd");
 					} else {
-						self.sendChat(self.identifier + doc.motd);
+						self.sendChat(self.identifier + doc.motd.msg);
 					}
 				});
 			}
 		}
-	},*/
+	},
 	whois: function (data) {
 		self = this;
 		var user = data.user.username;
