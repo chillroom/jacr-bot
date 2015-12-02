@@ -70,15 +70,7 @@ new DubAPI({
 				motd: ""
 			};
 			doc.songCount++;
-			bot.db.motd.update({
-				_id: 1
-			}, doc, {
-				upsert: true
-			}, function (err, num) {
-				if (err) {
-					console.log(err);
-				}
-			});
+			doc.save();
 			if (err) {
 				console.log(err);
 			}
@@ -119,27 +111,20 @@ new DubAPI({
 				}
 			}
 			//check to see if any of the words match an emoji
-			/*else if (bot.emojis.indexOf(token) > -1) {
+			else if (bot.emojis.indexOf(token) > -1) {
 				//if it does, find or create db entery, incrementing the count
-				bot.db.emojiCount.findOne({
+				bot.db.models.EmojiCount.findOne({
 					emoji: token
 				}, function (err, doc) {
+					console.log(doc);
 					doc = doc || {
 						emoji: token,
 						count: 0
 					};
-					doc.count++
-						bot.db.emojiCount.update({
-							emoji: token
-						}, doc, {
-							upsert: true
-						}, function (err, num) {
-							if (err) {
-								console.log(err);
-							}
-						});
+					doc.count++;
+					doc.save();
 				});
-			}*/
+			}
 		});
 		//DB store
 		//only storing the chat ID's, user IDs, and username so that the DB file doesn't get too big yo!
@@ -154,7 +139,7 @@ new DubAPI({
 		});
 	});
 	bot.on('room_playlist-update', function (data) {
-		/*bot.sendMotd();
+		//bot.sendMotd();
 		var date = new Date();
 		//checks to see if it's within the first hour of the day
 		if (date.getHours() === 0) {
@@ -176,22 +161,24 @@ new DubAPI({
 									date: date,
 									emojis: emojis
 								}
-								bot.db.emojiTrackDays.insert(emojiDaySchema, function (err, doc) {
+								bot.db.models.EmojiTrackDays.create(emojiDaySchema, function (err, doc) {
 									if (err) {
 										console.log(err)
 									}
 								});
 							}, 2000);
 						} else {
-							bot.db.emojiCount.findOne({
+							bot.db.models.EmojiCount.findOne({
 								emoji: emoji
 							}, function (err, doc) {
 								if (err) {
 									console.log(err);
 								}
 								if (doc) {
-									var count = {};
-									count[emoji] = doc.count;
+									var count = {
+										emojiName: emoji,
+										count: doc.count
+									};
 									emojis.push(count);
 								}
 							});
@@ -210,33 +197,27 @@ new DubAPI({
 									date: date,
 									emojis: emojis
 								}
-								bot.db.emojiTrackWeeks.insert(emojiWeekSchema, function (err, doc) {
+								bot.db.models.EmojiTrackWeeks.create(emojiWeekSchema, function (err, doc) {
 									if (err) {
 										console.log(err)
 									}
 								});
 							}, 2000);
 						} else {
-							bot.db.emojiCount.findOne({
+							bot.db.models.EmojiCount.findOne({
 								emoji: emoji
 							}, function (err, doc) {
 								if (err) {
 									console.log(err);
 								}
 								if (doc) {
-									var count = {};
-									count[emoji] = doc.count;
+									var count = {
+										emojiName: emoji,
+										count: doc.count
+									};
 									emojis.push(count);
 									doc.count = 0;
-									bot.db.emojiCount.update({
-										emoji: emoji
-									}, doc, {
-										upsert: true
-									}, function (err, num) {
-										if (err) {
-											console.log(err);
-										}
-									});
+									doc.save();
 								}
 							});
 						}
@@ -259,23 +240,27 @@ new DubAPI({
 									date: date,
 									emojis: emojis
 								}
-								bot.db.emojiTrackDays.insert(emojiDaySchema, function (err, doc) {
+								console.log(emojis);
+								bot.db.models.EmojiTrackDays.create(emojiDaySchema, function (err, doc) {
 									if (err) {
 										console.log(err)
 									}
 								});
-							}, 2000);
+							}, 5000);
 						} else {
-							bot.db.emojiCount.findOne({
+							bot.db.models.EmojiCount.findOne({
 								emoji: emoji
 							}, function (err, doc) {
 								if (err) {
 									console.log(err);
 								}
 								if (doc) {
-									var count = {};
-									count[emoji] = doc.count;
+									var count = {
+										emojiName: emoji,
+										count: doc.count
+									};
 									emojis.push(count);
+									console.log(emojis);
 								}
 							});
 						}
@@ -287,7 +272,7 @@ new DubAPI({
 				//safe to remove the pause protection when it's not within the first hour
 				bot.emojisPause = false;
 			}
-		}*/
+		}
 	});
 	console.log('DubAPI Version: ' + bot.version);
 
