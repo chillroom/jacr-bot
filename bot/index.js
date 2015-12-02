@@ -1,9 +1,8 @@
 var DubAPI = require('dubapi'),
 	mongoose = require('mongoose'),
 	pkg = require('../package.json'),
-	commands = require('./commands');
-
-require('../config');
+	commands = require('./commands'),
+	config = require('../config');
 
 if (typeof config.botName === "undefined") {
 	throw Error("Please set the BOT_NAME evironment variable or add bot username to the config.js file");
