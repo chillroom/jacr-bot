@@ -1,7 +1,15 @@
 var DubAPI = require('dubapi'),
-	Datastore = require('nedb'),
+	mongoose = require('mongoose'),
 	pkg = require('../package.json'),
 	commands = require('./commands');
+
+var mongoose = require('mongoose');
+
+mongoose.connect(process.env.MONGO || "mongodb://betabot:MickieRocks123@linus.mongohq.com:10016/chill_bot", {
+	server: {
+		auto_reconnect: true
+	}
+});
 
 new DubAPI({
 	username: 'betabot',
@@ -27,46 +35,30 @@ new DubAPI({
 	//added emoji pause to be used to stop double enteries in the days tracker
 	bot.emojisPause = false;
 	//added DB to bot
-	bot.db = {};
-	//as we may extend the use of DB's in the future
-	//setting up DB as an object to seperate each DB into its own collection
-	//chat DB
-	bot.db.chat = new Datastore({
-		filename: __dirname + "/db/chat.db",
-		autoload: true,
-		inMemoryOnly: false,
-		timestampData: true
+	bot.db = mongoose.connection;
+	bot.db.on('error', function (err) {
+		console.error('MongoDB connection error:', err);
 	});
-	//MOTD settings for persistence
-	bot.db.motd = new Datastore({
-		filename: __dirname + "/db/motd.db",
-		autoload: true,
-		inMemoryOnly: false,
-		timestampData: true
+
+	bot.db.once('open', function callback() {
+		console.info('MongoDB connection is established');
 	});
-	//emojiCount DB
-	bot.db.emojiCount = new Datastore({
-		filename: __dirname + "/db/emojiCount.db",
-		autoload: true,
-		inMemoryOnly: false,
-		timestampData: true
+
+	bot.db.on('disconnected', function () {
+		console.error('MongoDB disconnected!');
+		mongoose.connect(process.env.MONGO_URL || "mongodb://betabot:MickieRocks123@linus.mongohq.com:10016/chill_bot", {
+			server: {
+				auto_reconnect: true
+			}
+		});
 	});
-	//emoji track days DB
-	bot.db.emojiTrackDays = new Datastore({
-		filename: __dirname + "/db/emojiTrackDays.db",
-		autoload: true,
-		inMemoryOnly: false,
-		timestampData: true
+
+	bot.db.on('reconnected', function () {
+		console.info('MongoDB reconnected!');
 	});
-	//emoji track Weeks DB
-	bot.db.emojiTrackWeeks = new Datastore({
-		filename: __dirname + "/db/emojiTrackWeeks.db",
-		autoload: true,
-		inMemoryOnly: false,
-		timestampData: true
-	});
+	require('./models')(bot, mongoose);
 	//function to send MOTD based off the number of songs played
-	bot.sendMotd = function () {
+	/*bot.sendMotd = function () {
 		bot.db.motd.findOne({
 			_id: 1
 		}, function (err, doc) {
@@ -96,7 +88,7 @@ new DubAPI({
 				}
 			}
 		});
-	};
+	};*/
 	bot.on('chat-message', function (data) {
 		var cmd = data.message,
 			//split the whole message words into tokens
@@ -127,7 +119,7 @@ new DubAPI({
 				}
 			}
 			//check to see if any of the words match an emoji
-			else if (bot.emojis.indexOf(token) > -1) {
+			/*else if (bot.emojis.indexOf(token) > -1) {
 				//if it does, find or create db entery, incrementing the count
 				bot.db.emojiCount.findOne({
 					emoji: token
@@ -147,24 +139,22 @@ new DubAPI({
 							}
 						});
 				});
-			}
+			}*/
 		});
 		//DB store
-		//only storing the chat ID's, user IDs, and username so that the DB file doesn't get too big yo! 
+		//only storing the chat ID's, user IDs, and username so that the DB file doesn't get too big yo!
 		var chatSchema = {
-			chatid: data.raw.chatid,
-			userid: data.user.id,
-			username: data.user.username
-		};
-		bot.db.chat.insert(chatSchema, function (err, docs) {
+			username: data.user.username,
+			chatid: data.raw.chatid
+		}
+		bot.db.models.Chat.create(chatSchema, function (err, chat) {
 			if (err) {
 				console.log(err);
 			}
 		});
-
 	});
 	bot.on('room_playlist-update', function (data) {
-		bot.sendMotd();
+		/*bot.sendMotd();
 		var date = new Date();
 		//checks to see if it's within the first hour of the day
 		if (date.getHours() === 0) {
@@ -297,7 +287,7 @@ new DubAPI({
 				//safe to remove the pause protection when it's not within the first hour
 				bot.emojisPause = false;
 			}
-		}
+		}*/
 	});
 	console.log('DubAPI Version: ' + bot.version);
 
