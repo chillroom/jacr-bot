@@ -46,7 +46,7 @@ server.use(restify.gzipResponse());
 server.listen(config.port, config.ipaddress, function () {
 	var host = server.address().address;
 	var port = server.address().port;
-	log("info", "API", "Started on http://" + host + port);
+	log("info", "API", "Started on http://" + host + ":" + port);
 });
 server.get("/", function (req, res, next) {
 	res.json({
