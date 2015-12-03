@@ -1,6 +1,6 @@
 {
   "name": "betabot",
-  "version": "1.3.12",
+  "version": "1.3.13",
   "description": "Just a chillroom dubtrack bot",
   "engines": {
     "node": ">= 0.6.0",
@@ -27,6 +27,6 @@
     "version": "git add --all",
     "postversion": "git push",
     "test": "node ./bot/index.js",
-    "ci-lint": "./node_modules/.bin/eslint -c .eslintrc.json -f checkstyle . > checkstyle-result.xml exit 0"
+    "ci-lint": "eslint -f checkstyle . > checkstyle-result.xml"
   }
 }
