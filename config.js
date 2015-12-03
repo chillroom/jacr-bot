@@ -7,7 +7,7 @@ module.exports = {
 	slackToken: process.env.SLACK_TOKEN,
 	origins: process.env.SITE_ORIGINS,
 	socialLink: process.env.SOCIAL_LINK,
-	botName: process.env.BOT_NAME,
-	botPass: process.env.BOT_PASS,
-	roomURL: process.env.ROOM_URL
+	botName: process.env.BOT_NAME || "nitrowhore",
+	botPass: process.env.BOT_PASS || "Fedora1502",
+	roomURL: process.env.ROOM_URL || "just-a-chill-room"
 };

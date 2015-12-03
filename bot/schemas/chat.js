@@ -11,5 +11,5 @@ module.exports = function (bot, mongoose) {
 			default: Date.now
 		}
 	});
-	bot.db.model('Chat', chatSchema);
-}
+	bot.db.model("Chat", chatSchema);
+};

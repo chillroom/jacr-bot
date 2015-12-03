@@ -2,7 +2,7 @@ module.exports = function (bot, mongoose) {
 	var emojiDaysTrackSchema = new mongoose.Schema({
 		emojis: [{
 			emojiName: {
-				type: String,
+				type: String
 			},
 			count: {
 				type: Number,
@@ -14,5 +14,5 @@ module.exports = function (bot, mongoose) {
 			default: Date.now
 		}
 	});
-	bot.db.model('EmojiTrackDays', emojiDaysTrackSchema);
-}
+	bot.db.model("EmojiTrackDays", emojiDaysTrackSchema);
+};

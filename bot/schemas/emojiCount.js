@@ -8,5 +8,5 @@ module.exports = function (bot, mongoose) {
 			default: 0
 		}
 	});
-	bot.db.model('EmojiCount', emojiCountSchema);
-}
+	bot.db.model("EmojiCount", emojiCountSchema);
+};
