@@ -9,7 +9,7 @@
             "double"
         ],
 		"linebreak-style": [
-            0,
+            2,
             "unix"
         ],
 		"semi": [

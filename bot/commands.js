@@ -60,7 +60,16 @@ module.exports = {
 	},
 	purn: function (data) {
 		var self = this;
-		self.sendChat("http://puu.sh/lrdTh/a7e4a53a2d.jpg");
+		var pancakes = [
+			"http://puu.sh/lrdTh/a7e4a53a2d.jpg",
+			"http://puu.sh/lrdTh/a7e4a53a2d.jpg"
+		];
+		var sender = pancakes[Math.floor(Math.random() * pancakes.lengeth)];
+		self.sendChat(sender);
+	},
+	jinkx: function (data) {
+		var self = this;
+		self.sendChat("http://puu.sh/lHI7X/5cd15acbaa.jpg");
 	},
 	haha: function (data) {
 		var self = this;
