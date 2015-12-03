@@ -400,7 +400,7 @@ module.exports = {
 								id: "s3tt1ng5"
 							}, function (err, doc) {
 								if (err) {
-									log("error", "BOT", err);;
+									log("error", "BOT", err);
 								}
 								doc.motd.enabled = true;
 								doc.motd.msg = motd;
@@ -414,7 +414,7 @@ module.exports = {
 								id: "s3tt1ng5"
 							}, function (err, doc) {
 								if (err) {
-									log("error", "BOT", err);;
+									log("error", "BOT", err);
 								}
 								doc.motd.enabled = true;
 								doc.motd.msg = motd;
@@ -445,7 +445,7 @@ module.exports = {
 								id: "s3tt1ng5"
 							}, function (err, doc) {
 								if (err) {
-									log("error", "BOT", err);;
+									log("error", "BOT", err);
 								}
 								doc.motd.enabled = true;
 								doc.motd.interval = parseInt(firstParam);
@@ -466,7 +466,7 @@ module.exports = {
 							id: "s3tt1ng5"
 						}, function (err, doc) {
 							if (err) {
-								log("error", "BOT", err);;
+								log("error", "BOT", err);
 							}
 							self.sendChat(self.identifier + "MOTD interval is currently set to: " + doc.motd.interval + " songs");
 						});
@@ -477,7 +477,7 @@ module.exports = {
 							id: "s3tt1ng5"
 						}, function (err, doc) {
 							if (err) {
-								log("error", "BOT", err);;
+								log("error", "BOT", err);
 							}
 							doc.motd.interval = interval;
 							doc.save();
@@ -489,7 +489,7 @@ module.exports = {
 							id: "s3tt1ng5"
 						}, function (err, doc) {
 							if (err) {
-								log("error", "BOT", err);;
+								log("error", "BOT", err);
 							}
 							doc.motd.enabled = false;
 							doc.motd.msg = "";
@@ -503,7 +503,7 @@ module.exports = {
 							id: "s3tt1ng5"
 						}, function (err, doc) {
 							if (err) {
-								log("error", "BOT", err);;
+								log("error", "BOT", err);
 							}
 							doc.motd.msg = motd;
 							doc.save();
@@ -517,7 +517,7 @@ module.exports = {
 					id: "s3tt1ng5"
 				}, function (err, doc) {
 					if (err) {
-						log("error", "BOT", err);;
+						log("error", "BOT", err);
 					}
 					if (doc.motd.msg === "") {
 						self.sendChat(self.identifier + "Motd not set. do '!motd [interval] set [motd message]' to set motd");
@@ -629,7 +629,7 @@ module.exports = {
 						username: username
 					}, function (err, docs) {
 						if (err) {
-							log("error", "BOT", err);;
+							log("error", "BOT", err);
 						}
 						for (var i = 0; i < docs.length; i++) {
 							self.moderateDeleteChat(docs[i].chatid);
@@ -637,7 +637,7 @@ module.exports = {
 								chatid: docs[i].chatid
 							}, function (err, removed) {
 								if (err) {
-									log("error", "BOT", err);;
+									log("error", "BOT", err);
 								}
 							});
 						}
@@ -653,7 +653,7 @@ module.exports = {
 						username: username
 					}, function (err, docs) {
 						if (err) {
-							log("error", "BOT", err);;
+							log("error", "BOT", err);
 						}
 						for (var i = 0; i < docs.length; i++) {
 							self.moderateDeleteChat(docs[i].chatid);
@@ -661,7 +661,7 @@ module.exports = {
 								chatid: docs[i].chatid
 							}, function (err, removed) {
 								if (err) {
-									log("error", "BOT", err);;
+									log("error", "BOT", err);
 								}
 							});
 						}
@@ -686,7 +686,7 @@ module.exports = {
 						username: username
 					}, function (err, docs) {
 						if (err) {
-							log("error", "BOT", err);;
+							log("error", "BOT", err);
 						}
 						for (var i = 0; i < docs.length; i++) {
 							self.moderateDeleteChat(docs[i].chatid);
@@ -694,7 +694,7 @@ module.exports = {
 								chatid: docs[i].chatid
 							}, function (err, removed) {
 								if (err) {
-									log("error", "BOT", err);;
+									log("error", "BOT", err);
 								}
 							});
 						}
