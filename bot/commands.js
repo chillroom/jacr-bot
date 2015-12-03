@@ -153,6 +153,7 @@ module.exports = {
 							self.sendChat(self.identifier + term + " definition: " + definition);
 
 						} else {
+							self.sendChat(self.identifier + "http://urbandictionary.com/define.php?term=" + term);
 							self.sendChat(self.identifier + " sorry the definition for " + term + " is too long to be shown");
 						}
 					} else {
