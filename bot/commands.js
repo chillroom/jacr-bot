@@ -65,7 +65,7 @@ module.exports = {
 			"http://puu.sh/lrdTh/a7e4a53a2d.jpg"
 		];
 		var post = memes[Math.floor(Math.random() * memes.length)];
-		self.sendChat(sender);
+		self.sendChat(post);
 	},
 	jinkx: function (data) {
 		var self = this;
