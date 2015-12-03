@@ -1,5 +1,6 @@
 #BETA BOT#
 
+[![Build Status](https://jenkins-nitroghost.rhcloud.com/buildStatus/icon?job=betabot-build)](https://jenkins-nitroghost.rhcloud.com/job/betabot-build/)
 [![Join the JACR Community on Slack](https://betabot-nitroghost.rhcloud.com/badge.svg)](http://justachillroom.slack.com)
 
 The best freaking [dubtrack.fm](https://dubtrack.fm) bot in the world.
