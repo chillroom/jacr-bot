@@ -1,7 +1,8 @@
 module.exports = function (bot, mongoose) {
 	var chatSchema = new mongoose.Schema({
 		username: {
-			type: String
+			type: String,
+			index: true
 		},
 		chatid: {
 			type: String
@@ -10,6 +11,10 @@ module.exports = function (bot, mongoose) {
 			type: Date,
 			default: Date.now
 		}
+	});
+	chatSchema.index({
+		username: 1,
+		type: -1
 	});
 	bot.db.model("Chat", chatSchema);
 };
