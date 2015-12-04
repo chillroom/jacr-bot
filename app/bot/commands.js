@@ -635,23 +635,6 @@ module.exports = {
 					}
 					person = self.getUserByName(username);
 					self.moderateBanUser(person.id, time);
-					self.db.models.Chat.find({
-						username: username
-					}, function (err, docs) {
-						if (err) {
-							log("error", "BOT", err);
-						}
-						for (var i = 0; i < docs.length; i++) {
-							self.moderateDeleteChat(docs[i].chatid);
-							self.db.chat.remove({
-								chatid: docs[i].chatid
-							}, function (err, removed) {
-								if (err) {
-									log("error", "BOT", err);
-								}
-							});
-						}
-					});
 				} else {
 					if (username.substr(0, 1) === "@") {
 						//remove the @
@@ -659,23 +642,6 @@ module.exports = {
 					}
 					person = self.getUserByName(username);
 					self.moderateBanUser(person.id, time);
-					self.db.models.Chat.find({
-						username: username
-					}, function (err, docs) {
-						if (err) {
-							log("error", "BOT", err);
-						}
-						for (var i = 0; i < docs.length; i++) {
-							self.moderateDeleteChat(docs[i].chatid);
-							self.db.models.Chat.remove({
-								chatid: docs[i].chatid
-							}, function (err, removed) {
-								if (err) {
-									log("error", "BOT", err);
-								}
-							});
-						}
-					});
 				}
 			}
 		}

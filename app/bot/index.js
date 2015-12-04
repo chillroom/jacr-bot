@@ -156,15 +156,17 @@ new DubAPI({
 		});
 		//DB store
 		//only storing the chat ID's, user IDs, and username so that the DB file doesn't get too big yo!
-		var chatSchema = {
-			username: data.user.username,
-			chatid: data.raw.chatid
-		};
-		bot.db.models.Chat.create(chatSchema, function (err, chat) {
-			if (err) {
-				log("error", "BOT", err);
-			}
-		});
+		if (typeof (data.user) !== undefined) {
+			var chatSchema = {
+				username: data.user.username,
+				chatid: data.raw.chatid
+			};
+			bot.db.models.Chat.create(chatSchema, function (err, chat) {
+				if (err) {
+					log("error", "BOT", err);
+				}
+			});
+		}
 	});
 	bot.on("room_playlist-update", function (data) {
 		bot.sendMotd();
