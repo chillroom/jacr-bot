@@ -4,7 +4,8 @@
 
 var should = require("should"),
 	request = require("supertest"),
-	url = "http://localhost:8357";
+	config = require("../config"),
+	url = "http://" + config.ipaddress + ":" + config.port;
 
 
 describe("Test API routes", function () {
