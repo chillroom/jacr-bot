@@ -1,9 +1,9 @@
 var DubAPI = require("dubapi"),
 	mongoose = require("mongoose"),
 	log = require("jethro"),
-	pkg = require("../package.json"),
+	pkg = require("../../package.json"),
 	commands = require("./commands"),
-	config = require("../config");
+	config = require("../../config");
 
 mongoose.connect(process.env.MONGO || "mongodb://betabot:MickieRocks123@linus.mongohq.com:10016/chill_bot", {
 	server: {

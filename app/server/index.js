@@ -1,8 +1,8 @@
 var restify = require("restify"),
 	request = require("request"),
 	log = require("jethro"),
-	config = require("../config"),
-	pkg = require("../package.json");
+	config = require("../../config"),
+	pkg = require("../../package.json");
 
 var server = restify.createServer({
 	name: "Betabot Server",

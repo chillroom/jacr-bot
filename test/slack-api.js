@@ -1,4 +1,4 @@
-/*global describe:true, before:true, after: true, it:true */
+/*global describe:true, it:true */
 
 "use strict";
 
@@ -8,8 +8,8 @@ var should = require("should"),
 	url = "http://" + config.ipaddress + ":" + config.port;
 
 
-describe("Test API routes", function () {
-	require("../server");
+describe("Test Slack API routes", function () {
+	require("../app/server");
 	it("GET /", function (done) {
 		request(url)
 			.get("/")
