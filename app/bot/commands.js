@@ -690,8 +690,11 @@ module.exports = {
 					username = username.substr(1);
 				}
 				var person = self.getUserByName(username);
-				var role = person.role;
-				self.sendChat("/unset" + role + "@" + username);
+				if (self.isVIP(person)) {
+					self.sendChat("/unsetvip @" + username);
+				} else {
+					self.sendChat("@" + user + " you can only unset VIPs");
+				}
 			}
 		} else {
 			self.sendChat("Please specify a user");
