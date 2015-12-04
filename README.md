@@ -1,11 +1,11 @@
-#BETA BOT#
+# BETA BOT
 
 [![Build Status](https://jenkins-nitroghost.rhcloud.com/buildStatus/icon?job=betabot-build)](https://jenkins-nitroghost.rhcloud.com/job/betabot-build/)
 [![Join the JACR Community on Slack](https://betabot-nitroghost.rhcloud.com/badge.svg)](http://justachillroom.slack.com)
 
 The best freaking [dubtrack.fm](https://dubtrack.fm) bot in the world.
 
-#INSTALLATION AND RUNNING#
+# INSTALLATION AND RUNNING
 
 1) `git pull` to get the latest code, or `git clone git@bitbucket.org:dubbot/betabot.git` if you haven't already
 
@@ -36,7 +36,7 @@ git push
 ```
 >I bet you wish you upgraded your npm version now huh?
 
-#BUILD FAILURES#
+# BUILD FAILURES
 
 These are what currently results in build failures:
 
@@ -46,7 +46,7 @@ What doesn't result in a build failure:
 * Any code failures that are invoked through commands - If this happens you will notice that the bot runs away, then returns moments later. Check your code if you see the bot do this
 * MongoDB decides that it doesn't want you to connect. This shouldn't result in a bot failure, but Nitro Ghost will be able to see these in the logs. It may be just a case of a couple of commands that rely on the database to work. The bot should be trying to auto reconnect to the database if the database drops out for whatever reason
 
-#TO CONSIDER#
+# TO CONSIDER
 
 There are multiple folders and files contained within the repo that **should not be touched**. These are as follows:
 
