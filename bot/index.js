@@ -5,17 +5,6 @@ var DubAPI = require("dubapi"),
 	commands = require("./commands"),
 	config = require("../config");
 
-if (typeof config.botName === "undefined") {
-	throw Error("Please set the BOT_NAME evironment variable or add bot username to the config.js file");
-}
-
-if (typeof config.botPass === "undefined") {
-	throw Error("Please set the BOT_PASS evironment variable or add bot password to the config.js file");
-}
-if (typeof config.roomURL === "undefined") {
-	throw Error("Please set the ROOM_URL environment variable or add the room URL to the config.js file");
-}
-
 mongoose.connect(process.env.MONGO || "mongodb://betabot:MickieRocks123@linus.mongohq.com:10016/chill_bot", {
 	server: {
 		auto_reconnect: true
@@ -128,13 +117,13 @@ new DubAPI({
 					//the params are an array of the remaining tokens
 					data.params = tokens.slice(1);
 					switch (typeof (commands[data.trigger])) {
-					case "string":
-						bot.sendChat(bot.identifier + commands[data.trigger]);
-						break;
-					case "function":
+						case "string":
+							bot.sendChat(bot.identifier + commands[data.trigger]);
+							break;
+						case "function":
 							//little trick to give the commands the bot to use its functions and also the data from the chat
-						commands[data.trigger].apply(bot, [data]);
-						break;
+							commands[data.trigger].apply(bot, [data]);
+							break;
 					}
 				}
 			}
