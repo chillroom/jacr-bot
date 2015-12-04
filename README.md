@@ -38,11 +38,13 @@ git push
 
 # BUILD FAILURES
 
-These are what currently results in build failures:
+These are what currently result in build failures:
 
-* Errors in the linting process - Run `npm run lint` on your own machine to find out what are the errors and fix them.
+* Errors in the linting process - Run npm run lint on your own machine to find out what are the errors and fix them.
 * ./test tests fail during the build process results in a failure
+
 What doesn't result in a build failure:
+
 * Any code failures that are invoked through commands - If this happens you will notice that the bot runs away, then returns moments later. Check your code if you see the bot do this
 * MongoDB decides that it doesn't want you to connect. This shouldn't result in a bot failure, but Nitro Ghost will be able to see these in the logs. It may be just a case of a couple of commands that rely on the database to work. The bot should be trying to auto reconnect to the database if the database drops out for whatever reason
 
