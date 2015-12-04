@@ -689,8 +689,8 @@ module.exports = {
 				if (username.substr(0, 1) === "@") {
 					username = username.substr(1);
 				}
-
-				var role = data.username.role;
+				var person = self.getUserByName(username);
+				var role = person.role;
 				self.sendChat("/unset" + role + "@" + username);
 			}
 		} else {
