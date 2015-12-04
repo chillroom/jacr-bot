@@ -34,3 +34,6 @@ config.mine.js
 
 #ignore TAP file
 test.tap
+
+#ignore checkstyle files
+checkstyle-result.xml
