@@ -13,8 +13,7 @@ module.exports = function (bot, mongoose) {
 		}
 	});
 	chatSchema.index({
-		username: 1,
-		type: -1
+		username: 1
 	});
 	bot.db.model("Chat", chatSchema);
 };
