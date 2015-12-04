@@ -12,3 +12,5 @@ gulp.task("mine", function () {
 		.pipe(rename("./config.js"))
 		.pipe(gulp.dest("."));
 });
+
+gulp.task("default", ["config"]);

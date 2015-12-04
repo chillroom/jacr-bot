@@ -1,6 +1,6 @@
 {
   "name": "betabot",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Just a chillroom dubtrack bot",
   "engines": {
     "node": ">= 0.6.0",
@@ -32,7 +32,7 @@
     "version": "git add --all",
     "postversion": "git push",
     "test": "node ./bot/index.js",
-    "ci-build": "node_modules/.bin/gulp config",
+    "ci-build": "node_modules/.bin/gulp",
     "ci-test": "node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha -- -R mocha-tap-reporter",
     "ci-lint": "node_modules/.bin/eslint -f checkstyle bot/**/* > checkstyle-result.xml"
   }
