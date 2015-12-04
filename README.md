@@ -48,6 +48,6 @@ There are multiple folders and files contained within the repo that **should not
 
 >Feel free to make changes to the gulp file to add your own scripts if you want to do some automated builds yourself or whatever, just **do not** edit/delete "config" or "mine".
 
-If you're nosy, you probably noticed that there are a few extra scripts in the package.json file. Anything that starts with the prefix "ci-" are ran on the Jenkins build server to run the tests. Then they are the commands that contain the word "version" which is the scripts that are ran when you do `npm version patch -fm "commit message"` then finally the last script "start" is just a script I run to start app.js to get both the bot and the API server running because Nitro Ghost lazy.
+If you're nosy, you probably noticed that there are a few extra scripts in the package.json file. Anything that starts with the prefix "ci-" are ran on the Jenkins build server to run the tests. Then they are the commands that contain the word "version" which is the scripts that are ran when you do `npm version patch -fm "commit message"` then finally the last script "start" is just a script Nitro Ghost runs to start app.js to get both the bot and the API server running because he's lazy.
 
 If you have any questions, feel free to ask Nitro Ghost on slack, and I'm sure he will help (probs not before he winds you up first because it's just the way he is).
