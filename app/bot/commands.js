@@ -679,4 +679,23 @@ module.exports = {
 			}
 		}
 	}
+	unset: function (data) {
+		self = this;
+		var user = data.user.username;
+		var rank = data.user.role;
+		if (self.devs.indexOf(user) > -1 || self.ranks.indexOf(ranks) > -1) {
+			if (typepof (data.params) !== 'undefined' && data.params.length > 0) {
+				username = data.params[0];
+				if (username.substr(0, 1) === "@") {
+					username = username.substr(1);
+				}
+
+				role = data.username.role;
+				self.sendChat("/unset" + role + "@" + username);
+			}
+		}
+		else {
+			self.sendChat("Please specify a user");
+		}
+	}
 };
