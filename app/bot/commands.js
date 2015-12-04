@@ -678,9 +678,9 @@ module.exports = {
 				}
 			}
 		}
-	}
+	},
 	unset: function (data) {
-		self = this;
+		var self = this;
 		var user = data.user.username;
 		var rank = data.user.role;
 		if (self.devs.indexOf(user) > -1 || self.ranks.indexOf(ranks) > -1) {
