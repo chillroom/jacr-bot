@@ -29,8 +29,7 @@ db
 jenkins
 shh.txt
 
-#ignore config.js and config.mine.js
-config.js
+#ignore config.mine.js
 config.mine.js
 
 #ignore TAP file
