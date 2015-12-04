@@ -2,7 +2,7 @@ var gulp = require("gulp"),
 	rename = require("gulp-rename");
 
 gulp.task("config", function () {
-	return gulp.src(__dirname + "/config.openshift.js")
+	return gulp.src(__dirname + "/config.bot.js")
 		.pipe(rename(__dirname + "/config.js"))
 		.pipe(gulp.dest("."));
 });
