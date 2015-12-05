@@ -599,6 +599,9 @@ module.exports = {
 						case "forbidden":
 							self.sendChat(self.identifier + "This song is on the forbidden list: http://just-a-chill-room.net/op-forbidden-list/ ");
 							break;
+						case "n/a":
+							self.sendChat(self.identifier + "This song is not available to all users");
+							break;	
 						default:
 							self.sendChat(self.identifier + "Parameter not recognised, suggest it here: https://bitbucket.org/dubbot/dubbot/issues?status=new&status=open");
 						}
@@ -611,37 +614,6 @@ module.exports = {
 						self.sendChat(self.identifier + "Song skipped, no reason given though");
 						self.sendChat("!shrug");
 					}
-				}
-			}
-		}
-	},
-	ban: function (data) {
-		var self = this;
-		var user = data.user.username;
-		var rank = data.user.role;
-		if (self.devs.indexOf(user) > -1 || self.ranks.indexOf(rank) > -1) {
-			if (typeof (data.params) !== "undefined" && data.params.length > 0) {
-				var username = data.params[0];
-				var time = 60,
-					person;
-				if (data.params.length > 1) {
-					var secondParam = data.params[1];
-					if (username.substr(0, 1) === "@") {
-						//remove the @
-						username = username.substr(1);
-					}
-					if (!isNaN(parseInt(secondParam))) {
-						time = parseInt(secondParam);
-					}
-					person = self.getUserByName(username);
-					self.moderateBanUser(person.id, time);
-				} else {
-					if (username.substr(0, 1) === "@") {
-						//remove the @
-						username = username.substr(1);
-					}
-					person = self.getUserByName(username);
-					self.moderateBanUser(person.id, time);
 				}
 			}
 		}
@@ -726,6 +698,49 @@ module.exports = {
 			}
 		} else {
 			self.sendChat("Please specify a user");
+		}
+	},
+	ban: function (data) {
+		var self = this;
+		var user = data.user.username;
+		var rank = data.user.role;
+		if (self.devs.indexOf(user) > -1 || self.ranks.indexOf(rank) > -1) {
+			if (typeof (data.params) !== "undefined" && data.params.length > 0) {
+				var username = data.params[0];
+				var time = 60,
+					person;
+				if (data.params.length > 1) {
+					var secondParam = data.params[1];
+					if (username.substr(0, 1) === "@") {
+						//remove the @
+						username = username.substr(1);
+					}
+					if (!isNaN(parseInt(secondParam))) {
+						time = parseInt(secondParam);
+					}
+					person = self.getUserByName(username);
+					if (self.isVIP(person)) {
+						self.moderateUnsetRole(person.id, person.role);
+					}
+					// timeout required else bot tries to ban before the vip has been demoted
+					// it might be able to be a bit faster, 100ms was too quick
+					setTimeout(function() {
+						self.moderateBanUser(person.id, time);
+					}, 1000);
+				} else {
+					if (username.substr(0, 1) === "@") {
+						//remove the @
+						username = username.substr(1);
+					}
+					person = self.getUserByName(username);
+					if (self.isVIP(person)) {
+						self.moderateUnsetRole(person.id, person.role);
+					}
+					setTimeout(function() {
+						self.moderateBanUser(person.id, time);
+					}, 1000);
+				}
+			}
 		}
 	}
 };
