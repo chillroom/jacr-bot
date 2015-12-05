@@ -1,6 +1,6 @@
 {
   "name": "betabot",
-  "version": "1.4.23",
+  "version": "1.4.24",
   "description": "Just a chillroom dubtrack bot",
   "engines": {
     "node": ">= 0.6.0",
@@ -29,11 +29,11 @@
     "supertest": "^1.1.0"
   },
   "scripts": {
-    "preversion": "gulp config",
+    "preversion": "gulp config && node_modules/.bin/eslint app --fix",
     "version": "git add --all",
     "postversion": "git push",
-    "test": "npm install && node_modules/.bin/gulp mine && node ./app/bot/index.js",
-    "start": "npm install && node_modules/.bin/gulp mine && node app.js",
+    "test": "npm install && gulp mine && node ./app/bot/index.js",
+    "start": "npm install && gulp mine && node app.js",
     "lint": "node_modules/.bin/eslint app --fix",
     "testy": "node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha -- -R mocha-tap-reporter > test.tap",
     "ci-test": "node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha -- -R mocha-tap-reporter > test.tap && node_modules/.bin/istanbul report clover",
