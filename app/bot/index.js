@@ -159,7 +159,8 @@ new DubAPI({
 		if (typeof (data.user) !== undefined) {
 			var chatSchema = {
 				username: data.user.username,
-				chatid: data.raw.chatid
+				chatid: data.raw.chatid,
+				message: data.message
 			};
 			bot.db.models.Chat.create(chatSchema, function (err, chat) {
 				if (err) {

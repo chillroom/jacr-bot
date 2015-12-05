@@ -2,14 +2,20 @@ module.exports = function (bot, mongoose) {
 	var chatSchema = new mongoose.Schema({
 		username: {
 			type: String,
-			index: true
+			index: true,
+			required: true
 		},
 		chatid: {
-			type: String
+			type: String,
+			index: true,
+			required: true
 		},
 		time: {
 			type: Date,
 			default: Date.now
+		},
+		message: {
+			type: String
 		}
 	});
 	chatSchema.index({

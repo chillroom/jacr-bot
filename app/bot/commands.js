@@ -660,18 +660,25 @@ module.exports = {
 					}
 					self.db.models.Chat.find({
 						username: username
+					}, {
+						sort: {
+							time: -1
+						},
+						skip: 0,
+						limit: 10
 					}, function (err, docs) {
 						if (err) {
 							log("error", "BOT", err);
-						}
-						for (var i = 0; i < docs.length; i++) {
-							self.moderateDeleteChat(docs[i].chatid);
-							self.db.models.Chat.remove({
-								chatid: docs[i].chatid
-							}, function (err, removed) {
-								if (err) {
-									log("error", "BOT", err);
-								}
+						} else {
+							docs.forEach(function (doc) {
+								self.moderateDeleteChat(doc.chatid);
+								self.db.models.Chat.remove({
+									chatid: doc.chatid
+								}, function (err, doc) {
+									if (err) {
+										log("error", "BOT", err);
+									}
+								});
 							});
 						}
 					});
