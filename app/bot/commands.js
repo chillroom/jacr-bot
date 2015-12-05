@@ -601,7 +601,7 @@ module.exports = {
 							break;
 						case "n/a":
 							self.sendChat(self.identifier + "This song is not available to all users");
-							break;	
+							break;
 						default:
 							self.sendChat(self.identifier + "Parameter not recognised, suggest it here: https://bitbucket.org/dubbot/dubbot/issues?status=new&status=open");
 						}
@@ -632,13 +632,9 @@ module.exports = {
 					}
 					self.db.models.Chat.find({
 						username: username
-					}, {
-						sort: {
-							time: -1
-						},
-						skip: 0,
-						limit: 10
-					}, function (err, docs) {
+					}).sort({
+						time: -1
+					}).limit(10).exec(function (err, docs) {
 						if (err) {
 							log("error", "BOT", err);
 						} else {
@@ -724,7 +720,7 @@ module.exports = {
 					}
 					// timeout required else bot tries to ban before the vip has been demoted
 					// it might be able to be a bit faster, 100ms was too quick
-					setTimeout(function() {
+					setTimeout(function () {
 						self.moderateBanUser(person.id, time);
 					}, 1000);
 				} else {
@@ -736,7 +732,7 @@ module.exports = {
 					if (self.isVIP(person)) {
 						self.moderateUnsetRole(person.id, person.role);
 					}
-					setTimeout(function() {
+					setTimeout(function () {
 						self.moderateBanUser(person.id, time);
 					}, 1000);
 				}
