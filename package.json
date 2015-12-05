@@ -1,6 +1,6 @@
 {
   "name": "betabot",
-  "version": "1.4.25",
+  "version": "1.4.26",
   "description": "Just a chillroom dubtrack bot",
   "engines": {
     "node": ">= 0.6.0",
@@ -36,7 +36,7 @@
     "start": "npm install && gulp mine && node app.js",
     "lint": "node_modules/.bin/eslint app --fix",
     "testy": "node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha -- -R mocha-tap-reporter > test.tap",
-    "ci-test": "node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha -- -R mocha-tap-reporter > test.tap && node_modules/.bin/istanbul report clover",
+    "ci-test": "node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha -- -R mocha-tap-reporter > test.tap && node_modules/.bin/istanbul report cobertura",
     "ci-lint": "node_modules/.bin/eslint -f checkstyle app > checkstyle-result.xml"
   }
 }
