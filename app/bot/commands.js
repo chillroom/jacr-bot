@@ -581,26 +581,26 @@ module.exports = {
 						self.protection = true;
 						self.moderateSkip(reset);
 						switch (data.params[0]) {
-							case "op":
-								self.sendChat(self.identifier + "Song skipped for being op, check http://just-a-chill-room.net/op-forbidden-list/ next time please");
-								break;
-							case "history":
-								self.sendChat(self.identifier + "Song was recently played, history can be viewed by clicking queue then room history.");
-								break;
-							case "hist":
-								self.sendChat(self.identifier + "Song was recently played, history can be viewed by clicking queue then room history.");
-								break;
-							case "nsfw":
-								self.sendChat(self.identifier + "Song skipped for being NSFW, too much NSFW = ban!");
-								break;
-							case "theme":
-								self.sendChat(self.identifier + "Song does not fit the room theme.");
-								break;
-							case "forbidden":
-								self.sendChat(self.identifier + "This song is on the forbidden list: http://just-a-chill-room.net/op-forbidden-list/ ");
-								break;
-							default:
-								self.sendChat(self.identifier + "Parameter not recognised, suggest it here: https://bitbucket.org/dubbot/dubbot/issues?status=new&status=open");
+						case "op":
+							self.sendChat(self.identifier + "Song skipped for being op, check http://just-a-chill-room.net/op-forbidden-list/ next time please");
+							break;
+						case "history":
+							self.sendChat(self.identifier + "Song was recently played, history can be viewed by clicking queue then room history.");
+							break;
+						case "hist":
+							self.sendChat(self.identifier + "Song was recently played, history can be viewed by clicking queue then room history.");
+							break;
+						case "nsfw":
+							self.sendChat(self.identifier + "Song skipped for being NSFW, too much NSFW = ban!");
+							break;
+						case "theme":
+							self.sendChat(self.identifier + "Song does not fit the room theme.");
+							break;
+						case "forbidden":
+							self.sendChat(self.identifier + "This song is on the forbidden list: http://just-a-chill-room.net/op-forbidden-list/ ");
+							break;
+						default:
+							self.sendChat(self.identifier + "Parameter not recognised, suggest it here: https://bitbucket.org/dubbot/dubbot/issues?status=new&status=open");
 						}
 					}
 
