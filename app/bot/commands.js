@@ -599,6 +599,9 @@ module.exports = {
 						case "forbidden":
 							self.sendChat(self.identifier + "This song is on the forbidden list: http://just-a-chill-room.net/op-forbidden-list/ ");
 							break;
+						case "n/a":
+							self.sendChat(self.identifier + "This song is not available to all users");
+							break;	
 						default:
 							self.sendChat(self.identifier + "Parameter not recognised, suggest it here: https://bitbucket.org/dubbot/dubbot/issues?status=new&status=open");
 						}
