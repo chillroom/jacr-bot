@@ -13,9 +13,6 @@ module.exports = function (bot, mongoose) {
 		time: {
 			type: Date,
 			default: Date.now
-		},
-		message: {
-			type: String
 		}
 	});
 	chatSchema.index({
