@@ -9,5 +9,8 @@ module.exports = {
 	socialLink: process.env.SOCIAL_LINK,
 	botName: process.env.BOT_NAME,
 	botPass: process.env.BOT_PASS,
-	roomURL: process.env.ROOM_URL
+	roomURL: process.env.ROOM_URL,
+	jenkinsUser: process.env.JENKINS_USER,
+	jenkinsToken: process.env.JENKINS_TOKEN,
+	jenkinsURL: process.env.JENKINS_SITE
 };
