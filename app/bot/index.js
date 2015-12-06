@@ -156,7 +156,7 @@ new DubAPI({
 		});
 		//DB store
 		//only storing the chat ID's, user IDs, and username so that the DB file doesn't get too big yo!
-		if (typeof (data.user) !== undefined) {
+		if (typeof (data.user) !== "undefined") {
 			var chatSchema = {
 				username: data.user.username,
 				chatid: data.raw.chatid
