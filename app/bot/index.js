@@ -175,161 +175,48 @@ new DubAPI({
 		//need to set a time out to make sure the settings in bot.sendMotd() has been created.
 		setTimeout(function () {
 			//checks to see if it's within the first hour of the day
-			if (date.getHours() === 2) {
-				if (date.getDay() === 1) {
-					bot.db.models.Settings.findOne({
-						id: "s3tt1ng5"
-					}, function (err, doc) {
-						if (err) {
-							log("error", "BOT", err);
-						}
-						if (!doc.emoji.paused) {
-							var emojis = [];
-							bot.emojis.forEach(function (emoji, index, arr) {
-								if (index === arr.length - 1) {
-									setTimeout(function () {
-										bot.db.models.EmojiTrackDays.create({
-											emojis: emojis
-										}, function (err, doc) {
-											if (err) {
-												log("error", "BOT", err);
-											}
-
-										});
-									}, 5000);
-								} else {
-									bot.db.models.EmojiCount.findOne({
-										emoji: emoji
+			if (date.getUTCHours() === 1) {
+				bot.db.models.Settings.findOne({
+					id: "s3tt1ng5"
+				}, function (err, doc) {
+					if (err) {
+						log("error", "BOT", err);
+					}
+					if (!doc.emoji.paused) {
+						var emojis = [];
+						bot.emojis.forEach(function (emoji, index, arr) {
+							if (index === arr.length - 1) {
+								setTimeout(function () {
+									bot.db.models.EmojiTrackDays.create({
+										emojis: emojis
 									}, function (err, doc) {
 										if (err) {
 											log("error", "BOT", err);
 										}
-										if (doc) {
-											var count = {
-												emojiName: emoji,
-												count: doc.count
-											};
-											emojis.push(count);
-										}
-									});
-								}
-							});
-							bot.db.models.Settings.findOne({
-								id: "s3tt1ng5"
-							}, function (err, doc) {
-								if (err) {
-									log("error", "BOT", err);
-								}
-								doc.emoji.paused = true;
-								doc.save();
-							});
-						}
-						if (!doc.emoji.reset) {
-							var emojisW = [];
-							bot.emojis.forEach(function (emoji, index, arr) {
-								if (index === arr.length - 1) {
-									setTimeout(function () {
-										bot.db.models.EmojiTrackWeeks.create({
-											emojis: emojisW
-										}, function (err, doc) {
-											if (err) {
-												log("error", "BOT", err);
-											}
 
-										});
-									}, 5000);
-								} else {
-									bot.db.models.EmojiCount.findOne({
-										emoji: emoji
-									}, function (err, doc) {
-										if (err) {
-											log("error", "BOT", err);
-										}
-										if (doc) {
-											var count = {
-												emojiName: emoji,
-												count: doc.count
-											};
-											emojisW.push(count);
-											doc.count = 0;
-											doc.save();
-										}
 									});
-								}
-							});
-							bot.db.models.Settings.findOne({
-								id: "s3tt1ng5"
-							}, function (err, doc) {
-								if (err) {
-									log("error", "BOT", err);
-								}
-								doc.emoji.reset = true;
-								doc.save();
-							});
-						}
-
-					});
-				} else {
-					bot.db.models.Settings.findOne({
-						id: "s3tt1ng5"
-					}, function (err, doc) {
-						if (err) {
-							log("error", "BOT", err);
-						}
-						if (!doc.emoji.paused) {
-							var emojis = [];
-							bot.emojis.forEach(function (emoji, index, arr) {
-								if (index === arr.length - 1) {
-									setTimeout(function () {
-										bot.db.models.EmojiTrackDays.create({
-											emojis: emojis
-										}, function (err, doc) {
-											if (err) {
-												log("error", "BOT", err);
-											}
-
-										});
-									}, 5000);
-								} else {
-									bot.db.models.EmojiCount.findOne({
-										emoji: emoji
-									}, function (err, doc) {
-										if (err) {
-											log("error", "BOT", err);
-										}
-										if (doc) {
-											var count = {
-												emojiName: emoji,
-												count: doc.count
-											};
-											emojis.push(count);
-										}
-									});
-								}
-							});
-							bot.db.models.Settings.findOne({
-								id: "s3tt1ng5"
-							}, function (err, doc) {
-								if (err) {
-									log("error", "BOT", err);
-								}
-								doc.emoji.paused = true;
-								doc.save();
-							});
-						}
-						if (doc.emoji.reset) {
-							bot.db.models.Settings.findOne({
-								id: "s3tt1ng5"
-							}, function (err, doc) {
-								if (err) {
-									log("error", "BOT", err);
-								}
-								doc.emoji.reset = false;
-								doc.save();
-							});
-						}
-					});
-				}
+								}, 5000);
+							} else {
+								bot.db.models.EmojiCount.findOne({
+									emoji: emoji
+								}, function (err, doc) {
+									if (err) {
+										log("error", "BOT", err);
+									}
+									if (doc) {
+										var count = {
+											emojiName: emoji,
+											count: doc.count
+										};
+										doc.count = 0;
+										doc.save();
+										emojis.push(count);
+									}
+								});
+							}
+						});
+					}
+				});
 			} else {
 				bot.db.models.Settings.findOne({
 					id: "s3tt1ng5"
