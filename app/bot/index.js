@@ -219,6 +219,14 @@ new DubAPI({
 						});
 					}
 				});
+
+				bot.db.models.Chat.find({}).sort({
+					time: -1
+				}).skip(100).remove().exec(function (err, docs) {
+					if (err) {
+						log("error", "BOT", err);
+					}
+				});
 			} else {
 				bot.db.models.Settings.findOne({
 					id: "s3tt1ng5"
