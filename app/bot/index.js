@@ -5,6 +5,8 @@ var DubAPI = require("dubapi"),
 	commands = require("./commands"),
 	config = require("../../config");
 
+log.setUTC(true);
+
 mongoose.connect(process.env.MONGO || "mongodb://betabot:MickieRocks123@linus.mongohq.com:10016/chill_bot", {
 	server: {
 		auto_reconnect: true

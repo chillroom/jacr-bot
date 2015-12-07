@@ -3,6 +3,8 @@ var request = require("request"),
 	HtmlParser = require("htmlparser"),
 	log = require("jethro");
 
+log.setUTC(true);
+
 module.exports = {
 	//string bot responses
 	ping: "pong!",

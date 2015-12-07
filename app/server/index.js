@@ -4,6 +4,7 @@ var restify = require("restify"),
 	config = require("../../config"),
 	pkg = require("../../package.json");
 
+log.setUTC(true);
 var server = restify.createServer({
 	name: "Betabot Server",
 	version: pkg.version

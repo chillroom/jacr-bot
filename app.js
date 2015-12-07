@@ -1,6 +1,8 @@
 var log = require("jethro"),
 	config = require("./config");
 
+log.setUTC(true);
+
 if (typeof config.slackToken === "undefined") {
 	throw Error("Please set the SLACK_TOKEN evironment variable");
 } else if (typeof config.slackUrl === "undefined") {

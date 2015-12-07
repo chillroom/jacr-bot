@@ -1,6 +1,6 @@
 {
   "name": "betabot",
-  "version": "1.4.38",
+  "version": "1.4.39",
   "description": "Just a chillroom dubtrack bot",
   "engines": {
     "node": ">= 0.6.0",
@@ -11,7 +11,7 @@
   "dependencies": {
     "dubapi": "^1.0.1",
     "htmlparser": "^1.7.7",
-    "jethro": "^2.6.3",
+    "jethro": "git+https://github.com/NitroGhost/Jethro.git",
     "kerberos": "0.0.17",
     "mongoose": "^4.0.3",
     "request": "^2.64.0",
