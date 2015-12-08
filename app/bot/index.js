@@ -15,6 +15,7 @@ new DubAPI({
 	}
 	//setup logger
 	bot.log = require("jethro");
+	bot.log.setUTC(true);
 	//setup db
 	mongoose.connect(process.env.MONGO || "mongodb://betabot:MickieRocks123@linus.mongohq.com:10016/chill_bot", {
 		server: {
@@ -39,8 +40,6 @@ new DubAPI({
 	bot.db.on("reconnected", function () {
 		bot.log("info", "BOT", "MongoDB reconnected!");
 	});
-	//setup logger
-	bot.log.setUTC(true);
 	//setup > mod ranks
 	bot.ranks = ["5615fa9ae596154a5c000000", "5615fd84e596150061000003", "52d1ce33c38a06510c000001"];
 	//setup > vip ranks
