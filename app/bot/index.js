@@ -119,13 +119,13 @@ new DubAPI({
 					//the params are an array of the remaining tokens
 					data.params = tokens.slice(1);
 					switch (typeof (commands[data.trigger])) {
-						case "string":
-							bot.sendChat(bot.identifier + commands[data.trigger]);
-							break;
-						case "function":
+					case "string":
+						bot.sendChat(bot.identifier + commands[data.trigger]);
+						break;
+					case "function":
 							//little trick to give the commands the bot to use its functions and also the data from the chat
-							commands[data.trigger].apply(bot, [data]);
-							break;
+						commands[data.trigger].apply(bot, [data]);
+						break;
 					}
 				}
 			}
@@ -210,13 +210,15 @@ new DubAPI({
 											emojiName: emoji,
 											count: doc.count
 										};
+										emojis.push(count);
 										doc.count = 0;
 										doc.save();
-										emojis.push(count);
 									}
 								});
 							}
 						});
+						doc.emoji.paused = true();
+						doc.save();
 					}
 				});
 

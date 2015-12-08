@@ -1,6 +1,6 @@
 {
   "name": "betabot",
-  "version": "1.4.41",
+  "version": "1.4.42",
   "description": "Just a chillroom dubtrack bot",
   "engines": {
     "node": ">= 0.6.0",
@@ -13,7 +13,7 @@
     "htmlparser": "^1.7.7",
     "jethro": "^2.6.6",
     "kerberos": "0.0.17",
-    "mongoose": "^4.0.3",
+    "mongoose": "^4.2.9",
     "request": "^2.64.0",
     "restify": "^4.0.3",
     "soupselect": "^0.2.0"
