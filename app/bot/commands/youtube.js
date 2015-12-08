@@ -1,3 +1,3 @@
 module.exports = function (bot) {
-	bot.sendChat("Youtube: https://goo.gl/qTX1aA");
+	bot.sendChat(bot.identifier + "Youtube: https://goo.gl/qTX1aA");
 };

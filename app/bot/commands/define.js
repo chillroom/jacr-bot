@@ -9,22 +9,22 @@ module.exports = function (bot, data) {
 			request("http://api.urbandictionary.com/v0/define?term=" + term, function (error, response, body) {
 				if (error) {
 					bot.log("error", "BOT", error);
-					bot.sendChat("something went wrong with the urban dictionary API");
+					bot.sendChat(bot.identifier + "something went wrong with the urban dictionary API");
 				} else {
 					body = JSON.parse(body);
 					if (body.result_type !== "no_results") {
 						var definition = body.list[0].definition;
 						var slicer = 255 - (term.length + " definition: ".length);
 						if (definition.length <= (510 - slicer)) {
-							bot.sendChat("http://urbandictionary.com/define.php?term=" + term);
-							bot.sendChat(term + " definition: " + definition);
+							bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
+							bot.sendChat(bot.identifier + term + " definition: " + definition);
 
 						} else {
-							bot.sendChat("http://urbandictionary.com/define.php?term=" + term);
-							bot.sendChat(" sorry the definition for " + term + " is too long to be shown");
+							bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
+							bot.sendChat(bot.identifier + " sorry the definition for " + term + " is too long to be shown");
 						}
 					} else {
-						bot.sendChat("could not find the definition for: " + term);
+						bot.sendChat(bot.identifier + "could not find the definition for: " + term);
 					}
 				}
 			});
@@ -33,27 +33,27 @@ module.exports = function (bot, data) {
 			request("http://api.urbandictionary.com/v0/define?term=" + term, function (error, response, body) {
 				if (error) {
 					bot.log("error", "BOT", error);
-					bot.sendChat("something went wrong with the urban dictionary API");
+					bot.sendChat(bot.identifier + "something went wrong with the urban dictionary API");
 				} else {
 					body = JSON.parse(body);
 					if (body.result_type !== "no_results") {
 						var definition = body.list[0].definition;
 						var slicer = 255 - (term.length + " definition: ".length);
 						if (definition.length <= (510 - slicer)) {
-							bot.sendChat("http://urbandictionary.com/define.php?term=" + term);
-							bot.sendChat(data.params.join(" ") + " definition: " + definition); // cause none wants dat +
+							bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
+							bot.sendChat(bot.identifier + data.params.join(" ") + " definition: " + definition); // cause none wants dat +
 
 						} else {
-							bot.sendChat("http://urbandictionary.com/define.php?term=" + term);
-							bot.sendChat(" sorry the definition for " + data.params.join(" ") + " is too long to be shown"); // oh should be here too.
+							bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
+							bot.sendChat(bot.identifier + " sorry the definition for " + data.params.join(" ") + " is too long to be shown"); // oh should be here too.
 						}
 					} else {
-						bot.sendChat("could not find definition for: " + data.params.join(" "));
+						bot.sendChat(bot.identifier + "could not find definition for: " + data.params.join(" "));
 					}
 				}
 			});
 		}
 	} else {
-		bot.sendChat("@" + user + " you forgot to ask a word/phrase to define");
+		bot.sendChat(bot.identifier + "@" + user + " you forgot to ask a word/phrase to define");
 	}
 };

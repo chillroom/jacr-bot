@@ -11,10 +11,10 @@ module.exports = function (bot, data) {
 			if (bot.isVIP(person)) {
 				bot.moderateUnsetRole(person.id, person.role);
 			} else {
-				bot.sendChat("@" + user + " you can only unset VIPs");
+				bot.sendChat(bot.identifier + "@" + user + " you can only unset VIPs");
 			}
 		}
 	} else {
-		bot.sendChat("Please specify a user");
+		bot.sendChat(bot.identifier + "Please specify a user");
 	}
 };

@@ -1,3 +1,3 @@
 module.exports = function (bot) {
-	bot.sendChat("Dubtrack Moderation: http://just-a-chill-room.net/about/dubtrack-moderation/");
+	bot.sendChat(bot.identifier + "Dubtrack Moderation: http://just-a-chill-room.net/about/dubtrack-moderation/");
 };

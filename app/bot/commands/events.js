@@ -1,3 +1,3 @@
 module.exports = function (bot) {
-	bot.sendChat("Events: http://just-a-chill-room.net/events/");
+	bot.sendChat(bot.identifier + "Events: http://just-a-chill-room.net/events/");
 };

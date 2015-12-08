@@ -1,3 +1,3 @@
 module.exports = function (bot) {
-	bot.sendChat("Steam: http://steamcommunity.com/groups/JACR");
+	bot.sendChat(bot.identifier + "Steam: http://steamcommunity.com/groups/JACR");
 };

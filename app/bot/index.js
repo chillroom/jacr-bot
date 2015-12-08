@@ -27,6 +27,7 @@ new DubAPI({
 	//if want to give vip perm, use this instead of ranks
 	bot.vips = ["5615fa9ae596154a5c000000", "5615fd84e596150061000003", "52d1ce33c38a06510c000001", "5615fe1ee596154fc2000001"];
 	bot.devs = ["tigerpancake", "mclovinthesex", "nitroghost"];
+	bot.identifier = ":white_small_square: ";
 	//added protection to protect against double skips
 	bot.protection = false;
 	//added array of emojis to bot
@@ -65,7 +66,7 @@ new DubAPI({
 				doc.save();
 				if (doc.motd.enabled) {
 					if (doc.songCount % doc.motd.interval === 0) {
-						bot.sendChat(doc.motd.msg);
+						bot.sendChat(bot.identifier + doc.motd.msg);
 					}
 				}
 			} else {
@@ -103,7 +104,7 @@ new DubAPI({
 	}
 	bot.log("info", "BOT", "DubAPI Version: " + bot.version);
 	bot.on("connected", function (name) {
-		bot.sendChat("online! ver: " + pkg.version);
+		bot.sendChat(bot.identifier + "online! ver: " + pkg.version);
 		bot.log("info", "BOT", "Bot Version: " + pkg.version);
 		bot.log("info", "BOT", "Connected to " + name);
 	});

@@ -13,12 +13,12 @@ module.exports = function (bot, data) {
 				try {
 					var person = bot.getUserByName(username);
 					var kickcount = (typeof (person.kickCount) === "undefined") ? 0 : person.kickCount;
-					bot.sendChat("Username : " + person.username + "\n" + " Played songs : " + person.playedCount + "\n" + " Songs in queue : " + person.songsInQueue + "\n" + " Dubs : " + person.dubs + "\n" + " Kick count : " + kickcount);
+					bot.sendChat(bot.identifier + "Username : " + person.username + "\n" + " Played songs : " + person.playedCount + "\n" + " Songs in queue : " + person.songsInQueue + "\n" + " Dubs : " + person.dubs + "\n" + " Kick count : " + kickcount);
 				} catch (e) {
-					bot.sendChat("username is invalid.");
+					bot.sendChat(bot.identifier + "username is invalid.");
 				}
 			} else {
-				bot.sendChat("Please enter a single username.");
+				bot.sendChat(bot.identifier + "Please enter a single username.");
 			}
 
 		}

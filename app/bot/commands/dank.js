@@ -1,3 +1,3 @@
 module.exports = function (bot) {
-	bot.sendChat(":maple_leaf: :smoking: blaze it");
+	bot.sendChat(bot.identifier + ":maple_leaf: :smoking: blaze it");
 };

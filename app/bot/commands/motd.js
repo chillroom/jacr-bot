@@ -24,7 +24,7 @@ module.exports = function (bot, data) {
 							doc.motd.enabled = true;
 							doc.motd.msg = motd;
 							doc.save();
-							bot.sendChat("MOTD has been set to: " + motd);
+							bot.sendChat(bot.identifier + "MOTD has been set to: " + motd);
 						});
 						//if it doesn't join the params together to set the motd
 					} else {
@@ -38,7 +38,7 @@ module.exports = function (bot, data) {
 							doc.motd.enabled = true;
 							doc.motd.msg = motd;
 							doc.save();
-							bot.sendChat("MOTD has been set to: " + motd);
+							bot.sendChat(bot.identifier + "MOTD has been set to: " + motd);
 						});
 					}
 					//if the first param is a number
@@ -55,7 +55,7 @@ module.exports = function (bot, data) {
 							doc.motd.interval = parseInt(firstParam);
 							doc.motd.msg = motd;
 							doc.save();
-							bot.sendChat("MOTD has been set to: '" + motd + "' with interval of: " + parseInt(firstParam) + " songs");
+							bot.sendChat(bot.identifier + "MOTD has been set to: '" + motd + "' with interval of: " + parseInt(firstParam) + " songs");
 						});
 						//if it doesn't, just remove the interval from the params, then join them together to set the motd
 					} else {
@@ -70,7 +70,7 @@ module.exports = function (bot, data) {
 							doc.motd.interval = parseInt(firstParam);
 							doc.motd.msg = motd;
 							doc.save();
-							bot.sendChat("MOTD has been set to: '" + motd + "' with interval of: " + parseInt(firstParam) + " songs");
+							bot.sendChat(bot.identifier + "MOTD has been set to: '" + motd + "' with interval of: " + parseInt(firstParam) + " songs");
 						});
 					}
 				}
@@ -78,7 +78,7 @@ module.exports = function (bot, data) {
 			} else {
 				//checks to see if the only param is set
 				if (data.params[0] === "set") {
-					bot.sendChat("to set MOTD do: !motd [interval] set [motd message]");
+					bot.sendChat(bot.identifier + "to set MOTD do: !motd [interval] set [motd message]");
 					//checks to se if the only param is interval, to see the current interval set
 				} else if (data.params[0] === "interval") {
 					bot.db.models.settings.findOne({
@@ -87,7 +87,7 @@ module.exports = function (bot, data) {
 						if (err) {
 							bot.log("error", "BOT", err);
 						}
-						bot.sendChat("MOTD interval is currently set to: " + doc.motd.interval + " songs");
+						bot.sendChat(bot.identifier + "MOTD interval is currently set to: " + doc.motd.interval + " songs");
 					});
 					//checks to see if the only param is a number	
 				} else if (!isNaN(parseInt(data.params[0]))) {
@@ -100,7 +100,7 @@ module.exports = function (bot, data) {
 						}
 						doc.motd.interval = interval;
 						doc.save();
-						bot.sendChat("MOTD interval changed to " + interval + " songs");
+						bot.sendChat(bot.identifier + "MOTD interval changed to " + interval + " songs");
 					});
 					//checks to see if the only param is clear, to remove the MOTD
 				} else if (data.params[0] === "clear") {
@@ -113,7 +113,7 @@ module.exports = function (bot, data) {
 						doc.motd.enabled = false;
 						doc.motd.msg = "";
 						doc.save();
-						bot.sendChat("MOTD cleared");
+						bot.sendChat(bot.identifier + "MOTD cleared");
 					});
 				} else {
 					//single word motd (for that odd occasion when we might have just one word. who knows)
@@ -126,7 +126,7 @@ module.exports = function (bot, data) {
 						}
 						doc.motd.msg = motd;
 						doc.save();
-						bot.sendChat("MOTD has been set to: " + motd);
+						bot.sendChat(bot.identifier + "MOTD has been set to: " + motd);
 					});
 				}
 			}
@@ -139,9 +139,9 @@ module.exports = function (bot, data) {
 					bot.log("error", "BOT", err);
 				}
 				if (doc.motd.msg === "") {
-					bot.sendChat("Motd not set. do '!motd [interval] set [motd message]' to set motd");
+					bot.sendChat(bot.identifier + "Motd not set. do '!motd [interval] set [motd message]' to set motd");
 				} else {
-					bot.sendChat(doc.motd.msg);
+					bot.sendChat(bot.identifier + doc.motd.msg);
 				}
 			});
 		}

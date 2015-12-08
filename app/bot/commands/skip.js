@@ -14,28 +14,28 @@ module.exports = function (bot, data) {
 					bot.moderateSkip(reset);
 					switch (data.params[0]) {
 					case "op":
-						bot.sendChat("Song skipped for being op, check http://just-a-chill-room.net/op-forbidden-list/ next time please");
+						bot.sendChat(bot.identifier + "Song skipped for being op, check http://just-a-chill-room.net/op-forbidden-list/ next time please");
 						break;
 					case "history":
-						bot.sendChat("Song was recently played, history can be viewed by clicking queue then room history.");
+						bot.sendChat(bot.identifier + "Song was recently played, history can be viewed by clicking queue then room history.");
 						break;
 					case "hist":
-						bot.sendChat("Song was recently played, history can be viewed by clicking queue then room history.");
+						bot.sendChat(bot.identifier + "Song was recently played, history can be viewed by clicking queue then room history.");
 						break;
 					case "nsfw":
-						bot.sendChat("Song skipped for being NSFW, too much NSFW = ban!");
+						bot.sendChat(bot.identifier + "Song skipped for being NSFW, too much NSFW = ban!");
 						break;
 					case "theme":
-						bot.sendChat("Song does not fit the room theme.");
+						bot.sendChat(bot.identifier + "Song does not fit the room theme.");
 						break;
 					case "forbidden":
-						bot.sendChat("This song is on the forbidden list: http://just-a-chill-room.net/op-forbidden-list/ ");
+						bot.sendChat(bot.identifier + "This song is on the forbidden list: http://just-a-chill-room.net/op-forbidden-list/ ");
 						break;
 					case "n/a":
-						bot.sendChat("This song is not available to all users");
+						bot.sendChat(bot.identifier + "This song is not available to all users");
 						break;
 					default:
-						bot.sendChat("Parameter not recognised, suggest it here: https://bitbucket.org/dubbot/dubbot/issues?status=new&status=open");
+						bot.sendChat(bot.identifier + "Parameter not recognised, suggest it here: https://bitbucket.org/dubbot/dubbot/issues?status=new&status=open");
 					}
 				}
 
@@ -43,8 +43,8 @@ module.exports = function (bot, data) {
 				if (!bot.protection) {
 					bot.protection = true;
 					bot.moderateSkip(reset);
-					bot.sendChat("Song skipped, no reason given though");
-					bot.sendChat("!shrug");
+					bot.sendChat(bot.identifier + "Song skipped, no reason given though");
+					bot.sendChat(bot.identifier + "!shrug");
 				}
 			}
 		}

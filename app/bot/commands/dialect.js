@@ -7,9 +7,9 @@ module.exports = function (bot, data) {
 	if (typeof (data.params) !== "undefined" && data.params.length > 0) {
 		if (data.params.length === 1) {
 			if (data.params[0] === ("help" || "h")) {
-				bot.sendChat("dialects: " + dialects.join(", "));
+				bot.sendChat(bot.identifier + "dialects: " + dialects.join(", "));
 			} else {
-				bot.sendChat("to use do: !dialect [dialect] [message]");
+				bot.sendChat(bot.identifier + "to use do: !dialect [dialect] [message]");
 			}
 		} else {
 			if (data.params[0] === ("hacker" || "hax" || "haxor")) {
@@ -27,10 +27,10 @@ module.exports = function (bot, data) {
 						return;
 					}
 					var dialectizedText = result[0].children[0].raw;
-					bot.sendChat(dialectizedText.trim());
+					bot.sendChat(bot.identifier + dialectizedText.trim());
 				});
 			} else {
-				bot.sendChat("to use do: !dialect [dialect] [message]");
+				bot.sendChat(bot.identifier + "to use do: !dialect [dialect] [message]");
 			}
 		}
 	}

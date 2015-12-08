@@ -1,3 +1,3 @@
 module.exports = function (bot) {
-	bot.sendChat("pong!");
+	bot.sendChat(bot.identifier + "pong!");
 };

@@ -1,3 +1,3 @@
 module.exports = function (bot) {
-	bot.sendChat("Facebook: https://www.facebook.com/justachillroom");
+	bot.sendChat(bot.identifier + "Facebook: https://www.facebook.com/justachillroom");
 };

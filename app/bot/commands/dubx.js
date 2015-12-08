@@ -1,3 +1,3 @@
 module.exports = function (bot) {
-	bot.sendChat("DubX: https://dubx.net/");
+	bot.sendChat(bot.identifier + "DubX: https://dubx.net/");
 };

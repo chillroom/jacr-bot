@@ -27,14 +27,14 @@ module.exports = function (bot, data) {
 		if (data.params.length === 1) {
 			if (data.params[0].substr(0, 1) === "@") {
 				var recipient = data.params[0];
-				bot.sendChat("@" + user + " just sent " + recipient + " " + cookie);
+				bot.sendChat(bot.identifier + "@" + user + " just sent " + recipient + " " + cookie);
 			} else {
-				bot.sendChat("@" + user + " you need to @[username] to send them a cookie");
+				bot.sendChat(bot.identifier + "@" + user + " you need to @[username] to send them a cookie");
 			}
 		} else {
-			bot.sendChat("@" + user + " you can only send a cookie to one person");
+			bot.sendChat(bot.identifier + "@" + user + " you can only send a cookie to one person");
 		}
 	} else {
-		bot.sendChat("@" + user + " you didn't select a user. You need to @[username] to send them a cookie");
+		bot.sendChat(bot.identifier + "@" + user + " you didn't select a user. You need to @[username] to send them a cookie");
 	}
 };

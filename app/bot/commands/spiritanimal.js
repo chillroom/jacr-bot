@@ -22,5 +22,5 @@ module.exports = function (bot) {
 		"http://data.whicdn.com/images/135594271/original.gif"
 	];
 	var animal = animals[Math.floor(Math.random() * animals.length)];
-	bot.sendChat("Your spirit animal is a " + animal);
+	bot.sendChat(bot.identifier + "Your spirit animal is a " + animal);
 };

@@ -11,10 +11,10 @@ module.exports = function (bot, data) {
 			if (!bot.isVIP(person)) {
 				bot.moderateSetRole(person.id, "5615fe1ee596154fc2000001");
 			} else {
-				bot.sendChat("@" + user + " that user is already a VIP");
+				bot.sendChat(bot.identifier + "@" + user + " that user is already a VIP");
 			}
 		}
 	} else {
-		bot.sendChat("Please specify a user");
+		bot.sendChat(bot.identifier + "Please specify a user");
 	}
 };
