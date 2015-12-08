@@ -119,13 +119,13 @@ new DubAPI({
 					//the params are an array of the remaining tokens
 					data.params = tokens.slice(1);
 					switch (typeof (commands[data.trigger])) {
-					case "string":
-						bot.sendChat(bot.identifier + commands[data.trigger]);
-						break;
-					case "function":
+						case "string":
+							bot.sendChat(bot.identifier + commands[data.trigger]);
+							break;
+						case "function":
 							//little trick to give the commands the bot to use its functions and also the data from the chat
-						commands[data.trigger].apply(bot, [data]);
-						break;
+							commands[data.trigger].apply(bot, [data]);
+							break;
 					}
 				}
 			}
@@ -177,7 +177,7 @@ new DubAPI({
 		//need to set a time out to make sure the settings in bot.sendMotd() has been created.
 		setTimeout(function () {
 			//checks to see if it's within the first hour of the day
-			if (date.getUTCHours() === 1) {
+			if (date.getUTCHours() === 0) {
 				bot.db.models.Settings.findOne({
 					id: "s3tt1ng5"
 				}, function (err, doc) {
