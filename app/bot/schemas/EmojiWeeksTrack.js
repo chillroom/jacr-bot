@@ -14,5 +14,5 @@ module.exports = function (bot, mongoose) {
 			default: 0
 		}
 	});
-	bot.db.model("EmojiTrackWeeks", emojiWeeksTrackSchema);
+	bot.db.model("emojiTrackWeeks", emojiWeeksTrackSchema);
 };

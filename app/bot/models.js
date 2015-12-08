@@ -1,6 +1,10 @@
+var fs = require("fs");
+
 module.exports = function (bot, mongoose) {
-	require("./schemas/settings")(bot, mongoose);
-	require("./schemas/chat")(bot, mongoose);
-	require("./schemas/emojiCount")(bot, mongoose);
-	require("./schemas/emojiDaysTrack")(bot, mongoose);
+	var schemas = process.cwd() + "/app/bot/schemas";
+	fs.readdirSync(schemas).forEach(function (file) {
+		if (file.indexOf(".js") > -1) {
+			require(schemas + "/" + file)(bot, mongoose);
+		}
+	});
 };

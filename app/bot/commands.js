@@ -408,7 +408,7 @@ module.exports = {
 						// the rest to set the motd
 						if (firstParam === "set") {
 							motd = data.params.slice(1).join(" ");
-							self.db.models.Settings.findOne({
+							self.db.models.settings.findOne({
 								id: "s3tt1ng5"
 							}, function (err, doc) {
 								if (err) {
@@ -422,7 +422,7 @@ module.exports = {
 							//if it doesn't join the params together to set the motd
 						} else {
 							motd = data.params.join(" ");
-							self.db.models.Settings.findOne({
+							self.db.models.settings.findOne({
 								id: "s3tt1ng5"
 							}, function (err, doc) {
 								if (err) {
@@ -453,7 +453,7 @@ module.exports = {
 							//if it doesn't, just remove the interval from the params, then join them together to set the motd
 						} else {
 							motd = data.params.slice(1).join(" ");
-							self.db.models.Settings.findOne({
+							self.db.models.settings.findOne({
 								id: "s3tt1ng5"
 							}, function (err, doc) {
 								if (err) {
@@ -474,7 +474,7 @@ module.exports = {
 						self.sendChat(self.identifier + "to set MOTD do: !motd [interval] set [motd message]");
 						//checks to se if the only param is interval, to see the current interval set
 					} else if (data.params[0] === "interval") {
-						self.db.models.Settings.findOne({
+						self.db.models.settings.findOne({
 							id: "s3tt1ng5"
 						}, function (err, doc) {
 							if (err) {
@@ -485,7 +485,7 @@ module.exports = {
 						//checks to see if the only param is a number	
 					} else if (!isNaN(parseInt(data.params[0]))) {
 						var interval = parseInt(data.params[0]);
-						self.db.models.Settings.findOne({
+						self.db.models.settings.findOne({
 							id: "s3tt1ng5"
 						}, function (err, doc) {
 							if (err) {
@@ -497,7 +497,7 @@ module.exports = {
 						});
 						//checks to see if the only param is clear, to remove the MOTD
 					} else if (data.params[0] === "clear") {
-						self.db.models.Settings.findOne({
+						self.db.models.settings.findOne({
 							id: "s3tt1ng5"
 						}, function (err, doc) {
 							if (err) {
@@ -511,7 +511,7 @@ module.exports = {
 					} else {
 						//single word motd (for that odd occasion when we might have just one word. who knows)
 						motd = data.params[0];
-						self.db.models.Settings.findOne({
+						self.db.models.settings.findOne({
 							id: "s3tt1ng5"
 						}, function (err, doc) {
 							if (err) {
@@ -525,7 +525,7 @@ module.exports = {
 				}
 				//if the command is on its lonesome
 			} else {
-				self.db.models.Settings.findOne({
+				self.db.models.settings.findOne({
 					id: "s3tt1ng5"
 				}, function (err, doc) {
 					if (err) {
@@ -583,29 +583,29 @@ module.exports = {
 						self.protection = true;
 						self.moderateSkip(reset);
 						switch (data.params[0]) {
-						case "op":
-							self.sendChat(self.identifier + "Song skipped for being op, check http://just-a-chill-room.net/op-forbidden-list/ next time please");
-							break;
-						case "history":
-							self.sendChat(self.identifier + "Song was recently played, history can be viewed by clicking queue then room history.");
-							break;
-						case "hist":
-							self.sendChat(self.identifier + "Song was recently played, history can be viewed by clicking queue then room history.");
-							break;
-						case "nsfw":
-							self.sendChat(self.identifier + "Song skipped for being NSFW, too much NSFW = ban!");
-							break;
-						case "theme":
-							self.sendChat(self.identifier + "Song does not fit the room theme.");
-							break;
-						case "forbidden":
-							self.sendChat(self.identifier + "This song is on the forbidden list: http://just-a-chill-room.net/op-forbidden-list/ ");
-							break;
-						case "n/a":
-							self.sendChat(self.identifier + "This song is not available to all users");
-							break;
-						default:
-							self.sendChat(self.identifier + "Parameter not recognised, suggest it here: https://bitbucket.org/dubbot/dubbot/issues?status=new&status=open");
+							case "op":
+								self.sendChat(self.identifier + "Song skipped for being op, check http://just-a-chill-room.net/op-forbidden-list/ next time please");
+								break;
+							case "history":
+								self.sendChat(self.identifier + "Song was recently played, history can be viewed by clicking queue then room history.");
+								break;
+							case "hist":
+								self.sendChat(self.identifier + "Song was recently played, history can be viewed by clicking queue then room history.");
+								break;
+							case "nsfw":
+								self.sendChat(self.identifier + "Song skipped for being NSFW, too much NSFW = ban!");
+								break;
+							case "theme":
+								self.sendChat(self.identifier + "Song does not fit the room theme.");
+								break;
+							case "forbidden":
+								self.sendChat(self.identifier + "This song is on the forbidden list: http://just-a-chill-room.net/op-forbidden-list/ ");
+								break;
+							case "n/a":
+								self.sendChat(self.identifier + "This song is not available to all users");
+								break;
+							default:
+								self.sendChat(self.identifier + "Parameter not recognised, suggest it here: https://bitbucket.org/dubbot/dubbot/issues?status=new&status=open");
 						}
 					}
 
@@ -632,7 +632,7 @@ module.exports = {
 					if (username.substr(0, 1) === "@") {
 						username = username.substr(1);
 					}
-					self.db.models.Chat.find({
+					self.db.models.chat.find({
 						username: username
 					}).sort({
 						time: -1
@@ -642,7 +642,7 @@ module.exports = {
 						} else {
 							docs.forEach(function (doc) {
 								self.moderateDeleteChat(doc.chatid);
-								self.db.models.Chat.remove({
+								self.db.models.chat.remove({
 									chatid: doc.chatid
 								}, function (err, doc) {
 									if (err) {

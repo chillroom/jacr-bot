@@ -61,7 +61,7 @@ new DubAPI({
 	require("./models")(bot, mongoose);
 	//function to send MOTD based off the number of songs played
 	bot.sendMotd = function () {
-		bot.db.models.Settings.findOne({
+		bot.db.models.settings.findOne({
 			id: "s3tt1ng5"
 		}, function (err, doc) {
 			if (doc) {
@@ -87,7 +87,7 @@ new DubAPI({
 					songCount: 0
 				};
 				doc.songCount++;
-				bot.db.models.Settings.create(doc, function (err, doc) {
+				bot.db.models.settings.create(doc, function (err, doc) {
 					if (err) {
 						log("error", "BOT", err);
 					}
@@ -119,20 +119,20 @@ new DubAPI({
 					//the params are an array of the remaining tokens
 					data.params = tokens.slice(1);
 					switch (typeof (commands[data.trigger])) {
-						case "string":
-							bot.sendChat(bot.identifier + commands[data.trigger]);
-							break;
-						case "function":
+					case "string":
+						bot.sendChat(bot.identifier + commands[data.trigger]);
+						break;
+					case "function":
 							//little trick to give the commands the bot to use its functions and also the data from the chat
-							commands[data.trigger].apply(bot, [data]);
-							break;
+						commands[data.trigger].apply(bot, [data]);
+						break;
 					}
 				}
 			}
 			//check to see if any of the words match an emoji
 			else if (bot.emojis.indexOf(token) > -1) {
 				//if it does, find or create db entery, incrementing the count
-				bot.db.models.EmojiCount.findOne({
+				bot.db.models.emojiCount.findOne({
 					emoji: token
 				}, function (err, doc) {
 					if (doc) {
@@ -144,7 +144,7 @@ new DubAPI({
 							count: 0
 						};
 						doc.count++;
-						bot.db.models.EmojiCount.create(doc, function (err, doc) {
+						bot.db.models.emojiCount.create(doc, function (err, doc) {
 							if (err) {
 								log("error", "BOT", err);
 							}
@@ -163,7 +163,7 @@ new DubAPI({
 				username: data.user.username,
 				chatid: data.raw.chatid
 			};
-			bot.db.models.Chat.create(chatSchema, function (err, chat) {
+			bot.db.models.chat.create(chatSchema, function (err, chat) {
 				if (err) {
 					log("error", "BOT", err);
 				}
@@ -178,7 +178,7 @@ new DubAPI({
 		setTimeout(function () {
 			//checks to see if it's within the first hour of the day
 			if (date.getUTCHours() === 0) {
-				bot.db.models.Settings.findOne({
+				bot.db.models.settings.findOne({
 					id: "s3tt1ng5"
 				}, function (err, doc) {
 					if (err) {
@@ -189,7 +189,7 @@ new DubAPI({
 						bot.emojis.forEach(function (emoji, index, arr) {
 							if (index === arr.length - 1) {
 								setTimeout(function () {
-									bot.db.models.EmojiTrackDays.create({
+									bot.db.models.emojiTrackDays.create({
 										emojis: emojis
 									}, function (err, doc) {
 										if (err) {
@@ -199,7 +199,7 @@ new DubAPI({
 									});
 								}, 5000);
 							} else {
-								bot.db.models.EmojiCount.findOne({
+								bot.db.models.emojiCount.findOne({
 									emoji: emoji
 								}, function (err, doc) {
 									if (err) {
@@ -222,7 +222,7 @@ new DubAPI({
 					}
 				});
 
-				bot.db.models.Chat.find({}).sort({
+				bot.db.models.chat.find({}).sort({
 					time: -1
 				}).skip(100).remove().exec(function (err, docs) {
 					if (err) {
@@ -230,7 +230,7 @@ new DubAPI({
 					}
 				});
 			} else {
-				bot.db.models.Settings.findOne({
+				bot.db.models.settings.findOne({
 					id: "s3tt1ng5"
 				}, function (err, doc) {
 					if (err) {
