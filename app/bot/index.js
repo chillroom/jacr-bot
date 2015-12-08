@@ -38,7 +38,7 @@ new DubAPI({
 		bot.log("error", "BOT", "MongoDB connection error:" + err);
 	});
 
-	bot.db.once("open", function callback() {
+	bot.db.once("open", function () {
 		bot.log("info", "BOT", "MongoDB connection is established");
 	});
 
