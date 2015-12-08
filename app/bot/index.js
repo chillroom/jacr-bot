@@ -6,12 +6,6 @@ var DubAPI = require("dubapi"),
 
 log.setUTC(true);
 
-mongoose.connect(process.env.MONGO || "mongodb://betabot:MickieRocks123@linus.mongohq.com:10016/chill_bot", {
-	server: {
-		auto_reconnect: true
-	}
-});
-
 new DubAPI({
 	username: config.botName,
 	password: config.botPass
@@ -21,27 +15,19 @@ new DubAPI({
 	}
 	//setup logger
 	bot.log = require("jethro");
-	bot.log.setUTC(true);
-	// purps array has now become bot.ranks array, so that it is easier to use within the commands
-	bot.ranks = ["5615fa9ae596154a5c000000", "5615fd84e596150061000003", "52d1ce33c38a06510c000001"];
-	//if want to give vip perm, use this instead of ranks
-	bot.vips = ["5615fa9ae596154a5c000000", "5615fd84e596150061000003", "52d1ce33c38a06510c000001", "5615fe1ee596154fc2000001"];
-	bot.devs = ["tigerpancake", "mclovinthesex", "nitroghost"];
-	bot.identifier = ":white_small_square: ";
-	//added protection to protect against double skips
-	bot.protection = false;
-	//added array of emojis to bot
-	bot.emojis = require("./emojis");
-	//added DB to bot
+	//setup db
+	mongoose.connect(process.env.MONGO || "mongodb://betabot:MickieRocks123@linus.mongohq.com:10016/chill_bot", {
+		server: {
+			auto_reconnect: true
+		}
+	});
 	bot.db = mongoose.connection;
 	bot.db.on("error", function (err) {
 		bot.log("error", "BOT", "MongoDB connection error:" + err);
 	});
-
-	bot.db.once("open", function () {
-		bot.log("info", "BOT", "MongoDB connection is established");
+	bot.db.on("connected", function () {
+		bot.log("info", "BOT", "MongoDB connected!");
 	});
-
 	bot.db.on("disconnected", function () {
 		bot.log("warning", "BOT", "MongoDB disconnected!");
 		mongoose.connect(process.env.MONGO_URL || "mongodb://betabot:MickieRocks123@linus.mongohq.com:10016/chill_bot", {
@@ -50,13 +36,25 @@ new DubAPI({
 			}
 		});
 	});
-
 	bot.db.on("reconnected", function () {
 		bot.log("info", "BOT", "MongoDB reconnected!");
 	});
-	//
+	//setup logger
+	bot.log.setUTC(true);
+	//setup > mod ranks
+	bot.ranks = ["5615fa9ae596154a5c000000", "5615fd84e596150061000003", "52d1ce33c38a06510c000001"];
+	//setup > vip ranks
+	bot.vips = ["5615fa9ae596154a5c000000", "5615fd84e596150061000003", "52d1ce33c38a06510c000001", "5615fe1ee596154fc2000001"];
+	//setup devs
+	bot.devs = ["tigerpancake", "mclovinthesex", "nitroghost"];
+	//setup bot.identifier
+	bot.identifier = ":white_small_square: ";
+	//setup protection for double skips
+	bot.protection = false;
+	//setup emojis
+	bot.emojis = require("./emojis");
 	require("./models")(bot, mongoose);
-	//function to send MOTD based off the number of songs played
+	//setup function to send MOTD based off the number of songs played
 	bot.sendMotd = function () {
 		bot.db.models.settings.findOne({
 			id: "s3tt1ng5"
@@ -102,6 +100,7 @@ new DubAPI({
 	function connect() {
 		bot.connect(config.roomURL);
 	}
+	require("./events")(bot);
 	bot.log("info", "BOT", "DubAPI Version: " + bot.version);
 	bot.on("connected", function (name) {
 		bot.sendChat(bot.identifier + "online! ver: " + pkg.version);
@@ -117,6 +116,5 @@ new DubAPI({
 	bot.on("error", function (err) {
 		bot.log("error", "BOT", err);
 	});
-	require("./events")(bot);
 	connect();
 });
