@@ -31,7 +31,9 @@ module.exports = function (bot) {
 					//the params are an array of the remaining tokens
 					data.params = tokens.slice(1);
 					//exec command
-					commands[data.trigger](bot, data);
+					if (typeof (commands[data.trigger]) !== "undefined") {
+						commands[data.trigger](bot, data);
+					}
 				}
 			}
 			//check to see if any of the words match an emoji
