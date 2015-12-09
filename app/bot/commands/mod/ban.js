@@ -44,7 +44,7 @@ module.exports = function (bot, data) {
 										bot.log("error", "BOT", err);
 									} else {
 										if (!ban) {
-											doc = {
+											var doc = {
 												username: username,
 												uid: person.id
 											};

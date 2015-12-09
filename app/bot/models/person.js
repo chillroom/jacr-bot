@@ -30,7 +30,7 @@ module.exports = function (bot, mongoose) {
 		},
 		rank: {
 			name: {
-				type: String,
+				type: String
 			},
 			rid: {
 				type: String

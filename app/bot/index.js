@@ -35,7 +35,7 @@ new DubAPI({
 						bot.log("error", "BOT", err);
 					} else {
 						if (!person) {
-							doc = {
+							var doc = {
 								username: user.username,
 								uid: user.id,
 								dubs: user.dubs

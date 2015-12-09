@@ -52,7 +52,7 @@ module.exports = function (bot) {
 					}
 					person.username = data.user.username;
 					person.dubs = data.user.dubs;
-					doc.lastChat = new Date();
+					person.lastChat = new Date();
 					person.save();
 				}
 			});
