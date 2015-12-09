@@ -16,17 +16,17 @@ module.exports = function (bot, data) {
 					switch (data.params[0]) {
 					case "op":
 						bot.db.models.song.findOne({
-								fkid: media.fkid
-							}, function(err, doc) {
-								if (err) {
-									bot.log("error", "BOT", err);
-								} else {
-									if (doc) {
+							fkid: media.fkid
+						}, function(err, doc) {
+							if (err) {
+								bot.log("error", "BOT", err);
+							} else {
+								if (doc) {
 										doc.op = true;
 										doc.save();
 									}
-								}
-							});
+							}
+						});
 						bot.sendChat(bot.identifier + "Song skipped for being op, check http://just-a-chill-room.net/op-forbidden-list/ next time please");
 						break;
 					case "history":
@@ -37,47 +37,47 @@ module.exports = function (bot, data) {
 						break;
 					case "nsfw":
 						bot.db.models.song.findOne({
-								fkid: media.fkid
-							}, function(err, doc) {
-								if (err) {
-									bot.log("error", "BOT", err);
-								} else {
-									if (doc) {
+							fkid: media.fkid
+						}, function(err, doc) {
+							if (err) {
+								bot.log("error", "BOT", err);
+							} else {
+								if (doc) {
 										doc.nsfw = true;
 										doc.save();
 									}
-								}
-							});
+							}
+						});
 						bot.sendChat(bot.identifier + "Song skipped for being NSFW, too much NSFW = ban!");
 						break;
 					case "theme":
 						bot.db.models.song.findOne({
-								fkid: media.fkid
-							}, function(err, doc) {
-								if (err) {
-									bot.log("error", "BOT", err);
-								} else {
-									if (doc) {
+							fkid: media.fkid
+						}, function(err, doc) {
+							if (err) {
+								bot.log("error", "BOT", err);
+							} else {
+								if (doc) {
 										doc.theme = false;
 										doc.save();
 									}
-								}
-							});
+							}
+						});
 						bot.sendChat(bot.identifier + "Song does not fit the room theme.");
 						break;
 					case "forbidden":
 						bot.db.models.song.findOne({
-								fkid: media.fkid
-							}, function(err, doc) {
-								if (err) {
-									bot.log("error", "BOT", err);
-								} else {
-									if (doc) {
+							fkid: media.fkid
+						}, function(err, doc) {
+							if (err) {
+								bot.log("error", "BOT", err);
+							} else {
+								if (doc) {
 										doc.forbidden = true;
 										doc.save();
 									}
-								}
-							});
+							}
+						});
 						bot.sendChat(bot.identifier + "This song is on the forbidden list: http://just-a-chill-room.net/op-forbidden-list/ ");
 						break;
 					case "na":
@@ -85,32 +85,32 @@ module.exports = function (bot, data) {
 						break;
 					case "unv":
 						bot.db.models.song.findOne({
-								fkid: media.fkid
-							}, function(err, doc) {
-								if (err) {
-									bot.log("error", "BOT", err);
-								} else {
-									if (doc) {
+							fkid: media.fkid
+						}, function(err, doc) {
+							if (err) {
+								bot.log("error", "BOT", err);
+							} else {
+								if (doc) {
 										doc.unavailable = true;
 										doc.save();
 									}
-								}
-							});
+							}
+						});
 						bot.sendChat(bot.identifier + "This song is not available to all users");
 						break;
 					case "unvailable":
 						bot.db.models.song.findOne({
-								fkid: media.fkid
-							}, function(err, doc) {
-								if (err) {
-									bot.log("error", "BOT", err);
-								} else {
-									if (doc) {
+							fkid: media.fkid
+						}, function(err, doc) {
+							if (err) {
+								bot.log("error", "BOT", err);
+							} else {
+								if (doc) {
 										doc.unavailable = true;
 										doc.save();
 									}
-								}
-							});
+							}
+						});
 						bot.sendChat(bot.identifier + "This song is not available to all users");
 						break;
 					default:
