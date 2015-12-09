@@ -59,7 +59,7 @@ module.exports = function (bot, data) {
 					}
 				}, 1000);
 			} else {
-				if (username.substr(0, 1) === "@".to) {
+				if (username.substr(0, 1) === "@") {
 					//remove the @
 					username = username.substr(1);
 				}
