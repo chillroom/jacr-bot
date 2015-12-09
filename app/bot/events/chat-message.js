@@ -1,18 +1,25 @@
-var fs = require("fs");
+var fs = require("fs"),
+	path = require("path");
 
 module.exports = function (bot) {
 	var commands = {},
-		cmd = process.cwd() + "/app/bot/commands",
-		count = 0;
-	fs.readdirSync(cmd).forEach(function (file, index, arr) {
-		if (file.indexOf(".js") > -1) {
-			commands[file.split(".")[0]] = require(cmd + "/" + file);
-			count++;
-		}
-		if (index === arr.length - 1) {
-			bot.log("info", "BOT", "Command count: " + count);
-		}
-	});
+		cmd = process.cwd() + "/app/bot/commands";
+	var walk = function (dir) {
+		fs.readdirSync(dir).forEach(function (file) {
+			var _path = path.resolve(dir, file);
+			fs.stat(_path, function (err, stat) {
+				if (stat && stat.isDirectory()) {
+					walk(_path);
+				} else {
+					if (file.indexOf(".js") > -1) {
+						commands[file.split(".")[0]] = require(_path);
+					}
+
+				}
+			});
+		});
+	};
+	walk(cmd);
 	bot.on("chat-message", function (data) {
 		var cmd = data.message,
 			//split the whole message words into tokens

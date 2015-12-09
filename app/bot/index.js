@@ -1,8 +1,8 @@
 var DubAPI = require("dubapi"),
 	mongoose = require("mongoose"),
 	log = require("jethro"),
-	pkg = require("../../package.json"),
-	config = require("../../config");
+	pkg = require(process.cwd() + "/package.json"),
+	config = require(process.cwd() + "/config");
 
 log.setUTC(true);
 
