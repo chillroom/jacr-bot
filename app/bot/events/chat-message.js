@@ -46,28 +46,30 @@ module.exports = function (bot) {
 			//check to see if any of the words match an emoji
 			else if (bot.emojis.indexOf(token) > -1) {
 				//if it does, find or create db entery, incrementing the count
-				bot.db.models.emojiCount.findOne({
-					emoji: token
-				}, function (err, doc) {
-					if (doc) {
-						doc.count++;
-						doc.save();
-					} else {
-						doc = {
-							emoji: token,
-							count: 0
-						};
-						doc.count++;
-						bot.db.models.emojiCount.create(doc, function (err) {
-							if (err) {
-								bot.log("error", "BOT", err);
-							}
-						});
-					}
-					if (err) {
-						bot.log("error", "BOT", err);
-					}
-				});
+				setTimeout(function () {
+					bot.db.models.emojiCount.findOne({
+						emoji: token
+					}, function (err, doc) {
+						if (doc) {
+							doc.count++;
+							doc.save();
+						} else {
+							doc = {
+								emoji: token,
+								count: 0
+							};
+							doc.count++;
+							bot.db.models.emojiCount.create(doc, function (err) {
+								if (err) {
+									bot.log("error", "BOT", err);
+								}
+							});
+						}
+						if (err) {
+							bot.log("error", "BOT", err);
+						}
+					});
+				}, 2000);
 			}
 		});
 		//DB store
