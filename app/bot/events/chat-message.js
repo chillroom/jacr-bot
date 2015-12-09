@@ -24,27 +24,36 @@ module.exports = function (bot) {
 		if (typeof (data.user) !== "undefined") {
 			bot.db.models.person.findOne({
 				uid: data.user.id
-			}, function (err, doc) {
+			}, function (err, person) {
 				if (err) {
 					bot.log("error", "BOT", err);
 				} else {
-					if (doc) {
-						doc.dubs = data.user.dubs;
-						doc.lastChat = new Date();
-						doc.save();
-					} else {
-						doc = {
-							username: data.user.username,
-							uid: data.user.id,
-							dubs: data.user.dubs,
-							lastChat: new Date()
-						};
-						bot.db.models.person.create(doc, function (err) {
-							if (err) {
-								bot.log("error", "BOT", err);
-							}
+					if (!person) {
+						person = new bot.db.models.person({
+							uid: data.user.id
 						});
 					}
+					var moderator = {
+						isMod: false
+					};
+					if (bot.isMod(data.user)) {
+						moderator["type"] = "mod";
+						moderator["isMod"] = true;
+					} else if (bot.isManager(data.user)) {
+						moderator["type"] = "manager";
+						moderator["isMod"] = true;
+					} else if (bot.isOwner(data.user)) {
+						moderator["type"] = "co-owner";
+						moderator["isMod"] = true;
+					}
+					if (moderator.isMod) {
+						person.rank.name = moderator.type;
+						person.rank.rid = data.user.role;
+					}
+					person.username = data.user.username;
+					person.dubs = data.user.dubs;
+					doc.lastChat = new Date();
+					person.save();
 				}
 			});
 			var cmd = data.message,

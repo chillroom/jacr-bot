@@ -14,6 +14,31 @@ module.exports = function (bot, mongoose) {
 		},
 		lastChat: {
 			type: Date
+		},
+		ban: {
+			lastBan: {
+				type: Date
+			},
+			count: {
+				type: Number,
+				default: 0
+			},
+			by: {
+				type: mongoose.SchemaTypes.ObjectId,
+				ref: "mod"
+			}
+		},
+		rank: {
+			name: {
+				type: String,
+			},
+			rid: {
+				type: String
+			},
+			banCount: {
+				type: Number,
+				default: 0
+			}
 		}
 	});
 	personSchema.index({

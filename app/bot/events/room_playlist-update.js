@@ -57,11 +57,28 @@ module.exports = function (bot) {
 								} else {
 									if (!person) {
 										var doc = {
-											username: data.user.username,
 											uid: data.user.id
 										};
 										person = new bot.db.models.person(doc);
 									}
+									var moderator = {
+										isMod: false
+									};
+									if (bot.isMod(data.user)) {
+										moderator["type"] = "mod";
+										moderator["isMod"] = true;
+									} else if (bot.isManager(data.user)) {
+										moderator["type"] = "manager";
+										moderator["isMod"] = true;
+									} else if (bot.isOwner(data.user)) {
+										moderator["type"] = "co-owner";
+										moderator["isMod"] = true;
+									}
+									if (moderator.isMod) {
+										person.rank.name = moderator.type;
+										person.rank.rid = data.user.role;
+									}
+									person.username = data.user.username;
 									person.dubs = data.user.dubs;
 									person.save(function () {
 										bot.db.models.history.create({
