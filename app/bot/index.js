@@ -50,6 +50,8 @@ new DubAPI({
 	bot.identifier = ":white_small_square: ";
 	//setup protection for double skips
 	bot.protection = false;
+	//stop bot from inputting song/history twice
+	bot.started = false;
 	//setup emojis
 	bot.emojis = require("./emojis");
 	require("./models")(bot, mongoose);
