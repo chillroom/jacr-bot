@@ -10,6 +10,7 @@ module.exports = function (server) {
 				if (stat && stat.isDirectory()) {
 					walk(_path);
 				} else {
+					/* istanbul ignore else */
 					if (file.indexOf(".js") > -1) {
 						require(_path)(server);
 					}
