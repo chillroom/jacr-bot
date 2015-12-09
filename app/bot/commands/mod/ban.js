@@ -45,7 +45,11 @@ module.exports = function (bot, data) {
 											ban.ban.lastBan = new Date();
 											ban.ban.count++;
 											ban.ban.by = banner.username;
-											ban.save();
+											ban.save(function () {
+												bot.db.models.ban.create({
+													_person: ban._id
+												});
+											});
 											bot.moderateBanUser(person.id, time);
 										}
 									});
@@ -89,7 +93,11 @@ module.exports = function (bot, data) {
 											ban.ban.lastBan = new Date();
 											ban.ban.count++;
 											ban.ban.by = banner.username;
-											ban.save();
+											ban.save(function () {
+												bot.db.models.ban.create({
+													_person: ban._id
+												});
+											});
 											bot.moderateBanUser(person.id, time);
 										}
 									});
