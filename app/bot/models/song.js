@@ -25,6 +25,10 @@ module.exports = function (bot, mongoose) {
 			type: Boolean,
 			default: false
 		},
+		theme: {
+			type: Boolean,
+			default: true
+		},
 		plays: {
 			type: Number,
 			default: 0
