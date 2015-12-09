@@ -38,7 +38,8 @@ module.exports = function (bot, data) {
 											if (!ban) {
 												var doc = {
 													username: username,
-													uid: person.id
+													uid: person.id,
+													"ban.count": 0
 												};
 												ban = new bot.db.models.person(doc);
 											}

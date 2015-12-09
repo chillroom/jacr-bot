@@ -10,7 +10,8 @@ module.exports = function (bot, data) {
 				bot.log("error", "BOT", err);
 			} else {
 				if (doc) {
-					bot.sendChat(bot.identifier + "username: " + doc._person.username + ", id: " + doc._person.uid + ", banned by: " + doc._person.ban.by + ", ban count:" + doc._person.ban.banCount);
+					doc = doc[0];
+					bot.sendChat(bot.identifier + "username: " + doc._person.username + ", id: " + doc._person.uid + ", banned by: " + doc._person.ban.by + ", ban count: " + doc._person.ban.count);
 				} else {
 					bot.sendChat(bot.identifier + "no ban history");
 				}
