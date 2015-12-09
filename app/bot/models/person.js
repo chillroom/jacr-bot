@@ -24,8 +24,7 @@ module.exports = function (bot, mongoose) {
 				default: 0
 			},
 			by: {
-				type: mongoose.SchemaTypes.ObjectId,
-				ref: "mod"
+				type: String
 			}
 		},
 		rank: {
