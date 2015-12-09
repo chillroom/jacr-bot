@@ -27,25 +27,6 @@ describe("Test Slack API routes", function () {
 			});
 	});
 
-	it("GET /users", function (done) {
-		this.slow(3000);
-		this.timeout(4000);
-		request(url)
-			.get("/users")
-			.expect("Content-Type", /json/)
-			.expect(200)
-			.end(function (err, res) {
-				if (err) {
-					return done(err);
-				}
-				res.status.should.equal(200);
-				res.body.code.should.equal("ok");
-				res.body.users.online.should.be.a.Number();
-				res.body.users.total.should.be.a.Number();
-				return done();
-			});
-	});
-
 	it("GET /badge.svg", function (done) {
 		this.slow(3000);
 		this.timeout(4000);
