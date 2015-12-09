@@ -19,39 +19,41 @@ module.exports = function (bot, data) {
 				if (bot.isVIP(person)) {
 					bot.moderateUnsetRole(person.id, person.role);
 				}
-				if (bot.ranks.indexOf(person.role) === -1) {
-					bot.db.models.person.findOne({
-						username: user
-					}, function (err, banner) {
-						if (err) {
-							bot.log("error", "BOT", err);
-						} else {
-							banner.rank.banCount++;
-							banner.save(function () {
-								bot.db.models.person.findOne({
-									uid: person.id
-								}, function (err, ban) {
-									if (err) {
-										bot.log("error", "BOT", err);
-									} else {
-										if (!ban) {
-											var doc = {
-												username: username,
-												uid: person.id
-											};
-											ban = new bot.db.models.person(doc);
+				setTimeout(function () {
+					if (bot.ranks.indexOf(person.role) === -1) {
+						bot.db.models.person.findOne({
+							username: user
+						}, function (err, banner) {
+							if (err) {
+								bot.log("error", "BOT", err);
+							} else {
+								banner.rank.banCount++;
+								banner.save(function () {
+									bot.db.models.person.findOne({
+										uid: person.id
+									}, function (err, ban) {
+										if (err) {
+											bot.log("error", "BOT", err);
+										} else {
+											if (!ban) {
+												var doc = {
+													username: username,
+													uid: person.id
+												};
+												ban = new bot.db.models.person(doc);
+											}
+											ban.ban.lastBan = new Date();
+											ban.ban.count++;
+											ban.ban.by = banner.username;
+											ban.save();
+											bot.moderateBanUser(person.id, time);
 										}
-										ban.ban.lastBan = new Date();
-										ban.ban.count++;
-										ban.ban.by = banner.username;
-										ban.save();
-										bot.moderateBanUser(person.id, time);
-									}
+									});
 								});
-							});
-						}
-					});
-				}
+							}
+						});
+					}
+				}, 1000);
 			} else {
 				if (username.substr(0, 1) === "@") {
 					//remove the @
@@ -61,39 +63,41 @@ module.exports = function (bot, data) {
 				if (bot.isVIP(person)) {
 					bot.moderateUnsetRole(person.id, person.role);
 				}
-				if (bot.ranks.indexOf(person.role) === -1) {
-					bot.db.models.person.findOne({
-						username: user
-					}, function (err, banner) {
-						if (err) {
-							bot.log("error", "BOT", err);
-						} else {
-							banner.rank.banCount++;
-							banner.save(function () {
-								bot.db.models.person.findOne({
-									uid: person.id
-								}, function (err, ban) {
-									if (err) {
-										bot.log("error", "BOT", err);
-									} else {
-										if (!ban) {
-											var doc = {
-												username: username,
-												uid: person.id
-											};
-											ban = new bot.db.models.person(doc);
+				setTimeout(function () {
+					if (bot.ranks.indexOf(person.role) === -1) {
+						bot.db.models.person.findOne({
+							username: user
+						}, function (err, banner) {
+							if (err) {
+								bot.log("error", "BOT", err);
+							} else {
+								banner.rank.banCount++;
+								banner.save(function () {
+									bot.db.models.person.findOne({
+										uid: person.id
+									}, function (err, ban) {
+										if (err) {
+											bot.log("error", "BOT", err);
+										} else {
+											if (!ban) {
+												var doc = {
+													username: username,
+													uid: person.id
+												};
+												ban = new bot.db.models.person(doc);
+											}
+											ban.ban.lastBan = new Date();
+											ban.ban.count++;
+											ban.ban.by = banner.username;
+											ban.save();
+											bot.moderateBanUser(person.id, time);
 										}
-										ban.ban.lastBan = new Date();
-										ban.ban.count++;
-										ban.ban.by = banner.username;
-										ban.save();
-										bot.moderateBanUser(person.id, time);
-									}
+									});
 								});
-							});
-						}
-					});
-				}
+							}
+						});
+					}
+				}, 1000);
 			}
 		}
 	}
