@@ -31,11 +31,17 @@ module.exports = function (bot, data) {
 					case "forbidden":
 						bot.sendChat(bot.identifier + "This song is on the forbidden list: http://just-a-chill-room.net/op-forbidden-list/ ");
 						break;
-					case "n/a":
+					case "na":
+						bot.sendChat(bot.identifier + "This song is not available to all users");
+						break;
+					case "unv":
+						bot.sendChat(bot.identifier + "This song is not available to all users");
+						break;
+					case "unvailable":
 						bot.sendChat(bot.identifier + "This song is not available to all users");
 						break;
 					default:
-						bot.sendChat(bot.identifier + "Parameter not recognised, suggest it here: https://bitbucket.org/dubbot/dubbot/issues?status=new&status=open");
+						bot.sendChat(bot.identifier + "Parameter not recognised, but you can suggest it here: https://bitbucket.org/dubbot/dubbot/issues?status=new&status=open");
 					}
 				}
 
@@ -43,8 +49,7 @@ module.exports = function (bot, data) {
 				if (!bot.protection) {
 					bot.protection = true;
 					bot.moderateSkip(reset);
-					bot.sendChat(bot.identifier + "Song skipped, no reason given though");
-					bot.sendChat(bot.identifier + "!shrug");
+					bot.sendChat(bot.identifier + "no reason given");
 				}
 			}
 		}
