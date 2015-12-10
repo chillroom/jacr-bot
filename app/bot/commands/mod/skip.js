@@ -22,9 +22,9 @@ module.exports = function (bot, data) {
 								bot.log("error", "BOT", err);
 							} else {
 								if (doc) {
-										doc.op = true;
-										doc.save();
-									}
+									doc.op = true;
+									doc.save();
+								}
 							}
 						});
 						bot.sendChat(bot.identifier + "Song skipped for being op, check http://just-a-chill-room.net/op-forbidden-list/ next time please");
@@ -43,9 +43,9 @@ module.exports = function (bot, data) {
 								bot.log("error", "BOT", err);
 							} else {
 								if (doc) {
-										doc.nsfw = true;
-										doc.save();
-									}
+									doc.nsfw = true;
+									doc.save();
+								}
 							}
 						});
 						bot.sendChat(bot.identifier + "Song skipped for being NSFW, too much NSFW = ban!");
@@ -58,9 +58,9 @@ module.exports = function (bot, data) {
 								bot.log("error", "BOT", err);
 							} else {
 								if (doc) {
-										doc.theme = false;
-										doc.save();
-									}
+									doc.theme = false;
+									doc.save();
+								}
 							}
 						});
 						bot.sendChat(bot.identifier + "Song does not fit the room theme.");
@@ -73,9 +73,9 @@ module.exports = function (bot, data) {
 								bot.log("error", "BOT", err);
 							} else {
 								if (doc) {
-										doc.forbidden = true;
-										doc.save();
-									}
+									doc.forbidden = true;
+									doc.save();
+								}
 							}
 						});
 						bot.sendChat(bot.identifier + "This song is on the forbidden list: http://just-a-chill-room.net/op-forbidden-list/ ");
@@ -91,9 +91,9 @@ module.exports = function (bot, data) {
 								bot.log("error", "BOT", err);
 							} else {
 								if (doc) {
-										doc.unavailable = true;
-										doc.save();
-									}
+									doc.unavailable = true;
+									doc.save();
+								}
 							}
 						});
 						bot.sendChat(bot.identifier + "This song is not available to all users");
@@ -106,9 +106,9 @@ module.exports = function (bot, data) {
 								bot.log("error", "BOT", err);
 							} else {
 								if (doc) {
-										doc.unavailable = true;
-										doc.save();
-									}
+									doc.unavailable = true;
+									doc.save();
+								}
 							}
 						});
 						bot.sendChat(bot.identifier + "This song is not available to all users");
