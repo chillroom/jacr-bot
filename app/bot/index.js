@@ -24,7 +24,18 @@ new DubAPI({
 	bot.on("connected", function (name) {
 		bot.sendChat(bot.identifier + "online! ver: " + pkg.version);
 		bot.log("info", "BOT", "Bot Version: " + pkg.version);
-		bot.log("info", "BOT", "Connected to " + name);
+		bot.log("info", "BOT", "Bot connected to: " + name);
+		bot.log("info", "BOT", "Bot ID: " + bot._.self.id);
+		if (bot._.room.users.findWhere({
+			id: bot._.self.id
+		}, true) === "undefined") {
+			bot.log("warning", "BOT", "Bot not in room");
+		}
+		if (bot._.room.users.findWhere({
+			id: bot._.self.id
+		}, true) === undefined) {
+			bot.log("warning", "BOT", "Bot not in room");
+		}
 		var users = bot.getUsers();
 		users.forEach(function (user) {
 			if (typeof (user.id) !== "undefined") {
