@@ -27,13 +27,13 @@ new DubAPI({
 		bot.log("info", "BOT", "Bot connected to: " + name);
 		bot.log("info", "BOT", "Bot ID: " + bot._.self.id);
 		if (bot._.room.users.findWhere({
-			id: bot._.self.id
-		}, true) === "undefined") {
+				id: bot._.self.id
+			}, true) === "undefined") {
 			bot.log("warning", "BOT", "Bot not in room");
 		}
 		if (bot._.room.users.findWhere({
-			id: bot._.self.id
-		}, true) === undefined) {
+				id: bot._.self.id
+			}, true) === undefined) {
 			bot.log("warning", "BOT", "Bot not in room");
 		}
 		var users = bot.getUsers();
@@ -85,7 +85,7 @@ new DubAPI({
 	});
 	connect();
 	//setup db
-	mongoose.connect(process.env.MONGO || "mongodb://betabot:MickieRocks123@linus.mongohq.com:10016/chill_bot", {
+	mongoose.connect(config.mongoURL {
 		server: {
 			auto_reconnect: true
 		}
@@ -99,7 +99,7 @@ new DubAPI({
 	});
 	bot.db.on("disconnected", function () {
 		bot.log("warning", "BOT", "MongoDB disconnected!");
-		mongoose.connect(process.env.MONGO_URL || "mongodb://betabot:MickieRocks123@linus.mongohq.com:10016/chill_bot", {
+		mongoose.connect(config.mongoURL, {
 			server: {
 				auto_reconnect: true
 			}
