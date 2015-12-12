@@ -27,13 +27,13 @@ new DubAPI({
 		bot.log("info", "BOT", "Bot connected to: " + name);
 		bot.log("info", "BOT", "Bot ID: " + bot._.self.id);
 		if (bot._.room.users.findWhere({
-				id: bot._.self.id
-			}, true) === "undefined") {
+			id: bot._.self.id
+		}, true) === "undefined") {
 			bot.log("warning", "BOT", "Bot not in room");
 		}
 		if (bot._.room.users.findWhere({
-				id: bot._.self.id
-			}, true) === undefined) {
+			id: bot._.self.id
+		}, true) === undefined) {
 			bot.log("warning", "BOT", "Bot not in room");
 		}
 		var users = bot.getUsers();
@@ -85,7 +85,7 @@ new DubAPI({
 	});
 	connect();
 	//setup db
-	mongoose.connect(config.mongoURL {
+	mongoose.connect(config.mongoURL, {
 		server: {
 			auto_reconnect: true
 		}
