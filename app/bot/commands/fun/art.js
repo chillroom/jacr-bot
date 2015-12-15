@@ -24,12 +24,16 @@ module.exports = function (bot, data) {
 						body = JSON.parse(body);
 						var hits = body.hits;
 						var art = hits[Math.floor(Math.random() * hits.length)];
-						var title = art.title;
-						var date = art.date;
-						var image = art.images[0].image_urls.larger;
-						bot.sendChat(image);
-						bot.sendChat(bot.identifier + "Titled: " + title);
-						bot.sendChat(bot.identifier + "Dated: " + date);
+						if (typeof (art) == "undefined") {
+							bot.sendChat(bot.identifier + "could not load artists images, please try again");
+						} else {
+							var title = art.title;
+							var date = art.date;
+							var image = art.images[0].image_urls.larger;
+							bot.sendChat(image);
+							bot.sendChat(bot.identifier + "Titled: " + title);
+							bot.sendChat(bot.identifier + "Dated: " + date);
+						}
 					} else if (response.statusCode == 401) {
 						bot.sendChat("@nitroghost needs to hack this API in order for it to work again");
 					} else if (response.statusCode == 404) {
