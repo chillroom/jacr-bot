@@ -5,7 +5,7 @@ var xappToken = "JvTPWe4WsQO-xqX6Bts49gSRBYDJShSsEEUDXhn7hzu4JghO4G19QYHA4qH_qG-
 
 module.exports = function (bot, data) {
 	if (typeof (data.params) !== "undefined" && data.params.length > 0) {
-		if (data.params.length === 1) {
+		if (data.params.length === 0) {
 			bot.sendChat(bot.identifier + "no artist asked");
 		} else {
 			var artist = data.params.join("-").toLocaleLowerCase();
