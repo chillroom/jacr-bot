@@ -30,9 +30,22 @@ module.exports = function (bot, data) {
 							var title = art.title;
 							var date = art.date;
 							var image = art.images[0].image_urls.larger;
-							bot.sendChat(image);
-							bot.sendChat(bot.identifier + "Titled: " + title);
-							bot.sendChat(bot.identifier + "Dated: " + date);
+							if (image === "") {
+								image = art.images[0].image_urls.large;
+								if (image === "") {
+									bot.sendChat(bot.identifier + "sorry, no image found for: ");
+									bot.sendChat(bot.identifier + "Titled: " + title);
+									bot.sendChat(bot.identifier + "Dated: " + date);
+								} else {
+									bot.sendChat(image);
+									bot.sendChat(bot.identifier + "Titled: " + title);
+									bot.sendChat(bot.identifier + "Dated: " + date);
+								}
+							} else {
+								bot.sendChat(image);
+								bot.sendChat(bot.identifier + "Titled: " + title);
+								bot.sendChat(bot.identifier + "Dated: " + date);
+							}
 						}
 					} else if (response.statusCode == 401) {
 						bot.sendChat("@nitroghost needs to hack this API in order for it to work again");
