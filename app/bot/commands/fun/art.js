@@ -138,7 +138,8 @@ module.exports = function (bot, data) {
 				});
 			} else {
 				var querys = data.params.join(" ");
-				querys = encodeURIComponent(query);
+				bot.log("info", "BOT", querys);
+				querys = encodeURIComponent(querys);
 				request({
 					url: "https://api.artsy.net/api/v1/match/suggest?visible_to_public=true&fair_id=&size=7&term=" + querys,
 					headers: {
