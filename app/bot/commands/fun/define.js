@@ -6,7 +6,7 @@ module.exports = function (bot, data) {
 		var term;
 		if (data.params.length === 1) {
 			term = data.params[0];
-			request("http://api.urbandictionary.com/v0/define?term=" + term, function (error, response, body) {
+			request("http://api.urbandictionary.com/v0/define?term=" + encodeURIComponent(term), function (error, response, body) {
 				if (error) {
 					bot.log("error", "BOT", error);
 					bot.sendChat(bot.identifier + "something went wrong with the urban dictionary API");
@@ -30,7 +30,7 @@ module.exports = function (bot, data) {
 			});
 		} else {
 			term = data.params.join("+");
-			request("http://api.urbandictionary.com/v0/define?term=" + term, function (error, response, body) {
+			request("http://api.urbandictionary.com/v0/define?term=" + encodeURIComponent(term), function (error, response, body) {
 				if (error) {
 					bot.log("error", "BOT", error);
 					bot.sendChat(bot.identifier + "something went wrong with the urban dictionary API");
