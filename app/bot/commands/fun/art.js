@@ -90,6 +90,7 @@ module.exports = function (bot, data) {
 												if (typeof (art) == "undefined") {
 													bot.sendChat(bot.identifier + "could not load artists images, please try again");
 												} else {
+													var artist = art.artist.name;
 													var title = art.title;
 													var date = art.date;
 													var image = art.images[0].image_urls.larger;
