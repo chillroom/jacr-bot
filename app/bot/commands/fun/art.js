@@ -9,7 +9,7 @@ module.exports = function (bot, data) {
 			bot.sendChat(bot.identifier + "please try !art [artist name] or !art search [artwork name/artist name]");
 		} else {
 			if (data.params[0] === "search") {
-				query = data.params.slice(1).join(" ");
+				var query = data.params.slice(1).join(" ");
 				query = encodeURIComponent(query);
 				request({
 					url: "https://api.artsy.net/api/v1/match/suggest?visible_to_public=true&fair_id=&size=7&term=" + query,
@@ -26,7 +26,7 @@ module.exports = function (bot, data) {
 							body = JSON.parse(body);
 							if (typeof (body[0]) !== "undefined") {
 								var artID = body[0].id;
-								if (body[0].model = "artwork") {
+								if (body[0].model === "artwork") {
 									request({
 										url: "https://fusion.artsy.net/api/v1/artwork/" + artID,
 										headers: {
@@ -71,7 +71,7 @@ module.exports = function (bot, data) {
 											}
 										}
 									});
-								} else if (body[0].model = "artist") {
+								} else if (body[0].model === "artist") {
 									request({
 										url: "https://api.artsy.net/api/v1/filter/artworks?artist_id=" + artID,
 										headers: {
