@@ -73,7 +73,7 @@ module.exports = function (bot, data) {
 									});
 								} else if (body[0].model === "artist") {
 									request({
-										url: "https://api.artsy.net/api/v1/filter/artworks?artist_id=" + artID,
+										url: "https://api.artsy.net/api/v1/filter/artworks?size=100&artist_id=" + artID,
 										headers: {
 											"X-Xapp-Token": xappToken,
 											"Accept": "application/vnd.artsy-v2+json"
@@ -139,7 +139,7 @@ module.exports = function (bot, data) {
 			} else {
 				var artist = data.params.join("-").toLocaleLowerCase();
 				request({
-					url: "https://api.artsy.net/api/v1/filter/artworks?artist_id=" + artist,
+					url: "https://api.artsy.net/api/v1/filter/artworks?size=100&artist_id=" + artist,
 					headers: {
 						"X-Xapp-Token": xappToken,
 						"Accept": "application/vnd.artsy-v2+json"
