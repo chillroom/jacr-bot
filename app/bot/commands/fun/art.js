@@ -137,10 +137,10 @@ module.exports = function (bot, data) {
 					}
 				});
 			} else {
-				var query = data.params.join(" ");
-				query = encodeURIComponent(query);
+				var querys = data.params.join(" ");
+				querys = encodeURIComponent(query);
 				request({
-					url: "https://api.artsy.net/api/v1/match/suggest?visible_to_public=true&fair_id=&size=7&term=" + query,
+					url: "https://api.artsy.net/api/v1/match/suggest?visible_to_public=true&fair_id=&size=7&term=" + querys,
 					headers: {
 						"X-Xapp-Token": xappToken,
 						"Accept": "application/vnd.artsy-v2+json"
