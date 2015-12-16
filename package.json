@@ -1,6 +1,6 @@
 {
   "name": "betabot",
-  "version": "1.7.8",
+  "version": "1.7.9",
   "description": "Just a chillroom dubtrack bot",
   "engines": {
     "node": ">= 4.2.3",

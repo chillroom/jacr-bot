@@ -2,7 +2,7 @@ module.exports = function (bot) {
 	bot.on("room_playlist-update", function (data) {
 		bot.sendMotd();
 		if (bot.started) {
-			if (typeof (data.media.fkid) !== "undefined") {
+			if (typeof (data.media) !== "undefined") {
 				bot.db.models.song.findOne({
 					fkid: data.media.fkid
 				}, function (err, song) {
@@ -53,49 +53,51 @@ module.exports = function (bot) {
 						song.plays++;
 						song.lastPlay = new Date();
 						song.save(function () {
-							bot.db.models.person.findOne({
-								uid: data.user.id
-							}, function (err, person) {
-								if (err) {
-									bot.log("error", "BOT", err);
-								} else {
-									if (!person) {
-										var doc = {
-											uid: data.user.id
+							if (typeof (data.user) !== "undefined") {
+								bot.db.models.person.findOne({
+									uid: data.user.id
+								}, function (err, person) {
+									if (err) {
+										bot.log("error", "BOT", err);
+									} else {
+										if (!person) {
+											var doc = {
+												uid: data.user.id
+											};
+											person = new bot.db.models.person(doc);
+										}
+										var moderator = {
+											isMod: false
 										};
-										person = new bot.db.models.person(doc);
-									}
-									var moderator = {
-										isMod: false
-									};
-									if (bot.isMod(data.user)) {
-										moderator["type"] = "mod";
-										moderator["isMod"] = true;
-									} else if (bot.isManager(data.user)) {
-										moderator["type"] = "manager";
-										moderator["isMod"] = true;
-									} else if (bot.isOwner(data.user)) {
-										moderator["type"] = "co-owner";
-										moderator["isMod"] = true;
-									}
-									if (moderator.isMod) {
-										person.rank.name = moderator.type;
-										person.rank.rid = data.user.role;
-									}
-									person.username = data.user.username;
-									person.dubs = data.user.dubs;
-									person.save(function () {
-										bot.db.models.history.create({
-											_song: song._id,
-											_person: person._id
-										}, function (err) {
-											if (err) {
-												bot.log("error", "BOT", err);
-											}
+										if (bot.isMod(data.user)) {
+											moderator["type"] = "mod";
+											moderator["isMod"] = true;
+										} else if (bot.isManager(data.user)) {
+											moderator["type"] = "manager";
+											moderator["isMod"] = true;
+										} else if (bot.isOwner(data.user)) {
+											moderator["type"] = "co-owner";
+											moderator["isMod"] = true;
+										}
+										if (moderator.isMod) {
+											person.rank.name = moderator.type;
+											person.rank.rid = data.user.role;
+										}
+										person.username = data.user.username;
+										person.dubs = data.user.dubs;
+										person.save(function () {
+											bot.db.models.history.create({
+												_song: song._id,
+												_person: person._id
+											}, function (err) {
+												if (err) {
+													bot.log("error", "BOT", err);
+												}
+											});
 										});
-									});
-								}
-							});
+									}
+								});
+							}
 						});
 					}
 				});
