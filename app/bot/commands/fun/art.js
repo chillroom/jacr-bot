@@ -87,7 +87,7 @@ module.exports = function (bot, data) {
 												body = JSON.parse(body);
 												var hits = body.hits;
 												var art = hits[Math.floor(Math.random() * hits.length)];
-												if (typeof (art) === "object") {
+												if (typeof (art) === "undefined") {
 													bot.sendChat(bot.identifier + "could not load artists images, please try again");
 												} else {
 													var artist = art.artist.name;
@@ -153,7 +153,7 @@ module.exports = function (bot, data) {
 							body = JSON.parse(body);
 							var hits = body.hits;
 							var art = hits[Math.floor(Math.random() * hits.length)];
-							if (typeof (art) === "object") {
+							if (typeof (art) === "undefined") {
 								bot.sendChat(bot.identifier + "could not load artists images, please try again");
 							} else {
 								var title = art.title;
