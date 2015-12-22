@@ -1,7 +1,7 @@
 var request = require("request");
+var config = require(process.cwd() + "/config");
 
-var xappToken = "JvTPWe4WsQO-xqX6Bts49gSRBYDJShSsEEUDXhn7hzu4JghO4G19QYHA4qH_qG-wbwZcPYyz-8SMkw70m3uYcLMzPwBiXxxC8hYR2F17tRWwCokv8lJndDzGgI-mUY5VF-PQZPBHK0PL1i-Fx-7CJOjlfGfDRnq9CeXw81hfZfuyQ_gPK-PxeN4O-VU-nUog7Yf6mBVGm0NV96vwxv9nYPdORMRzO4hD7xVFULDQv4g=";
-
+var xappToken = config.artsyToken;
 
 module.exports = function (bot, data) {
 	if (typeof (data.params) !== "undefined" && data.params.length > 0) {
