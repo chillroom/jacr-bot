@@ -7,7 +7,7 @@ var server = restify.createServer({
 	version: pkg.version
 });
 server.use(restify.CORS({
-	origins: ["http://just-a-chill-room.net/"]
+	origins: ["http://just-a-chill-room.net"]
 }));
 server.use(restify.fullResponse());
 server.use(restify.bodyParser({
