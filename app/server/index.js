@@ -6,10 +6,10 @@ var server = restify.createServer({
 	name: "Betabot Server",
 	version: pkg.version
 });
+server.use(restify.fullResponse());
 server.use(restify.CORS({
 	origins: ["http://just-a-chill-room.net"]
 }));
-server.use(restify.fullResponse());
 server.use(restify.bodyParser({
 	mapParams: false
 }));
