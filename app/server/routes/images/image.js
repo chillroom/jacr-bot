@@ -23,6 +23,7 @@ module.exports = function (server) {
 							res.writeHead("200", {
 								"Content-Type": "image/jpeg"
 							});
+							res.cache();
 							res.end(body);
 							next();
 						}
