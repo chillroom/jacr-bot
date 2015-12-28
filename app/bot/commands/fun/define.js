@@ -48,7 +48,7 @@ module.exports = function (bot, data) {
 				} else {
 					body = JSON.parse(body);
 					if (body.result_type !== "no_results") {
-						var defid = body.load[0].defid;
+						var defid = body.list[0].defid;
 						request.post({
 							url: "https://betabot-nitroghost.rhcloud.com/image?url=" + encodeURIComponent("http://www.urbandictionary.com/render_definition.php?defid=" + defid)
 						}, function (error, request, body) {
