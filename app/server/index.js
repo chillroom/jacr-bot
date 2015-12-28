@@ -8,9 +8,7 @@ var server = restify.createServer({
 	version: pkg.version
 });
 server.use(restify.fullResponse());
-server.use(restify.CORS({
-	origins: [config.origins]
-}));
+server.use(restify.CORS());
 server.use(restify.bodyParser({
 	mapParams: false
 }));

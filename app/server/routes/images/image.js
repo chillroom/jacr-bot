@@ -21,8 +21,7 @@ module.exports = function (server) {
 					}, function (error, response, body) {
 						if (!error && response.statusCode == 200) {
 							res.writeHead("200", {
-								"Content=Type": "image/jpeg",
-								"Cache-Control": "max-age=0, no-cache"
+								"Content-Type": "image/jpeg"
 							});
 							res.end(body);
 							next();
