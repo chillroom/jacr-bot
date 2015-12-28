@@ -15,7 +15,7 @@ module.exports = function (bot, data) {
 					if (body.result_type !== "no_results") {
 						var defid = body.load[0].defid;
 						request.post({
-							url: "https://betabot-nitroghost.rhcloud.com/image?url=" + encodeURIComponent("http://www.urbandictionary.com/render_definition.php?defid=" + defid);
+							url: "https://betabot-nitroghost.rhcloud.com/image?url=" + encodeURIComponent("http://www.urbandictionary.com/render_definition.php?defid=" + defid)
 						}, function (error, request, body) {
 							if (!error && request.statusCode == 200) {
 								body = JSON.parse(body);
