@@ -1,6 +1,4 @@
-var request = require("request"),
-	config = require(process.cwd() + "/config");
-
+var request = require("request");
 module.exports = function (server) {
 	server.get("/image/:id", function (req, res, next) {
 		var id = req.params.id.split(".")[0];

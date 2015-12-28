@@ -13,16 +13,27 @@ module.exports = function (bot, data) {
 				} else {
 					body = JSON.parse(body);
 					if (body.result_type !== "no_results") {
-						var definition = body.list[0].definition;
-						var slicer = 255 - (term.length + " definition: ".length);
-						if (definition.length <= (510 - slicer)) {
-							bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
-							bot.sendChat(bot.identifier + term + " definition: " + definition);
+						var defid = body.load[0].defid;
+						request.post({
+							url: "https://betabot-nitroghost.rhcloud.com/image?url=" + encodeURIComponent("http://www.urbandictionary.com/render_definition.php?defid=" + defid);
+						}, function (error, request, body) {
+							if (!error && request.statusCode == 200) {
+								body = JSON.parse(body);
+								bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
+								bot.sendChat(bot.identifier + "https://betabot-nitroghost.rhcloud.com/image/" + body.message._id + "jpg");
+							} else {
+								var definition = body.list[0].definition;
+								var slicer = 255 - (term.length + " definition: ".length);
+								if (definition.length <= (510 - slicer)) {
+									bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
+									bot.sendChat(bot.identifier + term + " definition: " + definition);
 
-						} else {
-							bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
-							bot.sendChat(bot.identifier + " sorry the definition for " + term + " is too long to be shown");
-						}
+								} else {
+									bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
+									bot.sendChat(bot.identifier + " sorry the definition for " + term + " is too long to be shown");
+								}
+							}
+						});
 					} else {
 						bot.sendChat(bot.identifier + "could not find the definition for: " + term);
 					}
@@ -37,18 +48,29 @@ module.exports = function (bot, data) {
 				} else {
 					body = JSON.parse(body);
 					if (body.result_type !== "no_results") {
-						var definition = body.list[0].definition;
-						var slicer = 255 - (term.length + " definition: ".length);
-						if (definition.length <= (510 - slicer)) {
-							bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
-							bot.sendChat(bot.identifier + data.params.join(" ") + " definition: " + definition); // cause none wants dat +
+						var defid = body.load[0].defid;
+						request.post({
+							url: "https://betabot-nitroghost.rhcloud.com/image?url=" + encodeURIComponent("http://www.urbandictionary.com/render_definition.php?defid=" + defid);
+						}, function (error, request, body) {
+							if (!error && request.statusCode == 200) {
+								body = JSON.parse(body);
+								bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
+								bot.sendChat(bot.identifier + "https://betabot-nitroghost.rhcloud.com/image/" + body.message._id + "jpg");
+							} else {
+								var definition = body.list[0].definition;
+								var slicer = 255 - (term.length + " definition: ".length);
+								if (definition.length <= (510 - slicer)) {
+									bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
+									bot.sendChat(bot.identifier + term + " definition: " + definition);
 
-						} else {
-							bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
-							bot.sendChat(bot.identifier + " sorry the definition for " + data.params.join(" ") + " is too long to be shown"); // oh should be here too.
-						}
+								} else {
+									bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
+									bot.sendChat(bot.identifier + " sorry the definition for " + data.params.join(" ") + " is too long to be shown");
+								}
+							}
+						});
 					} else {
-						bot.sendChat(bot.identifier + "could not find definition for: " + data.params.join(" "));
+						bot.sendChat(bot.identifier + "could not find the definition for: " + data.params.join(" "));
 					}
 				}
 			});
