@@ -9,7 +9,7 @@ var server = restify.createServer({
 });
 server.use(restify.fullResponse());
 server.use(restify.CORS({
-	origins: ["http://just-a-chill-room.net"]
+	origins: [config.origins]
 }));
 server.use(restify.bodyParser({
 	mapParams: false
