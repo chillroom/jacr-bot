@@ -23,7 +23,7 @@ server.listen(config.port, config.ipaddress, function () {
 	var port = server.address().port;
 	server.logger("info", "API", "Started on http://" + host + ":" + port);
 });
-mongoose.connect(config.mongoURL, {
+mongoose.connect(config.APIMongoURL, {
 	server: {
 		auto_reconnect: true
 	}
@@ -37,7 +37,7 @@ server.db.on("connected", function () {
 });
 server.db.on("disconnected", function () {
 	server.logger("warning", "API", "MongoDB disconnected!");
-	mongoose.connect(config.mongoURL, {
+	mongoose.connect(config.APIMongoURL, {
 		server: {
 			auto_reconnect: true
 		}

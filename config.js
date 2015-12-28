@@ -11,6 +11,7 @@ module.exports = {
 	botPass: process.env.BOT_PASS,
 	roomURL: process.env.ROOM_URL,
 	mongoURL: process.env.MONGO_URL,
+	APIMongoURL: process.env.API_MONGO_URL,
 	artsyToken: process.env.ARTSY_TOKEN,
 	jenkinsUser: process.env.JENKINS_USER,
 	jenkinsToken: process.env.JENKINS_TOKEN,
