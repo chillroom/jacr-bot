@@ -20,7 +20,7 @@ module.exports = function (bot, data) {
 							if (!error && request.statusCode == 200) {
 								body = JSON.parse(body);
 								bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
-								bot.sendChat(bot.identifier + "https://betabot-nitroghost.rhcloud.com/image/" + body.message._id + "jpg");
+								bot.sendChat(bot.identifier + "https://betabot-nitroghost.rhcloud.com/image/" + body.message._id + ".jpg");
 							} else {
 								var definition = body.list[0].definition;
 								var slicer = 255 - (term.length + " definition: ".length);
@@ -55,7 +55,7 @@ module.exports = function (bot, data) {
 							if (!error && request.statusCode == 200) {
 								body = JSON.parse(body);
 								bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
-								bot.sendChat(bot.identifier + "https://betabot-nitroghost.rhcloud.com/image/" + body.message._id + "jpg");
+								bot.sendChat(bot.identifier + "https://betabot-nitroghost.rhcloud.com/image/" + body.message._id + ".jpg");
 							} else {
 								var definition = body.list[0].definition;
 								var slicer = 255 - (term.length + " definition: ".length);
