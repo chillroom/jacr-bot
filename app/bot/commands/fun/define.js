@@ -15,12 +15,12 @@ module.exports = function (bot, data) {
 					if (body.result_type !== "no_results") {
 						var defid = body.list[0].defid;
 						request.post({
-							url: "https://betabot-nitroghost.rhcloud.com/image?url=" + encodeURIComponent("http://www.urbandictionary.com/render_definition.php?defid=" + defid)
+							url: "https://bot.plugable.info/image?url=" + encodeURIComponent("http://www.urbandictionary.com/render_definition.php?defid=" + defid)
 						}, function (error, request, body) {
 							if (!error && request.statusCode == 200) {
 								body = JSON.parse(body);
 								bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
-								bot.sendChat(bot.identifier + "https://betabot-nitroghost.rhcloud.com/image/" + body.message._id + ".jpg");
+								bot.sendChat(bot.identifier + "https://bot.plugable.info/image/" + body.message._id + ".jpg");
 							} else {
 								var definition = body.list[0].definition;
 								var slicer = 255 - (term.length + " definition: ".length);
@@ -50,12 +50,12 @@ module.exports = function (bot, data) {
 					if (body.result_type !== "no_results") {
 						var defid = body.list[0].defid;
 						request.post({
-							url: "https://betabot-nitroghost.rhcloud.com/image?url=" + encodeURIComponent("http://www.urbandictionary.com/render_definition.php?defid=" + defid)
+							url: "https://bot.plugable.info/image?url=" + encodeURIComponent("http://www.urbandictionary.com/render_definition.php?defid=" + defid)
 						}, function (error, request, body) {
 							if (!error && request.statusCode == 200) {
 								body = JSON.parse(body);
 								bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
-								bot.sendChat(bot.identifier + "https://betabot-nitroghost.rhcloud.com/image/" + body.message._id + ".jpg");
+								bot.sendChat(bot.identifier + "https://bot.plugable.info/image/" + body.message._id + ".jpg");
 							} else {
 								var definition = body.list[0].definition;
 								var slicer = 255 - (term.length + " definition: ".length);
