@@ -2,6 +2,7 @@ var request = require("request");
 module.exports = function (server) {
 	server.get("/image/:id", function (req, res, next) {
 		var id = req.params.id.split(".")[0];
+		var ext = req.params.id.split(".")[1];
 		server.db.models.image.findOne({
 			_id: id
 		}, function (err, doc) {
@@ -20,11 +21,25 @@ module.exports = function (server) {
 						encoding: null
 					}, function (error, response, body) {
 						if (!error && response.statusCode == 200) {
-							res.writeHead("200", {
-								"Content-Type": "image/jpeg"
-							});
-							res.end(body);
-							next();
+							if (ext === "jpg") {
+								res.writeHead("200", {
+									"Content-Type": "image/jpeg"
+								});
+								res.end(body);
+								next();
+							} else if (ext === "png") {
+								res.writeHead("200", {
+									"Content-Type": "image/png"
+								});
+								res.end(body);
+								next();
+							} else if (ext === "gif") {
+								res.writeHead("200", {
+									"Content-Type": "image/gif"
+								});
+								res.end(body);
+								next();
+							}
 						}
 					});
 				}
