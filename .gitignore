@@ -37,3 +37,8 @@ test.tap
 
 #ignore checkstyle files
 checkstyle-result.xml
+
+#ignore random files
+pants.json
+pants2.json
+lmao.json
