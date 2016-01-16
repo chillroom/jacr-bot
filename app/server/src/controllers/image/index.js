@@ -120,6 +120,12 @@ module.exports = {
 								});
 							}
 						});
+					} else {
+						reply({
+							status: 404,
+							code: "not_found",
+							message: "Image not found"
+						}).code(404);
 					}
 				}
 			}

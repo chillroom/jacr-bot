@@ -9,7 +9,7 @@ module.exports = (server) => {
 			path: "/image",
 			handler: controller.upload
 		}, {
-			method: "POST",
+			method: "GET",
 			path: "/image/{id}",
 			handler: controller.get
 		}
