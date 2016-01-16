@@ -1,6 +1,6 @@
 {
   "name": "betabot",
-  "version": "1.10.1",
+  "version": "1.10.2",
   "description": "Just a chillroom dubtrack bot",
   "engines": {
     "node": ">= 4.2.3",
@@ -10,12 +10,13 @@
   "private": true,
   "dependencies": {
     "dubapi": "^1.2.0",
+    "hapi": "^12.1.0",
+    "hapi-mongodb": "^5.0.0",
     "htmlparser": "^1.7.7",
     "jethro": "^2.6.6",
     "kerberos": "0.0.17",
     "mongoose": "^4.2.9",
     "request": "^2.64.0",
-    "restify": "^4.0.3",
     "soupselect": "^0.2.0"
   },
   "devDependencies": {
