@@ -14,13 +14,13 @@ module.exports = function (bot, data) {
 					body = JSON.parse(body);
 					if (body.result_type !== "no_results") {
 						var defid = body.list[0].defid;
-						request.post({
-							url: "https://bot.plugable.info/image?url=" + encodeURIComponent("http://www.urbandictionary.com/render_definition.php?defid=" + defid)
+						request.get({
+							url: "https://bot.plugable.info/image?url=" + encodeURIComponent("http://www.urbandictionary.com/render_definition.php?defid=" + defid) + "&ext=jpg"
 						}, function (error, request, body) {
-							if (!error && request.statusCode == 200) {
+							if (!error && request.statusCode == 200 || 201) {
 								body = JSON.parse(body);
 								bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
-								bot.sendChat(bot.identifier + "https://bot.plugable.info/image/" + body.message._id + ".jpg");
+								bot.sendChat(bot.identifier + body.data.image);
 							} else {
 								var definition = body.list[0].definition;
 								var slicer = 255 - (term.length + " definition: ".length);
@@ -40,7 +40,7 @@ module.exports = function (bot, data) {
 				}
 			});
 		} else {
-			term = data.params.join("+");
+			term = data.params.join(" ");
 			request("http://api.urbandictionary.com/v0/define?term=" + encodeURIComponent(term), function (error, response, body) {
 				if (error) {
 					bot.log("error", "BOT", error);
@@ -49,13 +49,13 @@ module.exports = function (bot, data) {
 					body = JSON.parse(body);
 					if (body.result_type !== "no_results") {
 						var defid = body.list[0].defid;
-						request.post({
-							url: "https://bot.plugable.info/image?url=" + encodeURIComponent("http://www.urbandictionary.com/render_definition.php?defid=" + defid)
+						request.get({
+							url: "https://bot.plugable.info/image?url=" + encodeURIComponent("http://www.urbandictionary.com/render_definition.php?defid=" + defid) + "&ext=jpg"
 						}, function (error, request, body) {
-							if (!error && request.statusCode == 200) {
+							if (!error && request.statusCode == 200 || 201) {
 								body = JSON.parse(body);
 								bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
-								bot.sendChat(bot.identifier + "https://bot.plugable.info/image/" + body.message._id + ".jpg");
+								bot.sendChat(bot.identifier + body.data.image);
 							} else {
 								var definition = body.list[0].definition;
 								var slicer = 255 - (term.length + " definition: ".length);
@@ -65,7 +65,7 @@ module.exports = function (bot, data) {
 
 								} else {
 									bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
-									bot.sendChat(bot.identifier + " sorry the definition for " + data.params.join(" ") + " is too long to be shown");
+									bot.sendChat(bot.identifier + " sorry the definition for " + term + " is too long to be shown");
 								}
 							}
 						});
