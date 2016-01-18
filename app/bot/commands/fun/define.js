@@ -15,7 +15,7 @@ module.exports = function (bot, data) {
 					if (body.result_type !== "no_results") {
 						var defid = body.list[0].defid;
 						request.get({
-							url: "https://bot.plugable.info/image?url=" + encodeURIComponent("http://www.urbandictionary.com/render_definition.php?defid=" + defid) + "&ext=jpg"
+							url: "https://bot.plugable.info/image?ext=jpg&url=" + encodeURIComponent("http://www.urbandictionary.com/render_definition.php?defid=" + defid)
 						}, function (error, request, body) {
 							if (!error && request.statusCode == 200 || 201) {
 								body = JSON.parse(body);
@@ -50,7 +50,7 @@ module.exports = function (bot, data) {
 					if (body.result_type !== "no_results") {
 						var defid = body.list[0].defid;
 						request.get({
-							url: "https://bot.plugable.info/image?url=" + encodeURIComponent("http://www.urbandictionary.com/render_definition.php?defid=" + defid) + "&ext=jpg"
+							url: "https://bot.plugable.info/image?ext=jpg&url=" + encodeURIComponent("http://www.urbandictionary.com/render_definition.php?defid=" + defid)
 						}, function (error, request, body) {
 							if (!error && request.statusCode == 200 || 201) {
 								body = JSON.parse(body);
