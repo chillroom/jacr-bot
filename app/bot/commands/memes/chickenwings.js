@@ -5,6 +5,6 @@ module.exports = function (bot) {
 		"https://api.plugable.info/image/569d71b3d593cd62e99b3419.jpg",
 		"https://api.plugable.info/image/569d7221d593cd62e99b341b.jpg"
 	];
-	var meme = memes[Math.floor(Math.random() * memes.length)];
-	bot.sendChat(meme);
+	var post = memes[Math.floor(Math.random() * memes.length)];
+	bot.sendChat(post);
 };

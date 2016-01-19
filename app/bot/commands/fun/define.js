@@ -17,7 +17,7 @@ module.exports = function (bot, data) {
 						request.get({
 							url: "https://bot.plugable.info/image?ext=jpg&url=" + encodeURIComponent("http://www.urbandictionary.com/render_definition.php?defid=" + defid)
 						}, function (error, request, body) {
-							if (!error && request.statusCode == 200 || 201) {
+							if (!error && request.statusCode === 200 || request.statusCode === 201) {
 								body = JSON.parse(body);
 								bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
 								bot.sendChat(bot.identifier + body.data.image);

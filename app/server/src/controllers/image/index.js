@@ -16,7 +16,7 @@ module.exports = {
 			if (!ext) {
 				let preExt = url.split(".");
 
-				if (preExt[preExt.length - 1] === "jpg" || "png" || "svg" || "gif") {
+				if (preExt[preExt.length - 1] === "jpg" || preExt[preExt.length - 1] === "png" || preExt[preExt.length - 1] === "svg" || preExt[preExt.length - 1] === "gif") {
 					ext = preExt[preExt.length - 1];
 				} else {
 					ext = "png";
@@ -34,6 +34,9 @@ module.exports = {
 					}).code(500);
 				} else {
 					if (doc) {
+						if (!doc.ext) {
+							doc.ext = "png";
+						}
 						reply({
 							status: 200,
 							code: "image_found",
