@@ -73,8 +73,6 @@ module.exports = function (bot, data) {
 									bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + encodeURIComponent(term));
 									bot.sendChat(bot.identifier + body.data.image);
 								} else {
-									body = JSON.parse(body);
-									var definition = body.list[0].definition;
 									var slicer = 255 - (term.length + " definition: ".length);
 									if (definition.length <= (510 - slicer)) {
 										bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + encodeURIComponent(term));
