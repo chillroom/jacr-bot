@@ -30,7 +30,6 @@ module.exports = function (bot, data) {
 									bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
 									bot.sendChat(bot.identifier + body.data.image);
 								} else {
-									console.log(request.statusCode);
 									var slicer = 255 - (term.length + " definition: ".length);
 									if (definition.length <= (510 - slicer)) {
 										bot.sendChat(bot.identifier + "http://urbandictionary.com/define.php?term=" + term);
