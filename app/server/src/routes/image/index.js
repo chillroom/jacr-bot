@@ -7,10 +7,22 @@ module.exports = (server) => {
 		{
 			method: "GET",
 			path: "/image",
+			config: {
+				cache: {
+					expiresIn: 2628000,
+					privacy: "public"
+				}
+			},
 			handler: controller.upload
 		}, {
 			method: "GET",
 			path: "/image/{id}",
+			config: {
+				cache: {
+					expiresIn: 2628000,
+					privacy: "public"
+				}
+			},
 			handler: controller.get
 		}
 	]);
