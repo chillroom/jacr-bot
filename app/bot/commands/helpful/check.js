@@ -18,8 +18,8 @@ module.exports = function(bot, data) {
             bot.sendChat(bot.identifier + "leaf me alone, I has an error");
             bot.log("error", "MONGO", err);
         } else {
-            if (doc) {
-                bot.sendChat(bot.identifier + "song: " + doc.name + " has been played " + doc.plays + " before");
+            if (doc[0]) {
+                bot.sendChat(bot.identifier + doc[0].name + " has been played " + doc[0].plays + " times before");
             } else {
                 bot.sendChat(bot.identifier + "way to go sailor, that song hasn't been played before");
             }
