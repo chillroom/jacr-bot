@@ -1,9 +1,6 @@
 {
 	"rules": {
-		"indent": [
-            1,
-            "tab"
-        ],
+		"indent": 2,
 		"quotes": [
             2,
             "double"

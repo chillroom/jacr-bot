@@ -1,3 +1,3 @@
-module.exports = function (bot) {
-	bot.sendChat(bot.identifier + "Emoji list: http://www.emoji-cheat-sheet.com/");
+module.exports = function(bot) {
+    bot.sendChat(bot.identifier + "Emoji list: http://www.emoji-cheat-sheet.com/");
 };
