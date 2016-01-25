@@ -1,7 +1,7 @@
 module.exports = function(bot, data) {
     var text = data.params.join(" ");
     text = text.replace(/-+/g, "").replace(/\s+/g, " ").trim();
-    bot.db.models.song.songs.find({
+    bot.db.models.song.find({
         $text: {
             $search: text
         }
