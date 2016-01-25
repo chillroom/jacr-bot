@@ -19,9 +19,13 @@ module.exports = function(bot, data) {
             bot.log("error", "MONGO", err);
         } else {
             if (doc[0]) {
-                bot.sendChat(bot.identifier + doc[0].name + " has been played " + doc[0].plays + " times before");
+                if (doc[0].score > 0.7) {
+                    bot.sendChat(bot.identifier + doc[0].name + " has been played " + doc[0].plays + " times before");
+                } else {
+                    bot.sendChat(bot.identifier + "way to go sailor, looks like that song hasn't been played before");
+                }
             } else {
-                bot.sendChat(bot.identifier + "way to go sailor, that song hasn't been played before");
+                bot.sendChat(bot.identifier + "way to go sailor, looks like that song hasn't been played before");
             }
         }
     });
