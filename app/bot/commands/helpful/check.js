@@ -38,7 +38,18 @@ module.exports = function(bot, data) {
                 bot.log("error", "MONGO", err);
             } else {
                 if (doc[0]) {
-                    bot.sendChat(bot.identifier + doc[0].name + " has been played " + doc[0].plays + " times before");
+                    doc = doc[0];
+                    db.models.history.find({
+                        _song: doc._id
+                    }).sort(time: -1).limit(1).populate("_person").exec(function(err, person) {
+                        if (err) {
+                            bot.sendChat(bot.identifier + "leaf me alone, I has an error");
+                            bot.log("error", "MONGO", err);
+                        } else {
+                            person = person[0];
+                            bot.sendChat(bot.identifier + doc.name + " has been played " + doc.plays + " times before. last played by " + person.username);
+                        }
+                    });
                 } else {
                     bot.sendChat(bot.identifier + "way to go sailor, that song hasn't been played before");
                 }
