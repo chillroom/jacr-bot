@@ -29,7 +29,7 @@ module.exports = function(bot, data) {
             }, {
                 $match: {
                     score: {
-                        $gt: 0.7
+                        $gt: 0.8
                     }
                 }
             }, {
