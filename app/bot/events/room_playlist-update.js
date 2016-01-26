@@ -3,7 +3,7 @@ module.exports = function(bot) {
         bot.sendMotd();
         if (bot.started) {
             if (typeof(data.media) !== "undefined") {
-                var user = data.media.user.id;
+                var user = data.user.id;
                 bot.db.models.song.findOne({
                     fkid: data.media.fkid
                 }, function(err, song) {
