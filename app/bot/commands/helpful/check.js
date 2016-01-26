@@ -39,9 +39,9 @@ module.exports = function(bot, data) {
             } else {
                 if (doc[0]) {
                     doc = doc[0];
-                    db.models.history.find({
+                    bot.db.models.history.find({
                         _song: doc._id
-                    }).sort(time: -1).limit(1).populate("_person").exec(function(err, person) {
+                    }).sort({time: -1}).limit(1).populate("_person").exec(function(err, person) {
                         if (err) {
                             bot.sendChat(bot.identifier + "leaf me alone, I has an error");
                             bot.log("error", "MONGO", err);
