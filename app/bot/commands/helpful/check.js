@@ -51,7 +51,7 @@ module.exports = function(bot, data) {
                         } else {
                             person = person[0]._person;
                             var date = new Date(doc.lastPlay);
-                            bot.sendChat(bot.identifier + doc.name + " has been played " + doc.plays + " times before. last played by " + person.username + " " + moment(date).fromNow());
+                            bot.sendChat(bot.identifier + doc.name + " has been played " + doc.plays + " times before. Last played by " + person.username + " " + moment(date).fromNow() + ".");
                         }
                     });
                 } else {
