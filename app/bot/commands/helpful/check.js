@@ -1,3 +1,5 @@
+var moment = require("moment");
+
 module.exports = function(bot, data) {
     var text = data.params.join(" ");
     text = text.replace(/-+/g, "").replace(/\s+/g, " ").trim();
@@ -21,7 +23,8 @@ module.exports = function(bot, data) {
                         $meta: "textScore"
                     },
                     name: 1,
-                    plays: 1
+                    plays: 1,
+                    lastPlay: 1
                 }
             }, {
                 $match: {
@@ -46,8 +49,10 @@ module.exports = function(bot, data) {
                             bot.sendChat(bot.identifier + "leaf me alone, I has an error");
                             bot.log("error", "MONGO", err);
                         } else {
-                            person = person[0];
-                            bot.sendChat(bot.identifier + doc.name + " has been played " + doc.plays + " times before. last played by " + person.username);
+                            person = person[0]._person;
+                            console.log(person);
+                            date = new Date(doc.lastPlay);
+                            bot.sendChat(bot.identifier + doc.name + " has been played " + doc.plays + " times before. last played by " + person.username + " " + moment(date).fromNow());
                         }
                     });
                 } else {
