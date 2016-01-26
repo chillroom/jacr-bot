@@ -16,14 +16,14 @@ module.exports = function(bot, data) {
                 }
                 var person = bot.getUserByName(username);
                 bot.moderateMoveDJ(person.id, pos);
-                bot.sendChat(bot.identifer + username + " moved to position: " + pos);
+                bot.sendChat(bot.identifier + username + " moved to position: " + pos);
             } else {
                 if (username.substr(0, 1) === "@") {
                     //remove the @
                     username = username.substr(1);
                 }
                 bot.moderateMoveDJ(person.id, pos);
-                bot.sendChat(bot.identifer + username + " moved to position: " + pos);
+                bot.sendChat(bot.identifier + username + " moved to position: " + pos);
             }
         }
     }
