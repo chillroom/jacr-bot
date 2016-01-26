@@ -28,12 +28,21 @@ module.exports = function(bot, data) {
                             }
                         });
                         bot.sendChat(bot.identifier + "Song skipped for being op, check http://just-a-chill-room.net/op-forbidden-list/ next time please");
+                        setTimeout(function () {
+                            bot.moderateMoveDJ(media.user.id, 2);
+                        }, 2000);
                         break;
                     case "history":
                         bot.sendChat(bot.identifier + "Song was recently played, history can be viewed by clicking queue then room history.");
+                        setTimeout(function () {
+                            bot.moderateMoveDJ(media.user.id, 2);
+                        }, 2000);
                         break;
                     case "hist":
                         bot.sendChat(bot.identifier + "Song was recently played, history can be viewed by clicking queue then room history.");
+                        setTimeout(function () {
+                            bot.moderateMoveDJ(media.user.id, 2);
+                        }, 2000);
                         break;
                     case "nsfw":
                         bot.db.models.song.findOne({
@@ -81,7 +90,22 @@ module.exports = function(bot, data) {
                         bot.sendChat(bot.identifier + "This song is on the forbidden list: http://just-a-chill-room.net/op-forbidden-list/ ");
                         break;
                     case "na":
+                        bot.db.models.song.findOne({
+                            fkid: media.fkid
+                        }, function(err, doc) {
+                            if (err) {
+                                bot.log("error", "BOT", err);
+                            } else {
+                                if (doc) {
+                                    doc.unavailable = true;
+                                    doc.save();
+                                }
+                            }
+                        });
                         bot.sendChat(bot.identifier + "This song is not available to all users");
+                        setTimeout(function () {
+                            bot.moderateMoveDJ(media.user.id, 2);
+                        }, 2000);
                         break;
                     case "unv":
                         bot.db.models.song.findOne({
@@ -97,6 +121,9 @@ module.exports = function(bot, data) {
                             }
                         });
                         bot.sendChat(bot.identifier + "This song is not available to all users");
+                        setTimeout(function () {
+                            bot.moderateMoveDJ(media.user.id, 2);
+                        }, 2000);
                         break;
                     case "unvailable":
                         bot.db.models.song.findOne({
@@ -112,6 +139,9 @@ module.exports = function(bot, data) {
                             }
                         });
                         bot.sendChat(bot.identifier + "This song is not available to all users");
+                        setTimeout(function () {
+                            bot.moderateMoveDJ(media.user.id, 2);
+                        }, 2000);
                         break;
                     default:
                         bot.sendChat(bot.identifier + "Parameter not recognised, but you can suggest it here: https://bitbucket.org/dubbot/dubbot/issues?status=new&status=open");

@@ -3,6 +3,7 @@ module.exports = function(bot) {
         bot.sendMotd();
         if (bot.started) {
             if (typeof(data.media) !== "undefined") {
+                var user = data.media.user.id;
                 bot.db.models.song.findOne({
                     fkid: data.media.fkid
                 }, function(err, song) {
@@ -22,29 +23,27 @@ module.exports = function(bot) {
                             song = new bot.db.models.song(doc);
                         }
                         if (song.op) {
-                            bot.moderateSkip(function() {
+                            setTimeout(function() {
+                                skip("Song has been recently flagged as forbidden. You can view the op/forbidden list here: http://just-a-chill-room.net/op-forbidden-list/");
                                 setTimeout(function() {
-                                    skip("Song has been recently flagged as forbidden. You can view the op/forbidden list here: http://just-a-chill-room.net/op-forbidden-list/");
-                                }, 3000);
-                            });
+                                    bot.moderateMoveDJ(user, 2);
+                                },2000);
+                            }, 3000);
                         } else if (song.forbidden) {
-                            bot.moderateSkip(function() {
-                                setTimeout(function() {
-                                    skip("Song has been recently flagged as forbidden. You can view the op/forbidden list here: http://just-a-chill-room.net/op-forbidden-list/");
-                                }, 3000);
-                            });
+                            setTimeout(function() {
+                                skip("Song has been recently flagged as forbidden. You can view the op/forbidden list here: http://just-a-chill-room.net/op-forbidden-list/");
+                            }, 3000);
                         } else if (song.nsfw) {
-                            bot.moderateSkip(function() {
-                                setTimeout(function() {
-                                    skip("Song has been recently flagged as NSFW");
-                                }, 3000);
-                            });
+                            setTimeout(function() {
+                                skip("Song has been recently flagged as NSFW");
+                            }, 3000);
                         } else if (song.unavailable) {
-                            bot.moderateSkip(function() {
+                            setTimeout(function() {
+                                skip("Song has been recently flagged as unavailable for all users. Please pick another song");
                                 setTimeout(function() {
-                                    skip("Song has been recently flagged as unavailable for all users. Please pick another song");
-                                }, 3000);
-                            });
+                                    bot.moderateMoveDJ(user, 2);
+                                },2000);
+                            }, 3000);
                         } else if (!song.theme) {
                             setTimeout(function() {
                                 skip("Song has been recently flagged as not on theme. You can view the theme here: http://just-a-chill-room.net/rules/#theme");
