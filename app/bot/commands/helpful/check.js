@@ -50,8 +50,7 @@ module.exports = function(bot, data) {
                             bot.log("error", "MONGO", err);
                         } else {
                             person = person[0]._person;
-                            console.log(person);
-                            date = new Date(doc.lastPlay);
+                            var date = new Date(doc.lastPlay);
                             bot.sendChat(bot.identifier + doc.name + " has been played " + doc.plays + " times before. last played by " + person.username + " " + moment(date).fromNow());
                         }
                     });
