@@ -24,7 +24,7 @@ module.exports = function(bot) {
                             };
                             song = new bot.db.models.song(doc);
                         }
-                        bot.db.songs.aggregate([{
+                        bot.db.song.aggregate([{
                             $match: {
                                 plays: {
                                     $gt: 4
