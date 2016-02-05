@@ -14,9 +14,9 @@ module.exports.startRaffle = function startRaffle(bot) {
     }
     vm.raffle = setTimeout(function() {
         var numberEntered = vm.usersInRaffle.length + (vm.lockedNumberOne ? 1 : 0);
-        bot.sendChat(bot.identifier + "The raffle expires in 10 seconds, " + numberEntered + " user" + (numberEntered == 1 ? " is" : "s are") + " participating! Hurry @djs and \"!join\"");
+        bot.sendChat(bot.identifier + "The raffle expires in 20 seconds, " + numberEntered + " user" + (numberEntered == 1 ? " is" : "s are") + " participating! Hurry @djs and \"!join\"");
         setTimeout(function() {
-            //start another raffle in 15-45 min
+            //start another raffle in 45 min - 1 hour
             setTimeout(function() {
                 vm.startRaffle(bot);
             }, (Math.floor(Math.random() * (1000*60*60)) + (1000*60*45)));
@@ -38,7 +38,7 @@ module.exports.startRaffle = function startRaffle(bot) {
             }
             var randomWinner = vm.usersInRaffle[Math.floor(Math.random() * (vm.usersInRaffle.length - min)) + min];
             if (bot.getQueuePosition(randomWinner.id) > 0) {
-                bot.moderateMoveDJ(randomWinner.id, !vm.lockedNumberOne ? 0 : 1, function(response){});
+                bot.moderateMoveDJ(randomWinner.id, !vm.lockedNumberOne ? 0 : 2);
             }
             if (numberEntered == 1) {
                 bot.sendChat(bot.identifier + "The raffle has ended! 1 user participated and our lucky winner is: @" + randomWinner.username + "!");
@@ -49,6 +49,6 @@ module.exports.startRaffle = function startRaffle(bot) {
             vm.usersInRaffle = [];
             vm.raffleStarted = false;
             vm.lockedNumberOne = false;
-        }, 10000);
-    }, 110000);
+        }, 20000);
+    }, 100000);
 };
