@@ -43,7 +43,10 @@ module.exports = function(bot) {
                             } else {
                                 var date = new Date() - (1000 * 60 * 60 * 24 * 14);
                                 var compare = new Date(date);
-                                if (song.plays > doc.avgPlays && moment(new Date(song.lastPlay)).isAfter(compare)) {
+                                var lastPlay = new Date(song.lastPlay);
+                                bot.log("info", "MONGO", lastPlay);
+                                bot.log("info", "MONGO", JSON.stringify(doc));
+                                if (song.plays > doc[0].avgPlays && moment(lastPlay).isAfter(compare)) {
                                     skip("Because I'm super awesome. I have deduced that this song has been overplayed recently. Please pick another song. You can check when your song has been last played with !check [artist - song name]");
                                     setTimeout(function() {
                                         bot.moderateMoveDJ(user, 2);

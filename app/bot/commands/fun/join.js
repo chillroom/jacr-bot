@@ -8,15 +8,15 @@ module.exports = function(bot, data) {
         return data.user.id.indexOf(v.id) >= 0;
     }))
     {
-        return bot.sendChat((bot.identifier + "@" + data.user.username + " you've already entered the raffle!");
+        return bot.sendChat(bot.identifier + "@" + data.user.username + " you've already entered the raffle!");
     }
     if (!bot.getQueue().some(function(v) { return data.user.id.indexOf(v.uid) >= 0; })) {
-        return bot.sendChat((bot.identifier + "@" + data.user.username + " you must be in the queue to enter the raffle!");
+        return bot.sendChat(bot.identifier + "@" + data.user.username + " you must be in the queue to enter the raffle!");
     }
     var something = bot.moderateDeleteChat(data.id, function(response) {
         if(bot.getQueuePosition(data.user.id) == 0) {
             raffle.lockedNumberOne = data.user.username;
-            bot.sendChat((bot.identifier + "@" + data.user.username + " locked in their position at #1!");
+            bot.sendChat(bot.identifier + "@" + data.user.username + " locked in their position at #1!");
         }
         else {
             raffle.usersInRaffle.push({"id": data.user.id, "username": data.user.username});
