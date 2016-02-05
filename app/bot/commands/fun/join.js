@@ -1,6 +1,6 @@
 var raffle = require(process.cwd() + "/app/bot/utils/raffle");
 
-module.exports = function(bot, db, data) {
+module.exports = function(bot, data) {
     if (!raffle.raffleStarted) {
         return bot.sendChat("There isn't a raffle at this time!");
     }
