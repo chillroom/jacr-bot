@@ -1,4 +1,5 @@
 module.exports = function(bot, data) {
+    var DJ = bot.getDJ();
     var user = data.user.username;
     var rank = data.user.role;
     if (bot.devs.indexOf(user) > -1 || bot.vips.indexOf(rank) > -1) {
@@ -29,19 +30,19 @@ module.exports = function(bot, data) {
                         });
                         bot.sendChat(bot.identifier + "Song skipped for being op, check http://just-a-chill-room.net/op-forbidden-list/ next time please");
                         setTimeout(function () {
-                            bot.moderateMoveDJ(media.user.id, 2);
+                            bot.moderateMoveDJ(DJ.id, 2);
                         }, 2000);
                         break;
                     case "history":
                         bot.sendChat(bot.identifier + "Song was recently played, history can be viewed by clicking queue then room history.");
                         setTimeout(function () {
-                            bot.moderateMoveDJ(media.user.id, 2);
+                            bot.moderateMoveDJ(DJ.id, 2);
                         }, 2000);
                         break;
                     case "hist":
                         bot.sendChat(bot.identifier + "Song was recently played, history can be viewed by clicking queue then room history.");
                         setTimeout(function () {
-                            bot.moderateMoveDJ(media.user.id, 2);
+                            bot.moderateMoveDJ(DJ.id, 2);
                         }, 2000);
                         break;
                     case "nsfw":
@@ -104,7 +105,7 @@ module.exports = function(bot, data) {
                         });
                         bot.sendChat(bot.identifier + "This song is not available to all users");
                         setTimeout(function () {
-                            bot.moderateMoveDJ(media.user.id, 2);
+                            bot.moderateMoveDJ(DJ.id, 2);
                         }, 2000);
                         break;
                     case "unv":
@@ -122,7 +123,7 @@ module.exports = function(bot, data) {
                         });
                         bot.sendChat(bot.identifier + "This song is not available to all users");
                         setTimeout(function () {
-                            bot.moderateMoveDJ(media.user.id, 2);
+                            bot.moderateMoveDJ(DJ.id, 2);
                         }, 2000);
                         break;
                     case "unvailable":
@@ -140,14 +141,53 @@ module.exports = function(bot, data) {
                         });
                         bot.sendChat(bot.identifier + "This song is not available to all users");
                         setTimeout(function () {
-                            bot.moderateMoveDJ(media.user.id, 2);
+                            bot.moderateMoveDJ(DJ.id, 2);
                         }, 2000);
+                        break;
+                    case "troll":
+                        if (bot.ranks.indexOf(DJ.role) === -1) {
+                            bot.db.models.person.findOne({
+                                username: user
+                            }, function(err, banner) {
+                                if (err) {
+                                    bot.log("error", "BOT", err);
+                                } else {
+                                    banner.rank.banCount++;
+                                    banner.save(function() {
+                                        bot.db.models.person.findOne({
+                                            uid: DJ.id
+                                        }, function(err, ban) {
+                                            if (err) {
+                                                bot.log("error", "BOT", err);
+                                            } else {
+                                                if (!ban) {
+                                                    var doc = {
+                                                        username: DJ.username,
+                                                        uid: DJ.id,
+                                                        "ban.count": 0
+                                                    };
+                                                    ban = new bot.db.models.person(doc);
+                                                }
+                                                ban.ban.lastBan = new Date();
+                                                ban.ban.count++;
+                                                ban.ban.by = banner.username;
+                                                ban.save(function() {
+                                                    bot.db.models.ban.create({
+                                                        _person: ban._id
+                                                    });
+                                                });
+                                                bot.moderateBanUser(DJ.id, 0);
+                                            }
+                                        });
+                                    });
+                                }
+                            });
+                        }
                         break;
                     default:
                         bot.sendChat(bot.identifier + "Parameter not recognised, but you can suggest it here: https://bitbucket.org/dubbot/dubbot/issues?status=new&status=open");
                     }
                 }
-
             } else {
                 if (!bot.protection) {
                     bot.protection = true;

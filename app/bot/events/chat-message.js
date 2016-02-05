@@ -14,7 +14,6 @@ module.exports = function(bot) {
                     if (file.indexOf(".js") > -1) {
                         commands[file.split(".")[0]] = require(_path);
                     }
-
                 }
             });
         });
