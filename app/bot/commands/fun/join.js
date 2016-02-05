@@ -1,4 +1,4 @@
-var raffle = require(process.cwd()+"/bot/utils/raffle");
+var raffle = require(process.cwd() + "/app/bot/utils/raffle");
 
 module.exports = function(bot, db, data) {
     if (!raffle.raffleStarted) {
