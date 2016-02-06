@@ -9,7 +9,7 @@ server.connection({
     host: config.ipaddress,
     port: config.port,
     routes: {
-        cors: true,
+        cors: true
     }
 });
 
