@@ -7,7 +7,10 @@ const server = new Hapi.Server();
 
 server.connection({
     host: config.ipaddress,
-    port: config.port
+    port: config.port,
+    routes: {
+        cors: true,
+    }
 });
 
 server.register([
