@@ -10,12 +10,24 @@ server.connection({
     port: config.port
 });
 
-server.register([{
-    register: require("hapi-mongodb"),
-    options: {
-        url: config.APIMongoURL
+server.register([
+    {
+        register: require(process.cwd() + "/app/server/src/plugins/logger"),
+        options: {
+            timeformat: "YYYY-MM-DD HH:mm:ss:SSS",
+            output: {
+                timestampOpts: {
+                    utc: true
+                }
+            }
+        }
+    }, {
+        register: require("hapi-mongodb"),
+        options: {
+            url: config.APIMongoURL
+        }
     }
-}], (err) => {
+], (err) => {
     if (err) {
         logger("info", "API", err);
         throw err;
