@@ -30,20 +30,20 @@ module.exports = function(bot, data) {
                         });
                         bot.sendChat(bot.identifier + "Song skipped for being op, check http://just-a-chill-room.net/op-forbidden-list/ next time please");
                         setTimeout(function () {
-                            bot.moderateMoveDJ(DJ.id, 2);
-                        }, 2000);
+                            bot.moderateMoveDJ(DJ.id, 1);
+                        }, 5000);
                         break;
                     case "history":
                         bot.sendChat(bot.identifier + "Song was recently played, history can be viewed by clicking queue then room history.");
                         setTimeout(function () {
-                            bot.moderateMoveDJ(DJ.id, 2);
-                        }, 2000);
+                            bot.moderateMoveDJ(DJ.id, 1);
+                        }, 5000);
                         break;
                     case "hist":
                         bot.sendChat(bot.identifier + "Song was recently played, history can be viewed by clicking queue then room history.");
                         setTimeout(function () {
-                            bot.moderateMoveDJ(DJ.id, 2);
-                        }, 2000);
+                            bot.moderateMoveDJ(DJ.id, 1);
+                        }, 5000);
                         break;
                     case "nsfw":
                         bot.db.models.song.findOne({
@@ -105,8 +105,8 @@ module.exports = function(bot, data) {
                         });
                         bot.sendChat(bot.identifier + "This song is not available to all users");
                         setTimeout(function () {
-                            bot.moderateMoveDJ(DJ.id, 2);
-                        }, 2000);
+                            bot.moderateMoveDJ(DJ.id, 1);
+                        }, 5000);
                         break;
                     case "unv":
                         bot.db.models.song.findOne({
@@ -123,8 +123,8 @@ module.exports = function(bot, data) {
                         });
                         bot.sendChat(bot.identifier + "This song is not available to all users");
                         setTimeout(function () {
-                            bot.moderateMoveDJ(DJ.id, 2);
-                        }, 2000);
+                            bot.moderateMoveDJ(DJ.id, 1);
+                        }, 5000);
                         break;
                     case "unvailable":
                         bot.db.models.song.findOne({
@@ -141,8 +141,8 @@ module.exports = function(bot, data) {
                         });
                         bot.sendChat(bot.identifier + "This song is not available to all users");
                         setTimeout(function () {
-                            bot.moderateMoveDJ(DJ.id, 2);
-                        }, 2000);
+                            bot.moderateMoveDJ(DJ.id, 1);
+                        }, 5000);
                         break;
                     case "troll":
                         if (bot.ranks.indexOf(DJ.role) === -1) {

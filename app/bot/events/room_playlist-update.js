@@ -49,8 +49,8 @@ module.exports = function(bot) {
                                 if (song.plays > doc[0].avgPlays && moment(lastPlay).isAfter(compare)) {
                                     skip("Because I'm super awesome. I have deduced that this song has been overplayed recently. Please pick another song. You can check when your song has been last played with !check [artist - song name]");
                                     setTimeout(function() {
-                                        bot.moderateMoveDJ(user, 2);
-                                    }, 2000);
+                                        bot.moderateMoveDJ(user, 1);
+                                    }, 5000);
                                 } else {
                                     if (song.forbidden) {
                                         setTimeout(function() {
@@ -64,8 +64,8 @@ module.exports = function(bot) {
                                         setTimeout(function() {
                                             skip("Song has been recently flagged as unavailable for all users. Please pick another song");
                                             setTimeout(function() {
-                                                bot.moderateMoveDJ(user, 2);
-                                            }, 2000);
+                                                bot.moderateMoveDJ(user, 1);
+                                            }, 5000);
                                         }, 3000);
                                     } else if (!song.theme) {
                                         setTimeout(function() {

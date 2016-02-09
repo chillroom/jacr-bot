@@ -13,17 +13,25 @@ module.exports = function(bot, data) {
                 }
                 if (!isNaN(parseInt(position))) {
                     pos = parseInt(position);
+                    if (pos <= 0) {
+                        pos = 0;
+                    } else if (pos >= bot.getQueue().length) {
+                        pos = bot.getQueue().length - 1;
+                    } else {
+                        pos = pos -1;
+                    }
                 }
                 var person = bot.getUserByName(username);
                 bot.moderateMoveDJ(person.id, pos);
-                bot.sendChat(bot.identifier + username + " moved to position: " + pos);
+                var moved = pos + 1;
+                bot.sendChat(bot.identifier + username + " moved to position: " + moved);
             } else {
                 if (username.substr(0, 1) === "@") {
                     //remove the @
                     username = username.substr(1);
                 }
                 bot.moderateMoveDJ(person.id, pos);
-                bot.sendChat(bot.identifier + username + " moved to position: " + pos);
+                bot.sendChat(bot.identifier + username + " moved to position: " + moved);
             }
         }
     }

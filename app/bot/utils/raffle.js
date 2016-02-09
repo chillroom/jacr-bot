@@ -7,19 +7,22 @@ module.exports.usersInRaffle = [];
 var vm = this;
 
 module.exports.startRaffle = function startRaffle(bot) {
+    if (vm.raffle) {
+        clearTimeout(vm.raffle); //don't have multiple raffle timeouts running at once
+    }
+    //start another raffle in 45 min - 1 hour
+    setTimeout(function() {
+        vm.startRaffle(bot);
+    }, (Math.floor(Math.random() * (1000*60*60)) + (1000*60*45)));
+    if (bot.getQueue().length <= 2 || vm.raffleStarted === true) {
+        return;
+    }
     vm.raffleStarted = true;
     bot.sendChat(bot.identifier + "@djs starting raffle! To be within a chance of winning the raffle and be moved to spot 2 type: \"!join\" within the next 2 minutes. Goodluck!");
-    if (vm.raffle) {
-        clearTimeout(vm.raffle); //don"t have multiple raffle timeouts running at once
-    }
     vm.raffle = setTimeout(function() {
         var numberEntered = vm.usersInRaffle.length + (vm.lockedNumberOne ? 1 : 0);
         bot.sendChat(bot.identifier + "The raffle expires in 20 seconds, " + numberEntered + " user" + (numberEntered == 1 ? " is" : "s are") + " participating! Hurry @djs and \"!join\"");
         setTimeout(function() {
-            //start another raffle in 45 min - 1 hour
-            setTimeout(function() {
-                vm.startRaffle(bot);
-            }, (Math.floor(Math.random() * (1000*60*60)) + (1000*60*45)));
             var min = 0;
             var numberEntered = vm.usersInRaffle.length + (vm.lockedNumberOne ? 1 : 0); //add the person that locked number one
             if (numberEntered == 0) {
