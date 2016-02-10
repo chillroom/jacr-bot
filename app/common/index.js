@@ -12,7 +12,7 @@ mongoose.connect(config.mongoURL, {
     }
 });
 
-db = mongoose.connection;
+var db = mongoose.connection;
 
 db.on("error", function(err) {
     log("error", "MONGO", "Connection error:" + err);

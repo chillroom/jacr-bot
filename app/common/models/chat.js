@@ -1,4 +1,4 @@
-module.exports = function(bot, mongoose) {
+module.exports = function(db, mongoose) {
     var chatSchema = new mongoose.Schema({
         username: {
             type: String,

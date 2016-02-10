@@ -1,4 +1,4 @@
-module.exports = function(bot, mongoose) {
+module.exports = function(db, mongoose) {
     var songSchema = new mongoose.Schema({
         name: {
             type: String,

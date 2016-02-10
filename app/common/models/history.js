@@ -1,4 +1,4 @@
-module.exports = function(bot, mongoose) {
+module.exports = function(db, mongoose) {
     var historySchema = new mongoose.Schema({
         _song: {
             type: mongoose.SchemaTypes.ObjectId,

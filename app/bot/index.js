@@ -1,5 +1,4 @@
 var DubAPI = require("dubapi"),
-    mongoose = require("mongoose"),
     log = require("jethro"),
     pkg = require(process.cwd() + "/package.json"),
     config = require(process.cwd() + "/config");
