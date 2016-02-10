@@ -44,5 +44,5 @@ module.exports = function(bot, mongoose) {
         name: 1,
         uid: 1
     });
-    bot.db.model("person", personSchema);
+    db.model("person", personSchema);
 };

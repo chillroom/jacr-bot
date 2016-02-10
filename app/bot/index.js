@@ -75,29 +75,8 @@ new DubAPI({
     });
     connect();
     //setup db
-    mongoose.connect(config.mongoURL, {
-        server: {
-            auto_reconnect: true
-        }
-    });
-    bot.db = mongoose.connection;
-    bot.db.on("error", function(err) {
-        bot.log("error", "BOT", "MongoDB connection error:" + err);
-    });
-    bot.db.on("connected", function() {
-        bot.log("info", "BOT", "MongoDB connected!");
-    });
-    bot.db.on("disconnected", function() {
-        bot.log("warning", "BOT", "MongoDB disconnected!");
-        mongoose.connect(config.mongoURL, {
-            server: {
-                auto_reconnect: true
-            }
-        });
-    });
-    bot.db.on("reconnected", function() {
-        bot.log("info", "BOT", "MongoDB reconnected!");
-    });
+    bot.db = require(process.cwd() + "/app/common/index.js");
+
     //setup > mod ranks
     bot.ranks = ["5615fa9ae596154a5c000000", "5615fd84e596150061000003", "52d1ce33c38a06510c000001"];
     //setup > vip ranks
@@ -112,7 +91,6 @@ new DubAPI({
     bot.started = false;
     //setup emojis
     bot.emojis = require("./emojis");
-    require("./models")(bot, mongoose);
     //setup function to send MOTD based off the number of songs played
     bot.sendMotd = function() {
         bot.db.models.settings.findOne({
@@ -156,4 +134,5 @@ new DubAPI({
         });
     };
     require("./events")(bot);
+    module.exports = bot;
 });

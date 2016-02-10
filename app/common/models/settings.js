@@ -32,5 +32,5 @@ module.exports = function(bot, mongoose) {
             default: 0
         }
     });
-    bot.db.model("settings", settingsSchema);
+    db.model("settings", settingsSchema);
 };

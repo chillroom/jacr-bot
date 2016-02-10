@@ -14,5 +14,5 @@ module.exports = function(bot, mongoose) {
             default: Date.now
         }
     });
-    bot.db.model("emojiTrackDays", emojiDaysTrackSchema);
+    db.model("emojiTrackDays", emojiDaysTrackSchema);
 };

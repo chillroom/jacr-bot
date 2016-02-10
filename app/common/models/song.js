@@ -41,5 +41,5 @@ module.exports = function(bot, mongoose) {
         name: 1,
         fkid: 1
     });
-    bot.db.model("song", songSchema);
+    db.model("song", songSchema);
 };

@@ -18,5 +18,5 @@ module.exports = function(bot, mongoose) {
     chatSchema.index({
         username: 1
     });
-    bot.db.model("chat", chatSchema);
+    db.model("chat", chatSchema);
 };

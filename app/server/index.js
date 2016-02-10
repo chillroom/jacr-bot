@@ -15,6 +15,9 @@ server.connection({
 
 server.register([
     {
+        register: require(process.cwd() + "/app/server/src/plugins/database")
+    },
+    {
         register: require(process.cwd() + "/app/server/src/plugins/logger"),
         options: {
             timeformat: "YYYY-MM-DD HH:mm:ss:SSS",

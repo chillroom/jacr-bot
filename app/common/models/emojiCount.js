@@ -13,5 +13,5 @@ module.exports = function(bot, mongoose) {
     emojiCountSchema.index({
         emoji: 1
     });
-    bot.db.model("emojiCount", emojiCountSchema);
+    db.model("emojiCount", emojiCountSchema);
 };

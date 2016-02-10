@@ -1,5 +1,10 @@
 module.exports = function(bot, mongoose) {
-    var banSchema = new mongoose.Schema({
+    var historySchema = new mongoose.Schema({
+        _song: {
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: "song",
+            required: true
+        },
         _person: {
             type: mongoose.SchemaTypes.ObjectId,
             ref: "person",
@@ -10,5 +15,5 @@ module.exports = function(bot, mongoose) {
             default: Date.now
         }
     });
-    bot.db.model("ban", banSchema);
+    db.model("history", historySchema);
 };
