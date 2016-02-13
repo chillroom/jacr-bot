@@ -1,6 +1,6 @@
 {
   "name": "betabot",
-  "version": "1.16.3",
+  "version": "1.17.0",
   "description": "Just a chillroom dubtrack bot",
   "engines": {
     "node": ">= 4.2.3",
@@ -36,7 +36,7 @@
     "preversion": "gulp config && npm run lint",
     "version": "git add --all",
     "postversion": "git push",
-    "test": "npm install && gulp mine && node ./app/bot/index.js",
+    "test": "gulp mine && node ./app/bot/index.js",
     "start": "gulp mine && node app.js",
     "server": "npm install && gulp mine && node ./app/server/index.js",
     "lint": "node_modules/.bin/eslint app --fix",

@@ -14,11 +14,11 @@ module.exports.startRaffle = function startRaffle(bot) {
     setTimeout(function() {
         vm.startRaffle(bot);
     }, (Math.floor(Math.random() * (1000*60*60)) + (1000*60*45)));
-    if (bot.getQueue().length <= 2 || vm.raffleStarted === true) {
+    if (bot.getQueue().length <= 4 || vm.raffleStarted === true) {
         return;
     }
     vm.raffleStarted = true;
-    bot.sendChat(bot.identifier + "@djs starting raffle! To be within a chance of winning the raffle and be moved to spot 2 type: \"!join\" within the next 2 minutes. Goodluck!");
+    bot.sendChat(bot.identifier + "@djs Starting raffle! To be in with a chance of winning the raffle and move to spot 2, please type: \"!join\" within the next 2 minutes. Good Luck!");
     vm.raffle = setTimeout(function() {
         var numberEntered = vm.usersInRaffle.length + (vm.lockedNumberOne ? 1 : 0);
         bot.sendChat(bot.identifier + "The raffle expires in 20 seconds, " + numberEntered + " user" + (numberEntered == 1 ? " is" : "s are") + " participating! Hurry @djs and \"!join\"");
@@ -41,7 +41,7 @@ module.exports.startRaffle = function startRaffle(bot) {
             }
             var randomWinner = vm.usersInRaffle[Math.floor(Math.random() * (vm.usersInRaffle.length - min)) + min];
             if (bot.getQueuePosition(randomWinner.id) > 0) {
-                bot.moderateMoveDJ(randomWinner.id, !vm.lockedNumberOne ? 0 : 2);
+                bot.moderateMoveDJ(randomWinner.id, !vm.lockedNumberOne ? 0 : 1);
             }
             if (numberEntered == 1) {
                 bot.sendChat(bot.identifier + "The raffle has ended! 1 user participated and our lucky winner is: @" + randomWinner.username + "!");

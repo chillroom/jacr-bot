@@ -10,7 +10,7 @@ module.exports = function(bot) {
                     fkid: data.media.fkid
                 }, function(err, song) {
                     if (err) {
-                        bot.log("error", "BOT", err);
+                        bot.log("error", "MONGO", err);
                     } else {
                         var skip = function(msg) {
                             bot.moderateSkip(function() {
@@ -42,12 +42,10 @@ module.exports = function(bot) {
                                 bot.log("error", "MONGO", err);
                             } else {
                                 var date = new Date() - (1000 * 60 * 60 * 24 * 14);
-                                var compare = new Date(date);
                                 var lastPlay = new Date(song.lastPlay);
-                                bot.log("info", "MONGO", lastPlay);
-                                bot.log("info", "MONGO", JSON.stringify(doc));
+                                var compare = new Date(date);
                                 if (song.plays > doc[0].avgPlays && moment(lastPlay).isAfter(compare)) {
-                                    skip("Because I'm super awesome. I have deduced that this song has been overplayed recently. Please pick another song. You can check when your song has been last played with !check [artist - song name]");
+                                    skip("Because I'm super awesome, I have deduced that this song has been overplayed recently. Please pick another song. You can check when it was last played with !check [artist - song name]");
                                     setTimeout(function() {
                                         bot.moderateMoveDJ(user, 1);
                                     }, 5000);
@@ -81,7 +79,7 @@ module.exports = function(bot) {
                                             uid: data.user.id
                                         }, function(err, person) {
                                             if (err) {
-                                                bot.log("error", "BOT", err);
+                                                bot.log("error", "MONGO", err);
                                             } else {
                                                 if (!person) {
                                                     var doc = {
@@ -114,7 +112,7 @@ module.exports = function(bot) {
                                                         _person: person._id
                                                     }, function(err) {
                                                         if (err) {
-                                                            bot.log("error", "BOT", err);
+                                                            bot.log("error", "MONGO", err);
                                                         }
                                                     });
                                                 });
@@ -140,7 +138,7 @@ module.exports = function(bot) {
                     id: "s3tt1ng5"
                 }, function(err, doc) {
                     if (err) {
-                        bot.log("error", "BOT", err);
+                        bot.log("error", "MONGO", err);
                     }
                     if (!doc.emoji.paused) {
                         var emojis = [];
@@ -149,7 +147,7 @@ module.exports = function(bot) {
                                 emoji: emoji
                             }, function(err, doc) {
                                 if (err) {
-                                    bot.log("error", "BOT", err);
+                                    bot.log("error", "MONGO", err);
                                 }
                                 if (doc) {
                                     var count = {
@@ -167,7 +165,7 @@ module.exports = function(bot) {
                                         emojis: emojis
                                     }, function(err) {
                                         if (err) {
-                                            bot.log("error", "BOT", err);
+                                            bot.log("error", "MONGO", err);
                                         }
 
                                     });
@@ -183,7 +181,7 @@ module.exports = function(bot) {
                     time: -1
                 }).skip(100).remove().exec(function(err) {
                     if (err) {
-                        bot.log("error", "BOT", err);
+                        bot.log("error", "MONGO", err);
                     }
                 });
             } else {
@@ -191,7 +189,7 @@ module.exports = function(bot) {
                     id: "s3tt1ng5"
                 }, function(err, doc) {
                     if (err) {
-                        bot.log("error", "BOT", err);
+                        bot.log("error", "MONGO", err);
                     }
                     if (doc.emoji.paused) {
                         doc.emoji.paused = false;

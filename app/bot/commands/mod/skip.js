@@ -15,6 +15,12 @@ module.exports = function(bot, data) {
                     var media = bot.getMedia();
                     bot.moderateSkip(reset);
                     switch (data.params[0]) {
+                    case "unpop":
+                        bot.sendChat(bot.identifier + "Awww shucks, your song has been voted by the community as unpopular. Please check theme for guidance on what to play. http://just-a-chill-room.net/rules/#theme");
+                        break;
+                    case "shit":
+                        bot.sendChat(bot.identifier + "Awww shucks, your song has been voted by the community as unpopular. Please check theme for guidance on what to play. http://just-a-chill-room.net/rules/#theme");
+                        break;
                     case "op":
                         bot.db.models.song.findOne({
                             fkid: media.fkid
@@ -88,7 +94,7 @@ module.exports = function(bot, data) {
                                 }
                             }
                         });
-                        bot.sendChat(bot.identifier + "This song is on the forbidden list: http://just-a-chill-room.net/op-forbidden-list/ ");
+                        bot.sendChat(bot.identifier + "This song is on the forbidden list: http://just-a-chill-room.net/op-forbidden-list/");
                         break;
                     case "na":
                         bot.db.models.song.findOne({

@@ -4,7 +4,7 @@ module.exports = function(bot, data) {
     if (bot.devs.indexOf(user) > -1 || bot.ranks.indexOf(rank) > -1) {
         if (typeof(data.params) !== "undefined" && data.params.length > 0) {
             var username = data.params[0],
-                pos = 3;
+                pos = 1;
             if (data.params.length > 1) {
                 var position = data.params[1];
                 if (username.substr(0, 1) === "@") {
