@@ -82,7 +82,6 @@ module.exports = function(bot) {
                         // add the command used to the data sent from the chat to be used later
                         data.trigger = token.substr(1).toLowerCase();
                         parsedCommands.push(data.trigger);
-
                         //if very first token, it's a command and we need to grab the params (if any) and add to the data sent from chat
                         if (tokens.indexOf(token) === 0) {
                             //the params are an array of the remaining tokens
@@ -90,6 +89,38 @@ module.exports = function(bot) {
                             //exec command
                             if (typeof(commands[data.trigger]) !== "undefined") {
                                 commands[data.trigger](bot, data);
+                            } else {
+                                bot.db.models.commands.findOne({
+                                    name: data.trigger
+                                }).populate("aliasOf").exec(function (err, doc) {
+                                    if (err) {
+                                        bot.log("error", "MONGO", err);
+                                    } else {
+                                        if (doc) {
+                                            if (doc.aliasOf) {
+                                                if (doc.cmdType === "img") {
+                                                    var img = doc.aliasOf.response[Math.floor(Math.random() * doc.aliasOf.response.length)];
+                                                    bot.sendChat(img);
+                                                } else if (doc.aliasOf.cmdType === "txt") {
+                                                    var txt = doc.aliasOf.response[Math.floor(Math.random() * doc.aliasOf.response.length)];
+                                                    bot.sendChat(bot.identifier + txt);
+                                                } else if (doc.aliasOf.cmdType === "info") {
+                                                    bot.sendChat(bot.identifier + doc.aliasOf.response);
+                                                }
+                                            } else {
+                                                if (doc.cmdType === "img") {
+                                                    var image = doc.response[Math.floor(Math.random() * doc.response.length)];
+                                                    bot.sendChat(image);
+                                                } else if (doc.cmdType === "txt") {
+                                                    var text = doc.response[Math.floor(Math.random() * doc.response.length)];
+                                                    bot.sendChat(bot.identifier + text);
+                                                } else if (doc.cmdType === "info") {
+                                                    bot.sendChat(bot.identifier + doc.response);
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
                             }
                         }
                     }
