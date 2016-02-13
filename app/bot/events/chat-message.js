@@ -8,28 +8,26 @@ module.exports = function(bot) {
         fs.readdirSync(dir).forEach(function(file) {
             var _path = path.resolve(dir, file);
             fs.stat(_path, function(err, stat) {
-                    if (stat && stat.isDirectory()) {
-                        walk(_path);
-                    } else {
-                        if (file.indexOf(".js") > -1) {
-                            // add extra commands set in file if they exist
-                            if(typeof(require(_path).extra) !== "undefined") {
-                                if(Array.isArray(require(_path).extra)) {
-                                    // add each command in array into overall commands
-                                    require(_path).extra.forEach(function(command) {
-                                        commands[command] = require(_path);
-                                    });
-                                }
-                                else {
-                                    throw new TypeError("Invalid extra commands export for file: " + _path);
-                                }
+                if (stat && stat.isDirectory()) {
+                    walk(_path);
+                } else {
+                    if (file.indexOf(".js") > -1) {
+                        // add extra commands set in file if they exist
+                        if(typeof(require(_path).extra) !== "undefined") {
+                            if(Array.isArray(require(_path).extra)) {
+                                // add each command in array into overall commands
+                                require(_path).extra.forEach(function(command) {
+                                    commands[command] = require(_path);
+                                });
                             }
-
-                            commands[file.split(".")[0]] = require(_path);
+                            else {
+                                throw new TypeError("Invalid extra commands export for file: " + _path);
+                            }
                         }
-
+                        commands[file.split(".")[0]] = require(_path);
                     }
-                });
+                }
+            });
         });
     };
     walk(cmd);
