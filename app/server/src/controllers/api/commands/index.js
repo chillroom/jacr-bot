@@ -29,7 +29,7 @@ module.exports = {
                 if (doc) {
                     reply({
                         statusCode: 400,
-                        message: "Already exists"
+                        message: "Command already exists"
                     }).code(400);
                 } else {
                     let resp;
@@ -79,7 +79,7 @@ module.exports = {
                         if (doc.aliasOf.alias.indexOf(req.payload.name) > -1) {
                             reply({
                                 statusCode: 400,
-                                message: "Alias already added"
+                                message: "Alias already exists"
                             }).code(400);
                         } else {
                             req.server.db.models.commands.findOne({
@@ -121,7 +121,7 @@ module.exports = {
                         if (doc.alias.indexOf(req.payload.name) > -1) {
                             reply({
                                 statusCode: 400,
-                                message: "Alias already added"
+                                message: "Alias already exists"
                             }).code(400);
                         } else {
                             doc.alias.push(req.payload.name);
