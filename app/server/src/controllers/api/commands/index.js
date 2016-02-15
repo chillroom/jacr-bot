@@ -163,5 +163,53 @@ module.exports = {
                 }
             }
         });
+    },
+    image: (req, reply) => {
+        req.server.db.models.commands.findOne({
+            name: req.payload.name
+        }).populate("aliasOf").exec((err, doc) => {
+            if (doc) {
+                if (doc.aliasOf) {
+                    req.server.db.models.commands.findOne({
+                        name: doc.aliasOf.name
+                    }, (err, cmd) => {
+                        cmd.response.push(req.payload.image);
+                        cmd.save((err) => {
+                            if (err) {
+                                reply({
+                                    statusCode: 500,
+                                    message: "Something went wrong"
+                                }).code(500);
+                            } else {
+                                reply({
+                                    statusCode: 200,
+                                    message: "Image added"
+                                });
+                            }
+                        });
+                    });
+                } else {
+                    doc.response.push(req.payload.image);
+                    doc.save((err) => {
+                        if (err) {
+                            reply({
+                                statusCode: 200,
+                                message: "Something went wrong"
+                            }).code(500);
+                        } else {
+                            reply({
+                                statusCode: 200,
+                                message: "Image added"
+                            });
+                        }
+                    });
+                }
+            } else {
+                reply({
+                    statusCode: 400,
+                    message: "Command does not exist"
+                }).code(400);
+            }
+        });
     }
 };

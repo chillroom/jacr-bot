@@ -48,7 +48,7 @@ module.exports = function(bot) {
                                     skip("Because I'm super awesome, I have deduced that this song has been overplayed recently. Please pick another song. You can check when it was last played with !check [artist - song name]");
                                     setTimeout(function() {
                                         bot.moderateMoveDJ(user, 1);
-                                    }, 5000);
+                                    }, 6000);
                                 } else {
                                     if (song.forbidden) {
                                         setTimeout(function() {
@@ -63,7 +63,7 @@ module.exports = function(bot) {
                                             skip("Song has been recently flagged as unavailable for all users. Please pick another song");
                                             setTimeout(function() {
                                                 bot.moderateMoveDJ(user, 1);
-                                            }, 5000);
+                                            }, 6000);
                                         }, 3000);
                                     } else if (!song.theme) {
                                         setTimeout(function() {
@@ -169,7 +169,7 @@ module.exports = function(bot) {
                                         }
 
                                     });
-                                }, 5000);
+                                }, 6000);
                             }
                         });
                         doc.emoji.paused = true;
@@ -197,6 +197,6 @@ module.exports = function(bot) {
                     }
                 });
             }
-        }, 5000);
+        }, 6000);
     });
 };
