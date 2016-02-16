@@ -17,6 +17,24 @@ module.exports = function(db, mongoose) {
                 default: false
             }
         },
+        raffle: {
+            enabled: {
+                type: Boolean,
+                default: false
+            },
+            started: {
+                type: {
+                    Boolean,
+                    default: false
+                }
+            },
+            interval: {
+                type: Number,
+                default: 12
+            },
+            users: [],
+            lockedNumberOne: String
+        },
         emoji: {
             paused: {
                 type: Boolean,
@@ -31,6 +49,9 @@ module.exports = function(db, mongoose) {
             type: Number,
             default: 0
         }
+    });
+    settingsSchema.index({
+        id: 1
     });
     db.model("settings", settingsSchema);
 };

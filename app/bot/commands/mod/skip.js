@@ -7,7 +7,7 @@ module.exports = function(bot, data) {
             var reset = function() {
                 setTimeout(function() {
                     bot.protection = false;
-                }, 2000);
+                }, 5000);
             };
             if (data.params.length > 0) {
                 if (!bot.protection) {

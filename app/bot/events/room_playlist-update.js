@@ -3,6 +3,7 @@ var moment = require("moment");
 module.exports = function(bot) {
     bot.on("room_playlist-update", function(data) {
         bot.sendMotd();
+        bot.raffle();
         if (bot.started) {
             if (typeof(data.media) !== "undefined") {
                 var user = data.user.id;
