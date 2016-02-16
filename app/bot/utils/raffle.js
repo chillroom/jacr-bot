@@ -24,7 +24,7 @@ module.exports = (bot) => {
                                         bot.sendChat(bot.identifier + "The raffle expires in 20 seconds, " + numberEntered + " user" + (numberEntered == 1 ? " is" : "s are") + " participating! Hurry @djs and \"!join\"");
                                         setTimeout(() => {
                                             var min = 0;
-                                            var numberEntered = doc.users.length + (doc.raffle.lockedNumberOne ? 1 : 0); //add the person that locked number one
+                                            var numberEntered = doc.raffle.users.length + (doc.raffle.lockedNumberOne ? 1 : 0); //add the person that locked number one
                                             if (numberEntered == 0) {
                                                 bot.sendChat(bot.identifier + "No one entered the raffle! Be sure to pay attention for the next one!");
                                                 doc.raffle.users = [];
