@@ -115,7 +115,6 @@ module.exports = {
                                     }
                                 });
                             });
-
                         }
                     } else {
                         if (doc.alias.indexOf(req.payload.name) > -1) {
