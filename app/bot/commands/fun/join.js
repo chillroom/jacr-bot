@@ -20,14 +20,19 @@ module.exports = function(bot, data) {
                 if(bot.getQueuePosition(data.user.id) == 0) {
                     doc.raffle.lockedNumberOne = data.user.username;
                     bot.sendChat(bot.identifier + "@" + data.user.username + " locked in their position at #1!");
+                    doc.save((err) => {
+                        if (err) {
+                            bot.log("error", "MONGO", err);
+                        }
+                    });
                 }
                 else {
                     doc.raffle.users.push({"id": data.user.id, "username": data.user.username});
-                }
-            });
-            doc.save((err) => {
-                if (err) {
-                    bot.log("error", "MONGO", err);
+                    doc.save((err) => {
+                        if (err) {
+                            bot.log("error", "MONGO", err);
+                        }
+                    });
                 }
             });
         }
