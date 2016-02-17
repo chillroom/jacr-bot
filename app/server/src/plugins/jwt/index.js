@@ -14,6 +14,10 @@ internals.verify = (decoded, req, callback) => {
             callback(null, false);
         } else {
             if (doc) {
+                doc.expire = Date.now() + config.jwt.ttl;
+                doc.save((err) => {
+                    req.server.logger("error", "MONGO", err);
+                });
                 callback(null, true);
             } else {
                 callback(null, false);
