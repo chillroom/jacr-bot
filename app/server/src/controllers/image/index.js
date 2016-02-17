@@ -22,7 +22,7 @@ module.exports = {
                     ext = "png";
                 }
             }
-            const images = req.server.models.db.images;
+            const images = req.server.db.models.images;
             images.findOne({
                 url: url
             }, (err, doc) => {
