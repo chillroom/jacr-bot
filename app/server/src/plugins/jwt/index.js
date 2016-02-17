@@ -6,20 +6,20 @@ const internals = {};
 
 internals.verify = (decoded, req, callback) => {
     const sessions = req.server.db;
-	        sessions.findOne({
-		        jti: decoded.jti
-	}, (err, doc) => {
-		        if (err) {
-    req.server.logger("error", "MONGO", err);
-			        callback(null, false);
-		} else {
-			        if (doc) {
-				        callback(null, true);
-			} else {
-				        callback(null, false);
-			}
-		}
-	});
+    sessions.findOne({
+        jti: decoded.jti
+    }, (err, doc) => {
+        if (err) {
+            req.server.logger("error", "MONGO", err);
+            callback(null, false);
+        } else {
+            if (doc) {
+                callback(null, true);
+            } else {
+                callback(null, false);
+            }
+        }
+    });
 };
 
 module.exports.register = (server, options, next) => {

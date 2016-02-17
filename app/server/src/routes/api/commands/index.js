@@ -15,9 +15,9 @@ module.exports = (server) => {
             config: {
                 auth: "jwt",
                 state: {
-					                                        parse: true,
-					                                        failAction: "error"
-				                                },
+                    parse: true,
+                    failAction: "error"
+                },
                 validate: {
                     payload: {
                         name: Joi.string().required(),
@@ -31,6 +31,11 @@ module.exports = (server) => {
             method: "POST",
             path: "/api/commands/alias",
             config: {
+                auth: "jwt",
+                state: {
+                    parse: true,
+                    failAction: "error"
+                },
                 validate: {
                     payload: {
                         name: Joi.string().required(),
