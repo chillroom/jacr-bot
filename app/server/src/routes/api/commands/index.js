@@ -13,6 +13,11 @@ module.exports = (server) => {
             method: "POST",
             path: "/api/commands/add",
             config: {
+                auth: "jwt",
+                state: {
+					                                        parse: true,
+					                                        failAction: "error"
+				                                },
                 validate: {
                     payload: {
                         name: Joi.string().required(),

@@ -1,26 +1,25 @@
-var mongoose = require("mongoose"),
-    log = require("jethro"),
-    config = require(process.cwd() + "/config");
+const mongoose = require("mongoose");
+const log = require("jethro");
+const config = require(process.cwd() + "/config");
 
 log.setUTC(true);
 log.setTimeformat("YYYY-MM-DD HH:mm:ss:SSS");
 
-//setup db
 mongoose.connect(config.mongoURL, {
     server: {
         auto_reconnect: true
     }
 });
 
-var db = mongoose.connection;
+const db = mongoose.connection;
 
-db.on("error", function(err) {
+db.on("error", (err) => {
     log("error", "MONGO", "Connection error:" + err);
 });
-db.on("connected", function() {
+db.on("connected", () => {
     log("info", "MONGO", "Connected!");
 });
-db.on("disconnected", function() {
+db.on("disconnected", () => {
     log("warning", "MONGO", "Disconnected!");
     mongoose.connect(config.mongoURL, {
         server: {
@@ -28,7 +27,7 @@ db.on("disconnected", function() {
         }
     });
 });
-db.on("reconnected", function() {
+db.on("reconnected", () => {
     log("info", "MONGO", "Reconnected!");
 });
 

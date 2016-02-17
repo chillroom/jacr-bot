@@ -2,7 +2,8 @@
 
 module.exports = {
     get: (req, reply) => {
-        req.server.db.models.commands.find((err, docs) => {
+        const commands = req.server.db.models.commands;
+        commands.find((err, docs) => {
             if (err) {
                 req.server.logger("error", "MONGO", JSON.stringify(err));
                 reply({
@@ -18,7 +19,10 @@ module.exports = {
         });
     },
     add: (req, reply) => {
-        req.server.db.models.commands.findOne({name: req.payload.name}, (err, doc) => {
+        const commands = req.server.db.models.commands;
+        commands.findOne({
+            name: req.payload.name
+        }, (err, doc) => {
             if (err) {
                 req.server.logger("error", "MONGO", JSON.stringify(err));
                 reply({
@@ -38,7 +42,11 @@ module.exports = {
                     } else {
                         resp = req.payload.response;
                     }
-                    req.server.db.models.commands.create({name: req.payload.name, response: resp, cmdType: req.payload.type}, (err) => {
+                    commands.create({
+                        name: req.payload.name,
+                        response: resp,
+                        cmdType: req.payload.type
+                    }, (err) => {
                         if (err) {
                             req.server.logger("error", "MONGO", JSON.stringify(err));
                             if (err.errors.cmdType) {
@@ -64,9 +72,12 @@ module.exports = {
         });
     },
     alias: (req, reply) => {
-        req.server.db.models.commands.findOne({
+        const commands = req.server.db.models.commands;
+        commands.findOne({
             name: req.payload.alias
-        }).populate("aliasOf").exec((err, doc) => {
+        })
+        .populate("aliasOf")
+        .exec((err, doc) => {
             if (err) {
                 req.server.logger("error", "MONGO", JSON.stringify(err));
                 reply({
@@ -82,7 +93,7 @@ module.exports = {
                                 message: "Alias already exists"
                             }).code(400);
                         } else {
-                            req.server.db.models.commands.findOne({
+                            commands.findOne({
                                 name: doc.aliasOf.name
                             }, (err, cmd) => {
                                 cmd.alias.push(req.payload.name);
@@ -94,7 +105,7 @@ module.exports = {
                                             message: "Something went wrong"
                                         }).code(500);
                                     } else {
-                                        req.server.db.models.commands.create({
+                                        commands.create({
                                             name: req.payload.name,
                                             aliasOf: command._id,
                                             cmdType: command.cmdType
@@ -132,7 +143,7 @@ module.exports = {
                                         message: "Something went wrong"
                                     }).code(500);
                                 } else {
-                                    req.server.db.models.commands.create({
+                                    commands.create({
                                         name: req.payload.name,
                                         aliasOf: command._id,
                                         cmdType: command.cmdType
@@ -164,12 +175,15 @@ module.exports = {
         });
     },
     image: (req, reply) => {
-        req.server.db.models.commands.findOne({
+        const commands = req.server.db.models.commands;
+        commands.findOne({
             name: req.payload.name
-        }).populate("aliasOf").exec((err, doc) => {
+        })
+        .populate("aliasOf")
+        .exec((err, doc) => {
             if (doc) {
                 if (doc.aliasOf) {
-                    req.server.db.models.commands.findOne({
+                    commands.findOne({
                         name: doc.aliasOf.name
                     }, (err, cmd) => {
                         cmd.response.push(req.payload.image);

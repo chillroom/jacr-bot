@@ -6,6 +6,9 @@ module.exports = (server) => {
     server.route({
         method: "GET",
         path: "/badge-social.svg",
+        config: {
+            auth: false
+        },
         handler: controller
     });
 };

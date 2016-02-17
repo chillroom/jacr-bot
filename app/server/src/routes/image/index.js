@@ -7,6 +7,7 @@ module.exports = (server) => {
         method: "GET",
         path: "/image",
         config: {
+            auth: false,
             cache: {
                 expiresIn: 2628000,
                 privacy: "public"
@@ -17,6 +18,7 @@ module.exports = (server) => {
         method: "GET",
         path: "/image/{id}",
         config: {
+            auth: false,
             cache: {
                 expiresIn: 2628000,
                 privacy: "public"

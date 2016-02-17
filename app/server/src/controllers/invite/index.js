@@ -6,12 +6,12 @@ const config = require(process.cwd() + "/config");
 module.exports = (req, reply) => {
     if (req.payload.email) {
         request.post({
-            url: "https://" + config.slackUrl + "/api/users.admin.invite",
+            url: "https://" + config.slack.URL + "/api/users.admin.invite",
             form: {
                 email: req.payload.email,
-                channels: config.slackChannels,
-                token: config.slackToken,
-                extra_message: config.slackMessage,
+                channels: config.slack.channels,
+                token: config.slack.token,
+                extra_message: config.slack.message,
                 set_active: true,
                 _attempts: 1
             }
@@ -41,7 +41,7 @@ module.exports = (req, reply) => {
                         reply({
                             status: 200,
                             code: "already_in_team",
-                            message: "Already a part of the slack team. Please login at " + config.slackUrl + " with email: " + req.payload.email
+                            message: "Already a part of the slack team. Please login at " + config.slack.URL + " with email: " + req.payload.email
                         });
                     } else if (body.error === "invalid_email") {
                         reply({

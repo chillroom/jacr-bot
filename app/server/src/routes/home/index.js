@@ -6,6 +6,9 @@ module.exports = (server) => {
     server.route({
         method: "GET",
         path: "/",
+        config: {
+            auth: false
+        },
         handler: controller
     });
 };

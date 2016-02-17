@@ -1,14 +1,14 @@
-var DubAPI = require("dubapi"),
-    log = require("jethro"),
-    pkg = require(process.cwd() + "/package.json"),
-    config = require(process.cwd() + "/config");
+const DubAPI = require("dubapi");
+const log = require("jethro");
+const pkg = require(process.cwd() + "/package.json");
+const config = require(process.cwd() + "/config");
 
 log.setUTC(true);
 
 new DubAPI({
-    username: config.botName,
-    password: config.botPass
-}, function(err, bot) {
+    username: config.bot.name,
+    password: config.bot.pass
+}, (err, bot) => {
     if (err) {
         return log("error", "BOT", err);
     }
@@ -17,20 +17,20 @@ new DubAPI({
     bot.log.setUTC(true);
 
     function connect() {
-        bot.connect(config.roomURL);
+        bot.connect(config.bot.URL);
     }
     bot.log("info", "BOT", "DubAPI Version: " + bot.version);
-    bot.on("connected", function(name) {
+    bot.on("connected", (name) => {
         bot.sendChat(bot.identifier + "online! ver: " + pkg.version);
         bot.log("info", "BOT", "Bot Version: " + pkg.version);
         bot.log("info", "BOT", "Bot connected to: " + name);
         bot.log("info", "BOT", "Bot ID: " + bot._.self.id);
         var users = bot.getUsers();
-        users.forEach(function(user) {
+        users.forEach((user) => {
             if (typeof(user.id) !== "undefined") {
                 bot.db.models.person.findOne({
                     uid: user.id
-                }, function(err, person) {
+                }, (err, person) => {
                     if (err) {
                         bot.log("error", "BOT", err);
                     } else {
@@ -65,7 +65,7 @@ new DubAPI({
             }
         });
     });
-    bot.on("disconnected", function(name) {
+    bot.on("disconnected", (name) => {
         bot.log("warning", "BOT", "Disconnected from " + name);
         setTimeout(connect, 15000);
     });
@@ -74,14 +74,14 @@ new DubAPI({
     });
     connect();
     //setup db
-    bot.db = require(process.cwd() + "/app/common/index.js");
+    bot.db = require(process.cwd() + "/app/common/db");
 
     //setup > mod ranks
     bot.ranks = ["5615fa9ae596154a5c000000", "5615fd84e596150061000003", "52d1ce33c38a06510c000001"];
     //setup > vip ranks
     bot.vips = ["5615fa9ae596154a5c000000", "5615fd84e596150061000003", "52d1ce33c38a06510c000001", "5615fe1ee596154fc2000001"];
     //setup devs
-    bot.devs = ["tigerpancake", "mclovinthesex", "nitroghost"];
+    bot.devs = ["nitroghost"];
     //setup bot.identifier
     bot.identifier = ":white_small_square: ";
     //setup protection for double skips

@@ -22,8 +22,8 @@ module.exports = {
                     ext = "png";
                 }
             }
-            const db = req.server.plugins["hapi-mongodb"].db;
-            db.collection("images").findOne({
+            const images = req.server.models.db.images;
+            images.findOne({
                 url: url
             }, (err, doc) => {
                 if (err) {
@@ -46,7 +46,7 @@ module.exports = {
                             }
                         });
                     } else {
-                        db.collection("images").insert({
+                        images.create({
                             url: url,
                             ext: ext
                         }, (err, doc) => {
@@ -75,10 +75,9 @@ module.exports = {
     get: (req, reply) => {
         const id = req.params.id.split(".")[0];
         const ext = req.params.id.split(".")[1];
-        const db = req.server.plugins["hapi-mongodb"].db;
-        const ObjectID = req.server.plugins["hapi-mongodb"].ObjectID;
-        db.collection("images").findOne({
-            _id: ObjectID(id)
+        const images = req.server.db.models.images;
+        images.findOne({
+            _id: id
         }, (err, doc) => {
             if (err) {
                 reply({

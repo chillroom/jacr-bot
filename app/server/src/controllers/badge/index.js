@@ -5,9 +5,9 @@ const config = require(process.cwd() + "/config");
 
 module.exports = (req, reply) => {
     request.post({
-        url: "https://" + config.slackUrl + "/api/users.list",
+        url: "https://" + config.slack.url + "/api/users.list",
         form: {
-            token: config.slackToken,
+            token: config.slack.token,
             presence: 1
         }
     }, (err, resp, body) => {

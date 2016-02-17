@@ -1,6 +1,6 @@
 "use strict";
 
-const db = require(process.cwd() + "/app/common/index.js");
+const db = require(process.cwd() + "/app/common/db");
 
 module.exports.register = (server, options, next) => {
     server.decorate("server", "db", db);

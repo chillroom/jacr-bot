@@ -8,6 +8,9 @@ const server = new Hapi.Server();
 server.connection({
     host: config.ipaddress,
     port: config.port,
+    router: {
+        stripTrailingSlash: true
+    },
     routes: {
         cors: true
     }
@@ -15,9 +18,8 @@ server.connection({
 
 server.register([
     {
-        register: require(process.cwd() + "/app/server/src/plugins/database")
-    },
-    {
+        register: require(process.cwd() + "/app/server/src/plugins/db")
+    }, {
         register: require(process.cwd() + "/app/server/src/plugins/logger"),
         options: {
             timeformat: "YYYY-MM-DD HH:mm:ss:SSS",
@@ -28,10 +30,7 @@ server.register([
             }
         }
     }, {
-        register: require("hapi-mongodb"),
-        options: {
-            url: config.APIMongoURL
-        }
+        register: require(process.cwd() + "/app/server/src/plugins/jwt")
     }
 ], (err) => {
     if (err) {

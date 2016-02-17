@@ -6,6 +6,9 @@ module.exports = (server) => {
     server.route({
         method: "POST",
         path: "/invite",
+        config: {
+            auth: false
+        },
         handler: controller
     });
 };

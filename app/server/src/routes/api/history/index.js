@@ -6,6 +6,9 @@ module.exports = (server) => {
     server.route({
         method: "GET",
         path: "/api/history",
+        config: {
+            auth: false
+        },
         handler: controller
     });
 };
