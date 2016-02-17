@@ -62,7 +62,7 @@ module.exports = {
                                     code: "image_created",
                                     message: "Image has been created",
                                     data: {
-                                        image: "https://api.plugable.info/image/" + doc.ops[0]._id + "." + doc.ops[0].ext
+                                        image: "https://api.plugable.info/image/" + doc._id + "." + doc.ext
                                     }
                                 }).code(201);
                             }
