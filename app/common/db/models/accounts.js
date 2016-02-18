@@ -1,6 +1,10 @@
 module.exports = (db, mongoose) => {
-    const sessionSchema = new mongoose.Schema({
-        jti: {
+    const accountSchema = new mongoose.Schema({
+        username: {
+            type: String,
+            required: true
+        },
+        email: {
             type: String,
             required: true,
             validate: {
@@ -9,14 +13,6 @@ module.exports = (db, mongoose) => {
                 },
                 message: "\"{VALUE}\" is not valid UUID v4."
             }
-        },
-        username: {
-            type: String,
-            required: true
-        },
-        expireAt: {
-            type: Date,
-            required: true
         },
         role: {
             type: String,
@@ -27,10 +23,21 @@ module.exports = (db, mongoose) => {
                 },
                 message: "\"{VALUE}\" is not allowed. Valid roles: \"OWNER\", \"ADMIN\" and \"USER\"."
             }
+        },
+        password: {
+            type: String,
+            required: true
+        },
+        verify: {
+            verified: {
+                type: Boolean
+            },
+            token: String
         }
     });
-    sessionSchema.index({
-        jti: 1
+    accountSchema.index({
+        username: 1,
+        email: 1
     });
-    db.model("sessions", sessionSchema);
+    db.model("acounts", accountSchema);
 };

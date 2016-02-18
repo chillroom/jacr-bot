@@ -12,7 +12,7 @@ module.exports = (db, mongoose) => {
                 validator: (v) => {
                     return /fun|helpful|info|memes|mod/.test(v);
                 },
-                message: "\"{VALUE} is not allowed. Please use \"fun\", \"helpful\", \"info\", \"memes\", \"mod\""
+                message: "\"{VALUE}\" is not allowed. Please use \"fun\", \"helpful\", \"info\", \"memes\", \"mod\"."
             }
         }
     });

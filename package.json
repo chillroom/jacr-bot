@@ -12,6 +12,7 @@
     "dubapi": "^1.5.0",
     "hapi": "^13.0.0",
     "hapi-auth-jwt2": "^5.4.1",
+    "hapi-authorization": "^3.0.2",
     "hoek": "^3.0.4",
     "htmlparser": "^1.7.7",
     "jethro": "^2.7.1",
