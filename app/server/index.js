@@ -31,6 +31,11 @@ server.register([
         }
     }, {
         register: require(process.cwd() + "/app/server/src/plugins/jwt")
+    }, {
+        register: require("hapi-authorization"),
+        options: {
+            roles: ["OWNER", "ADMIN", "USER"]
+        }
     }
 ], (err) => {
     if (err) {
