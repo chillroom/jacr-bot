@@ -34,7 +34,7 @@ server.register([
     }, {
         register: require("hapi-authorization"),
         options: {
-            roles: ["OWNER", "ADMIN", "USER"]
+            roles: ["ADMIN", "MANAGER", "EDITOR"]
         }
     }
 ], (err) => {

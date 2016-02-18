@@ -19,7 +19,7 @@ module.exports = (server) => {
                 auth: "jwt",
                 plugins: {
                     hapiAuthorization: {
-                        roles: ["OWNER", "ADMIN", "USER"]
+                        roles: ["ADMIN", "MANAGER", "EDITOR"]
                     }
                 },
                 state: {

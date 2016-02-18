@@ -10,7 +10,7 @@ module.exports = (db, mongoose) => {
             required: true,
             validate: {
                 validator: (v) => {
-                    return /img|txt|info/.test(v);
+                    return /^img|txt|info$/.test(v);
                 },
                 message: "\"{VALUE}\" is not allowed. Please use \"img\", \"txt\" or \"info\"."
             }
@@ -26,7 +26,7 @@ module.exports = (db, mongoose) => {
             type: String,
             validate: {
                 validator: (v) => {
-                    return /fun|helpful|info|memes|mod/.test(v);
+                    return /^fun|helpful|info|memes|mod$/.test(v);
                 },
                 message: "\"{VALUE}\" is not allowed. Please use \"fun\", \"helpful\", \"info\", \"memes\", \"mod\"."
             }

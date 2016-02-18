@@ -5,7 +5,7 @@ module.exports = (db, mongoose) => {
             required: true,
             validate: {
                 validator: (v) => {
-                    return /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(v)
+                    return /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(v);
                 },
                 message: "\"{VALUE}\" is not valid UUID v4."
             }
@@ -23,9 +23,9 @@ module.exports = (db, mongoose) => {
             required: true,
             validate: {
                 validator: (v) => {
-                    return /OWNER|ADMIN|USER/.test(v)
+                    return /^ADMIN|MANAGER|EDITOR$/.test(v);
                 },
-                message: "\"{VALUE}\" is not allowed. Valid roles: \"OWNER\", \"ADMIN\" and \"USER\"."
+                message: "\"{VALUE}\" is not allowed. Valid roles: \"ADMIN\", \"MANAGER\" and \"EDITOR\"."
             }
         }
     });

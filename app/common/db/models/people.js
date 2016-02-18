@@ -44,5 +44,5 @@ module.exports = (db, mongoose) => {
         name: 1,
         uid: 1
     });
-    db.model("people", personSchema);
+    db.model("person", personSchema);
 };

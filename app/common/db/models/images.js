@@ -8,7 +8,7 @@ module.exports = (db, mongoose) => {
             type: String,
             validate: {
                 validator: function (v) {
-                    return /jpg|png|svg|gif/.test(v);
+                    return /^jpg|png|svg|gif$/.test(v);
                 },
                 message: "\"{VALUE} is not allowed. Please use \"jpg\", \"png\", \"svg\", \"gif\""
             }
