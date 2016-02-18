@@ -8,12 +8,20 @@ module.exports = (server) => {
         {
             method: "GET",
             path: "/api/commands",
+            config: {
+                auth: false
+            },
             handler: controller.get
         }, {
             method: "POST",
             path: "/api/commands/add",
             config: {
                 auth: "jwt",
+                plugins: {
+                    hapiAuthorization: {
+                        roles: ["OWNER", "ADMIN", "USER"]
+                    }
+                },
                 state: {
                     parse: true,
                     failAction: "error"
@@ -32,6 +40,11 @@ module.exports = (server) => {
             path: "/api/commands/alias",
             config: {
                 auth: "jwt",
+                plugins: {
+                    hapiAuthorization: {
+                        roles: ["OWNER", "ADMIN", "USER"]
+                    }
+                },
                 state: {
                     parse: true,
                     failAction: "error"
