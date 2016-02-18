@@ -4,7 +4,7 @@ module.exports = function(bot, data) {
     var text = data.params.join(" ");
     text = text.replace(/-+/g, "").replace(/\s+/g, " ").trim();
     if (typeof(data.params) !== "undefined" && data.params.length > 0) {
-        bot.db.models.song.aggregate([
+        bot.db.models.songs.aggregate([
             {
                 $match: {
                     $text: {

@@ -1,14 +1,14 @@
-module.exports = function(bot) {
-    bot.on("room_playlist-dub", function(data) {
+module.exports = (bot) => {
+    bot.on("room_playlist-dub", (data) => {
         if (typeof(data.id) !== "undefined") {
-            bot.db.models.person.findOne({
+            bot.db.models.people.findOne({
                 uid: data.user.id
-            }, function(err, person) {
+            }, (err, person) => {
                 if (err) {
                     bot.log("error", "BOT", err);
                 } else {
                     if (!person) {
-                        person = new bot.db.models.person({
+                        person = new bot.db.models.people({
                             uid: data.user.id
                         });
                     }

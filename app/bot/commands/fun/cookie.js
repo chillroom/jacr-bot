@@ -1,4 +1,4 @@
-module.exports = function(bot, data) {
+module.exports = (bot, data) => {
     var cookies = [
         "a chocolate chip cookie!",
         "a soft homemade oatmeal cookie!",
@@ -21,8 +21,8 @@ module.exports = function(bot, data) {
         "an old cookie that was left out in the rain, it's moldy.",
         "freshly baked cookies, they smell amazing."
     ];
-    var cookie = cookies[Math.floor(Math.random() * cookies.length)];
-    var user = data.user.username;
+    const cookie = cookies[Math.floor(Math.random() * cookies.length)];
+    const user = data.user.username;
     if (typeof(data.params) !== "undefined" && data.params.length > 0) {
         if (data.params.length === 1) {
             if (data.params[0].substr(0, 1) === "@") {

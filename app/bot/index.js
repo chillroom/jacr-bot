@@ -28,7 +28,7 @@ new DubAPI({
         var users = bot.getUsers();
         users.forEach((user) => {
             if (typeof(user.id) !== "undefined") {
-                bot.db.models.person.findOne({
+                bot.db.models.people.findOne({
                     uid: user.id
                 }, (err, person) => {
                     if (err) {
@@ -40,7 +40,7 @@ new DubAPI({
                                 uid: user.id,
                                 dubs: user.dubs
                             };
-                            person = new bot.db.models.person(doc);
+                            person = new bot.db.models.people(doc);
                         }
                         var moderator = {
                             isMod: false

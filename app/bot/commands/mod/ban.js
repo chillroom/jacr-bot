@@ -1,13 +1,13 @@
-module.exports = function(bot, data) {
-    var user = data.user.username;
-    var rank = data.user.role;
+module.exports = (bot, data) => {
+    const user = data.user.username;
+    const rank = data.user.role;
     if (bot.devs.indexOf(user) > -1 || bot.ranks.indexOf(rank) > -1) {
         if (typeof(data.params) !== "undefined" && data.params.length > 0) {
             var username = data.params[0];
-            var time = 60,
-                person;
+            var time = 60;
+            var person;
             if (data.params.length > 1) {
-                var secondParam = data.params[1];
+                const secondParam = data.params[1];
                 if (username.substr(0, 1) === "@") {
                     //remove the @
                     username = username.substr(1);
@@ -19,19 +19,19 @@ module.exports = function(bot, data) {
                 if (bot.isVIP(person)) {
                     bot.moderateUnsetRole(person.id, person.role);
                 }
-                setTimeout(function() {
+                setTimeout(() => {
                     if (bot.ranks.indexOf(person.role) === -1) {
-                        bot.db.models.person.findOne({
+                        bot.db.models.people.findOne({
                             username: user
-                        }, function(err, banner) {
+                        }, (err, banner) => {
                             if (err) {
                                 bot.log("error", "BOT", err);
                             } else {
                                 banner.rank.banCount++;
-                                banner.save(function() {
-                                    bot.db.models.person.findOne({
+                                banner.save(() => {
+                                    bot.db.models.people.findOne({
                                         uid: person.id
-                                    }, function(err, ban) {
+                                    }, (err, ban) => {
                                         if (err) {
                                             bot.log("error", "BOT", err);
                                         } else {
@@ -41,12 +41,12 @@ module.exports = function(bot, data) {
                                                     uid: person.id,
                                                     "ban.count": 0
                                                 };
-                                                ban = new bot.db.models.person(doc);
+                                                ban = new bot.db.models.people(doc);
                                             }
                                             ban.ban.lastBan = new Date();
                                             ban.ban.count++;
                                             ban.ban.by = banner.username;
-                                            ban.save(function() {
+                                            ban.save(() => {
                                                 bot.db.models.ban.create({
                                                     _person: ban._id
                                                 });
@@ -68,33 +68,33 @@ module.exports = function(bot, data) {
                 if (bot.isVIP(person)) {
                     bot.moderateUnsetRole(person.id, person.role);
                 }
-                setTimeout(function() {
+                setTimeout(() => {
                     if (bot.ranks.indexOf(person.role) === -1) {
-                        bot.db.models.person.findOne({
+                        bot.db.models.people.findOne({
                             username: user
-                        }, function(err, banner) {
+                        }, (err, banner) => {
                             if (err) {
                                 bot.log("error", "BOT", err);
                             } else {
                                 banner.rank.banCount++;
-                                banner.save(function() {
-                                    bot.db.models.person.findOne({
+                                banner.save(() => {
+                                    bot.db.models.people.findOne({
                                         uid: person.id
-                                    }, function(err, ban) {
+                                    }, (err, ban) => {
                                         if (err) {
                                             bot.log("error", "BOT", err);
                                         } else {
                                             if (!ban) {
-                                                var doc = {
+                                                const doc = {
                                                     username: username,
                                                     uid: person.id
                                                 };
-                                                ban = new bot.db.models.person(doc);
+                                                ban = new bot.db.models.people(doc);
                                             }
                                             ban.ban.lastBan = new Date();
                                             ban.ban.count++;
                                             ban.ban.by = banner.username;
-                                            ban.save(function() {
+                                            ban.save(() => {
                                                 bot.db.models.ban.create({
                                                     _person: ban._id
                                                 });

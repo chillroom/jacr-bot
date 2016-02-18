@@ -26,7 +26,7 @@ module.exports = (bot) => {
                     songCount: 0
                 };
                 doc.songCount++;
-                bot.db.models.settings.create(doc, function(err, doc) {
+                bot.db.models.settings.create(doc, (err, doc) => {
                     if (err) {
                         bot.log("error", "BOT", err);
                     }

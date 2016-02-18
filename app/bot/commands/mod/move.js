@@ -1,6 +1,6 @@
-module.exports = function(bot, data) {
-    var user = data.user.username;
-    var rank = data.user.role;
+module.exports = (bot, data) => {
+    const user = data.user.username;
+    const rank = data.user.role;
     if (bot.devs.indexOf(user) > -1 || bot.ranks.indexOf(rank) > -1) {
         if (typeof(data.params) !== "undefined" && data.params.length > 0) {
             var username = data.params[0],

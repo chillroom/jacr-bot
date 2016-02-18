@@ -1,5 +1,5 @@
-module.exports = function(bot, data) {
-    var user = data.user.username;
+module.exports = (bot, data) => {
+    const user = data.user.username;
     if (typeof(data.params) !== "undefined" && data.params.length > 0) {
         if (data.params.length === 1) {
             if (data.params[0].substr(0, 1) === "@") {

@@ -1,8 +1,8 @@
-var fs = require("fs");
+const Fs = require("fs");
 
-module.exports = function(bot) {
-    var utils = process.cwd() + "/app/bot/utils";
-    fs.readdirSync(utils).forEach(function(file) {
+module.exports = (bot) => {
+    const utils = process.cwd() + "/app/bot/utils";
+    Fs.readdirSync(utils).forEach((file) => {
         if (file.indexOf(".js") > -1) {
             require(utils + "/" + file)(bot);
         }

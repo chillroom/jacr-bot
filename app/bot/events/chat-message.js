@@ -1,13 +1,13 @@
-var fs = require("fs"),
-    path = require("path");
+var Fs = require("fs"),
+    Path = require("path");
 
-module.exports = function(bot) {
+module.exports = (bot) => {
     var commands = {},
         cmd = process.cwd() + "/app/bot/commands";
-    var walk = function(dir) {
-        fs.readdirSync(dir).forEach(function(file) {
-            var _path = path.resolve(dir, file);
-            fs.stat(_path, function(err, stat) {
+    const walk = (dir) => {
+        Fs.readdirSync(dir).forEach((file) => {
+            var _path = Path.resolve(dir, file);
+            Fs.stat(_path, (err, stat) => {
                 if (stat && stat.isDirectory()) {
                     walk(_path);
                 } else {
@@ -16,7 +16,7 @@ module.exports = function(bot) {
                         if(typeof(require(_path).extra) !== "undefined") {
                             if(Array.isArray(require(_path).extra)) {
                                 // add each command in array into overall commands
-                                require(_path).extra.forEach(function(command) {
+                                require(_path).extra.forEach((command) => {
                                     commands[command] = require(_path);
                                 });
                             }
@@ -31,20 +31,20 @@ module.exports = function(bot) {
         });
     };
     walk(cmd);
-    bot.on("chat-message", function(data) {
+    bot.on("chat-message", (data) => {
         if (typeof(data.user) !== "undefined") {
             if (data.message.match(/(\[AFK\].*https?:\/\/.*\.(?:png|jpg|gif))/i)) {
                 bot.moderateDeleteChat(data.raw.chatid);
                 bot.sendChat(bot.identifier + "@" + data.user.username + " nitroghost is a sour puss and has banned image/gif AFK responses. pls change it, k thanks bai!");
             } else {
-                bot.db.models.person.findOne({
+                bot.db.models.people.findOne({
                     uid: data.user.id
-                }, function(err, person) {
+                }, (err, person) => {
                     if (err) {
                         bot.log("error", "BOT", err);
                     } else {
                         if (!person) {
-                            person = new bot.db.models.person({
+                            person = new bot.db.models.people({
                                 uid: data.user.id
                             });
                         }
@@ -77,7 +77,7 @@ module.exports = function(bot) {
                     // array of the command triggers
                     parsedCommands = [];
                 //command handler
-                tokens.forEach(function(token) {
+                tokens.forEach((token) => {
                     if (token.charAt(0) === "!" && parsedCommands.indexOf(token.substr(1)) == -1) {
                         // add the command used to the data sent from the chat to be used later
                         data.trigger = token.substr(1).toLowerCase();
@@ -92,27 +92,27 @@ module.exports = function(bot) {
                             } else {
                                 bot.db.models.commands.findOne({
                                     name: data.trigger
-                                }).populate("aliasOf").exec(function (err, doc) {
+                                }).populate("aliasOf").exec( (err, doc) => {
                                     if (err) {
                                         bot.log("error", "MONGO", err);
                                     } else {
                                         if (doc) {
                                             if (doc.aliasOf) {
                                                 if (doc.cmdType === "img") {
-                                                    var img = doc.aliasOf.response[Math.floor(Math.random() * doc.aliasOf.response.length)];
+                                                    const img = doc.aliasOf.response[Math.floor(Math.random() * doc.aliasOf.response.length)];
                                                     bot.sendChat(img);
                                                 } else if (doc.aliasOf.cmdType === "txt") {
-                                                    var txt = doc.aliasOf.response[Math.floor(Math.random() * doc.aliasOf.response.length)];
+                                                    const txt = doc.aliasOf.response[Math.floor(Math.random() * doc.aliasOf.response.length)];
                                                     bot.sendChat(bot.identifier + txt);
                                                 } else if (doc.aliasOf.cmdType === "info") {
                                                     bot.sendChat(bot.identifier + doc.aliasOf.response);
                                                 }
                                             } else {
                                                 if (doc.cmdType === "img") {
-                                                    var image = doc.response[Math.floor(Math.random() * doc.response.length)];
+                                                    const image = doc.response[Math.floor(Math.random() * doc.response.length)];
                                                     bot.sendChat(image);
                                                 } else if (doc.cmdType === "txt") {
-                                                    var text = doc.response[Math.floor(Math.random() * doc.response.length)];
+                                                    const text = doc.response[Math.floor(Math.random() * doc.response.length)];
                                                     bot.sendChat(bot.identifier + text);
                                                 } else if (doc.cmdType === "info") {
                                                     bot.sendChat(bot.identifier + doc.response);
@@ -127,10 +127,10 @@ module.exports = function(bot) {
                     //check to see if any of the words match an emoji
                     else if (bot.emojis.indexOf(token) > -1) {
                         //if it does, find or create db entery, incrementing the count
-                        setTimeout(function() {
+                        setTimeout(() => {
                             bot.db.models.emojiCount.findOne({
                                 emoji: token
-                            }, function(err, doc) {
+                            }, (err, doc) => {
                                 if (doc) {
                                     doc.count++;
                                     doc.save();
@@ -140,7 +140,7 @@ module.exports = function(bot) {
                                         count: 0
                                     };
                                     doc.count++;
-                                    bot.db.models.emojiCount.create(doc, function(err) {
+                                    bot.db.models.emojiCount.create(doc, (err) => {
                                         if (err) {
                                             bot.log("error", "BOT", err);
                                         }
@@ -155,11 +155,11 @@ module.exports = function(bot) {
                 });
                 //DB store
                 //only storing the chat ID's, user IDs, and username so that the DB file doesn't get too big yo!
-                var chatSchema = {
+                const chatSchema = {
                     username: data.user.username,
                     chatid: data.raw.chatid
                 };
-                bot.db.models.chat.create(chatSchema, function(err) {
+                bot.db.models.chat.create(chatSchema, (err) => {
                     if (err) {
                         bot.log("error", "BOT", err);
                     }

@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = (req, reply) => {
-    const songs = req.server.db.models.songs;
+    const songs = req.server.db.models.songss;
     songs.aggregate([{
         $match: {
             plays: {
@@ -20,8 +20,8 @@ module.exports = (req, reply) => {
         if (err) {
             req.server.logger("error", "MONGO", err);
         } else {
-            var date = new Date() - (1000 * 60 * 60 * 24 * 14);
-            var compare = new Date(date);
+            const date = new Date() - (1000 * 60 * 60 * 24 * 14);
+            const compare = new Date(date);
             songs.find({
                 plays: {
                     $gt: avg[0].avgPlays

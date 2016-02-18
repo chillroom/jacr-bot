@@ -1,6 +1,6 @@
-module.exports = function(bot, data) {
-    var user = data.user.username;
-    var rank = data.user.role;
+module.exports = (bot, data) => {
+    const user = data.user.username;
+    const rank = data.user.role;
     //if the user has name in the bot.devs array, or their role is one from bot.rank
     if (bot.devs.indexOf(user) > -1 || bot.ranks.indexOf(rank) > -1) {
         //checks to make sure there's params set
@@ -17,7 +17,7 @@ module.exports = function(bot, data) {
                         motd = data.params.slice(1).join(" ");
                         bot.db.models.settings.findOne({
                             id: "s3tt1ng5"
-                        }, function(err, doc) {
+                        }, (err, doc) => {
                             if (err) {
                                 bot.log("error", "BOT", err);
                             }
@@ -31,7 +31,7 @@ module.exports = function(bot, data) {
                         motd = data.params.join(" ");
                         bot.db.models.settings.findOne({
                             id: "s3tt1ng5"
-                        }, function(err, doc) {
+                        }, (err, doc) => {
                             if (err) {
                                 bot.log("error", "BOT", err);
                             }
@@ -50,7 +50,7 @@ module.exports = function(bot, data) {
                         motd = data.params.slice(2).join(" ");
                         bot.db.motd.findOne({
                             _id: 1
-                        }, function(err, doc) {
+                        }, (err, doc) => {
                             doc.motd.enabled = true;
                             doc.motd.interval = parseInt(firstParam);
                             doc.motd.msg = motd;
@@ -62,7 +62,7 @@ module.exports = function(bot, data) {
                         motd = data.params.slice(1).join(" ");
                         bot.db.models.settings.findOne({
                             id: "s3tt1ng5"
-                        }, function(err, doc) {
+                        }, (err, doc) => {
                             if (err) {
                                 bot.log("error", "BOT", err);
                             }
@@ -89,12 +89,12 @@ module.exports = function(bot, data) {
                         }
                         bot.sendChat(bot.identifier + "MOTD interval is currently set to: " + doc.motd.interval + " songs");
                     });
-                    //checks to see if the only param is a number	
+                    //checks to see if the only param is a number
                 } else if (!isNaN(parseInt(data.params[0]))) {
                     var interval = parseInt(data.params[0]);
                     bot.db.models.settings.findOne({
                         id: "s3tt1ng5"
-                    }, function(err, doc) {
+                    }, (err, doc) => {
                         if (err) {
                             bot.log("error", "BOT", err);
                         }
@@ -106,7 +106,7 @@ module.exports = function(bot, data) {
                 } else if (data.params[0] === "clear") {
                     bot.db.models.settings.findOne({
                         id: "s3tt1ng5"
-                    }, function(err, doc) {
+                    }, (err, doc) => {
                         if (err) {
                             bot.log("error", "BOT", err);
                         }
@@ -120,7 +120,7 @@ module.exports = function(bot, data) {
                     motd = data.params[0];
                     bot.db.models.settings.findOne({
                         id: "s3tt1ng5"
-                    }, function(err, doc) {
+                    }, (err, doc) => {
                         if (err) {
                             bot.log("error", "BOT", err);
                         }
@@ -134,7 +134,7 @@ module.exports = function(bot, data) {
         } else {
             bot.db.models.settings.findOne({
                 id: "s3tt1ng5"
-            }, function(err, doc) {
+            }, (err, doc) => {
                 if (err) {
                     bot.log("error", "BOT", err);
                 }

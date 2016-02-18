@@ -1,31 +1,31 @@
 var moment = require("moment");
 
-module.exports = function(bot) {
-    bot.on("room_playlist-update", function(data) {
+module.exports = (bot) => {
+    bot.on("room_playlist-update", (data) => {
         bot.sendMotd();
         bot.raffle();
         if (bot.started) {
             if (typeof(data.media) !== "undefined") {
-                var user = data.user.id;
-                bot.db.models.song.findOne({
+                const user = data.user.id;
+                bot.db.models.songs.findOne({
                     fkid: data.media.fkid
-                }, function(err, song) {
+                }, (err, song) => {
                     if (err) {
                         bot.log("error", "MONGO", err);
                     } else {
-                        var skip = function(msg) {
-                            bot.moderateSkip(function() {
+                        const skip = (msg) => {
+                            bot.moderateSkip(() => {
                                 bot.sendChat(bot.identifier + msg);
                             });
                         };
                         if (!song) {
-                            var doc = {
+                            const doc = {
                                 name: data.media.name,
                                 fkid: data.media.fkid
                             };
-                            song = new bot.db.models.song(doc);
+                            song = new bot.db.models.songs(doc);
                         }
-                        bot.db.models.song.aggregate([{
+                        bot.db.models.songs.aggregate([{
                             $match: {
                                 plays: {
                                     $gt: 4
@@ -38,55 +38,55 @@ module.exports = function(bot) {
                                     $avg: "$plays"
                                 }
                             }
-                        }]).exec(function(err, doc) {
+                        }]).exec((err, doc) => {
                             if (err) {
                                 bot.log("error", "MONGO", err);
                             } else {
-                                var date = new Date() - (1000 * 60 * 60 * 24 * 14);
-                                var lastPlay = new Date(song.lastPlay);
-                                var compare = new Date(date);
+                                const date = new Date() - (1000 * 60 * 60 * 24 * 14);
+                                const lastPlay = new Date(song.lastPlay);
+                                const compare = new Date(date);
                                 if (song.plays > doc[0].avgPlays && moment(lastPlay).isAfter(compare)) {
                                     skip("Because I'm super awesome, I have deduced that this song has been overplayed recently. Please pick another song. You can check when it was last played with !check [artist - song name]");
-                                    setTimeout(function() {
+                                    setTimeout(() => {
                                         bot.moderateMoveDJ(user, 1);
                                     }, 6000);
                                 } else {
                                     if (song.forbidden) {
-                                        setTimeout(function() {
+                                        setTimeout(() => {
                                             skip("Song has been recently flagged as forbidden. You can view the op/forbidden list here: http://just-a-chill-room.net/op-forbidden-list/");
                                         }, 3000);
                                     } else if (song.nsfw) {
-                                        setTimeout(function() {
+                                        setTimeout(() => {
                                             skip("Song has been recently flagged as NSFW");
                                         }, 3000);
                                     } else if (song.unavailable) {
-                                        setTimeout(function() {
+                                        setTimeout(() => {
                                             skip("Song has been recently flagged as unavailable for all users. Please pick another song");
-                                            setTimeout(function() {
+                                            setTimeout(() => {
                                                 bot.moderateMoveDJ(user, 1);
                                             }, 6000);
                                         }, 3000);
                                     } else if (!song.theme) {
-                                        setTimeout(function() {
+                                        setTimeout(() => {
                                             skip("Song has been recently flagged as not on theme. You can view the theme here: http://just-a-chill-room.net/rules/#theme");
                                         }, 3000);
                                     }
                                 }
                                 song.plays++;
                                 song.lastPlay = new Date();
-                                song.save(function() {
+                                song.save(() => {
                                     if (typeof(data.user) !== "undefined") {
-                                        bot.db.models.person.findOne({
+                                        bot.db.models.people.findOne({
                                             uid: data.user.id
-                                        }, function(err, person) {
+                                        }, (err, person) => {
                                             if (err) {
                                                 bot.log("error", "MONGO", err);
                                             } else {
                                                 if (!person) {
-                                                    var doc = {
+                                                    const doc = {
                                                         uid: data.user.id
                                                     };
-                                                    person = new bot.db.models.person(doc);
+                                                    person = new bot.db.models.people(doc);
                                                 }
                                                 var moderator = {
                                                     isMod: false
@@ -107,11 +107,11 @@ module.exports = function(bot) {
                                                 }
                                                 person.username = data.user.username;
                                                 person.dubs = data.user.dubs;
-                                                person.save(function() {
+                                                person.save(() => {
                                                     bot.db.models.history.create({
                                                         _song: song._id,
                                                         _person: person._id
-                                                    }, function(err) {
+                                                    }, (err) => {
                                                         if (err) {
                                                             bot.log("error", "MONGO", err);
                                                         }
@@ -129,29 +129,29 @@ module.exports = function(bot) {
         } else {
             bot.started = true;
         }
-        var date = new Date();
+        const date = new Date();
         //for the off chance that the bot is started for the first time during a period where it needs to track emojis
         //need to set a time out to make sure the settings in bot.sendMotd() has been created.
-        setTimeout(function() {
+        setTimeout(() => {
             //checks to see if it's within the first hour of the day
             if (date.getUTCHours() === 0) {
                 bot.db.models.settings.findOne({
                     id: "s3tt1ng5"
-                }, function(err, doc) {
+                }, (err, doc) => {
                     if (err) {
                         bot.log("error", "MONGO", err);
                     }
                     if (!doc.emoji.paused) {
                         var emojis = [];
-                        bot.emojis.forEach(function(emoji, index, arr) {
+                        bot.emojis.forEach((emoji, index, arr) => {
                             bot.db.models.emojiCount.findOne({
                                 emoji: emoji
-                            }, function(err, doc) {
+                            }, (err, doc) => {
                                 if (err) {
                                     bot.log("error", "MONGO", err);
                                 }
                                 if (doc) {
-                                    var count = {
+                                    const count = {
                                         emojiName: emoji,
                                         count: doc.count
                                     };
@@ -161,10 +161,10 @@ module.exports = function(bot) {
                                 }
                             });
                             if (index === arr.length - 1) {
-                                setTimeout(function() {
+                                setTimeout(() => {
                                     bot.db.models.emojiTrackDays.create({
                                         emojis: emojis
-                                    }, function(err) {
+                                    }, (err) => {
                                         if (err) {
                                             bot.log("error", "MONGO", err);
                                         }
@@ -180,7 +180,7 @@ module.exports = function(bot) {
 
                 bot.db.models.chat.find({}).sort({
                     time: -1
-                }).skip(100).remove().exec(function(err) {
+                }).skip(100).remove().exec((err) => {
                     if (err) {
                         bot.log("error", "MONGO", err);
                     }
@@ -188,7 +188,7 @@ module.exports = function(bot) {
             } else {
                 bot.db.models.settings.findOne({
                     id: "s3tt1ng5"
-                }, function(err, doc) {
+                }, (err, doc) => {
                     if (err) {
                         bot.log("error", "MONGO", err);
                     }

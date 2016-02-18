@@ -1,3 +1,3 @@
-module.exports = function(bot) {
+module.exports = (bot) => {
     bot.sendChat(bot.identifier + "ping!");
 };
