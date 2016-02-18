@@ -1,5 +1,5 @@
-module.exports = function(db, mongoose) {
-    var emojiCountSchema = new mongoose.Schema({
+module.exports = (db, mongoose) => {
+    const emojiCountSchema = new mongoose.Schema({
         emoji: {
             type: String,
             index: true,

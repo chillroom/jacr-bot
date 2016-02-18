@@ -1,5 +1,5 @@
-module.exports = function(db, mongoose) {
-    var historySchema = new mongoose.Schema({
+module.exports = (db, mongoose) => {
+    const historySchema = new mongoose.Schema({
         _song: {
             type: mongoose.SchemaTypes.ObjectId,
             ref: "song",

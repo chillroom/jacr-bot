@@ -1,5 +1,5 @@
-module.exports = function(db, mongoose) {
-    var settingsSchema = new mongoose.Schema({
+module.exports = (db, mongoose) => {
+    const settingsSchema = new mongoose.Schema({
         id: {
             type: String,
             unique: true

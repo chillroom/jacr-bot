@@ -1,5 +1,5 @@
-module.exports = function(db, mongoose) {
-    var emojiDaysTrackSchema = new mongoose.Schema({
+module.exports = (db, mongoose) => {
+    const emojiDaysTrackSchema = new mongoose.Schema({
         emojis: [{
             emojiName: {
                 type: String

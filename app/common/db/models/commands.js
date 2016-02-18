@@ -1,5 +1,5 @@
-module.exports = function(db, mongoose) {
-    var commandSchema = new mongoose.Schema({
+module.exports = (db, mongoose) => {
+    const commandSchema = new mongoose.Schema({
         name: {
             type: String,
             required: true
@@ -9,7 +9,7 @@ module.exports = function(db, mongoose) {
             type: String,
             required: true,
             validate: {
-                validator: function(v) {
+                validator: (v) => {
                     return /img|txt|info/.test(v);
                 },
                 message: "\"{VALUE}\" is not allowed. Please use \"img\", \"txt\" or \"info\""
@@ -25,7 +25,7 @@ module.exports = function(db, mongoose) {
         category: {
             type: String,
             validate: {
-                validator: function (v) {
+                validator: (v) => {
                     return /fun|helpful|info|memes|mod/.test(v);
                 },
                 message: "\"{VALUE} is not allowed. Please use \"fun\", \"helpful\", \"info\", \"memes\", \"mod\""

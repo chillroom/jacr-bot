@@ -1,5 +1,5 @@
-module.exports = function(db, mongoose) {
-    var chatSchema = new mongoose.Schema({
+module.exports = (db, mongoose) => {
+    const chatSchema = new mongoose.Schema({
         username: {
             type: String,
             index: true,

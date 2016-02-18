@@ -1,5 +1,5 @@
-module.exports = function(db, mongoose) {
-    var responseSchema = new mongoose.Schema({
+module.exports = (db, mongoose) => {
+    const responseSchema = new mongoose.Schema({
         category: {
             type: String,
             required: true

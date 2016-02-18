@@ -1,8 +1,8 @@
-var fs = require("fs");
+const Fs = require("fs");
 
-module.exports = function(bot, mongoose) {
-    var models = process.cwd() + "/app/common/db/models";
-    fs.readdirSync(models).forEach(function(file) {
+module.exports = (bot, mongoose) => {
+    const models = process.cwd() + "/app/common/db/models";
+    Fs.readdirSync(models).forEach((file) => {
         if (file.indexOf(".js") > -1) {
             require(models + "/" + file)(bot, mongoose);
         }
