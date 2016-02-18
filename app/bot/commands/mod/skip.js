@@ -178,7 +178,7 @@ module.exports = (bot, data) => {
                                                 ban.ban.count++;
                                                 ban.ban.by = banner.username;
                                                 ban.save(() => {
-                                                    bot.db.models.ban.create({
+                                                    bot.db.models.bans.create({
                                                         _person: ban._id
                                                     });
                                                 });

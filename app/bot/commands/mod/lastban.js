@@ -3,7 +3,7 @@ module.exports = (bot, data) => {
     const rank = data.user.role;
     //if the user has name in the bot.devs array, or their role is one from bot.rank
     if (bot.devs.indexOf(user) > -1 || bot.ranks.indexOf(rank) > -1) {
-        bot.db.models.ban.find().sort({
+        bot.db.models.bans.find().sort({
             time: -1
         }).limit(1).populate("_person").exec((err, doc) => {
             if (err) {

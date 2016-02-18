@@ -1,6 +1,6 @@
 {
   "name": "illumibot",
-  "version": "1.18.14",
+  "version": "1.18.15",
   "description": "Just a chillroom dubtrack bot",
   "engines": {
     "node": ">= 4.3.0",
