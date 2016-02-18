@@ -38,7 +38,4 @@ test.tap
 checkstyle-result.xml
 
 #ignore random files
-pants.json
-pants2.json
 lmao.json
-meow.json
