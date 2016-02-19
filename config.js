@@ -29,7 +29,7 @@ module.exports = {
 		service: process.env.MAILER_SERVICE,
 		user: process.env.MAILER_USER,
 		pass: process.env.MAILER_PASS
-	}
+	},
     mongoURL: process.env.MONGO_URL,
     slack: {
         URL: process.env.SLACK_URL,

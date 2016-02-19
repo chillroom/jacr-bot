@@ -30,6 +30,7 @@ shh.txt
 
 #ignore config.mine.js
 config.mine.js
+config.bot.js
 
 #ignore TAP file
 test.tap
