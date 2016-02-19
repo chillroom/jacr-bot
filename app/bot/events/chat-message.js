@@ -37,14 +37,14 @@ module.exports = (bot) => {
                 bot.moderateDeleteChat(data.raw.chatid);
                 bot.sendChat(bot.identifier + "@" + data.user.username + " nitroghost is a sour puss and has banned image/gif AFK responses. pls change it, k thanks bai!");
             } else {
-                bot.db.models.people.findOne({
+                bot.db.models.person.findOne({
                     uid: data.user.id
                 }, (err, person) => {
                     if (err) {
                         bot.log("error", "BOT", err);
                     } else {
                         if (!person) {
-                            person = new bot.db.models.people({
+                            person = new bot.db.models.person({
                                 uid: data.user.id
                             });
                         }

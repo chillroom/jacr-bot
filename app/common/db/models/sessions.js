@@ -3,6 +3,7 @@ module.exports = (db, mongoose) => {
         jti: {
             type: String,
             required: true,
+            unique: true,
             validate: {
                 validator: (v) => {
                     return /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(v);
@@ -23,9 +24,9 @@ module.exports = (db, mongoose) => {
             required: true,
             validate: {
                 validator: (v) => {
-                    return /^ADMIN|MANAGER|EDITOR$/.test(v);
+                    return /^ADMIN|MANAGER|BOT|EDITOR$/.test(v);
                 },
-                message: "\"{VALUE}\" is not allowed. Valid roles: \"ADMIN\", \"MANAGER\" and \"EDITOR\"."
+                message: "\"{VALUE}\" is not allowed. Valid roles: \"ADMIN\", \"MANAGER\", \"BOT\" and \"EDITOR\"."
             }
         }
     });

@@ -76,7 +76,7 @@ module.exports = (bot) => {
                                 song.lastPlay = new Date();
                                 song.save(() => {
                                     if (typeof(data.user) !== "undefined") {
-                                        bot.db.models.people.findOne({
+                                        bot.db.models.person.findOne({
                                             uid: data.user.id
                                         }, (err, person) => {
                                             if (err) {
@@ -86,7 +86,7 @@ module.exports = (bot) => {
                                                     const doc = {
                                                         uid: data.user.id
                                                     };
-                                                    person = new bot.db.models.people(doc);
+                                                    person = new bot.db.models.person(doc);
                                                 }
                                                 var moderator = {
                                                     isMod: false

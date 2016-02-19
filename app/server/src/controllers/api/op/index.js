@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = (req, reply) => {
-    const songs = req.server.db.models.songss;
+    const songs = req.server.db.models.songs;
     songs.aggregate([{
         $match: {
             plays: {

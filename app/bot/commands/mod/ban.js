@@ -21,7 +21,7 @@ module.exports = (bot, data) => {
                 }
                 setTimeout(() => {
                     if (bot.ranks.indexOf(person.role) === -1) {
-                        bot.db.models.people.findOne({
+                        bot.db.models.person.findOne({
                             username: user
                         }, (err, banner) => {
                             if (err) {
@@ -29,7 +29,7 @@ module.exports = (bot, data) => {
                             } else {
                                 banner.rank.banCount++;
                                 banner.save(() => {
-                                    bot.db.models.people.findOne({
+                                    bot.db.models.person.findOne({
                                         uid: person.id
                                     }, (err, ban) => {
                                         if (err) {
@@ -41,7 +41,7 @@ module.exports = (bot, data) => {
                                                     uid: person.id,
                                                     "ban.count": 0
                                                 };
-                                                ban = new bot.db.models.people(doc);
+                                                ban = new bot.db.models.person(doc);
                                             }
                                             ban.ban.lastBan = new Date();
                                             ban.ban.count++;
@@ -70,7 +70,7 @@ module.exports = (bot, data) => {
                 }
                 setTimeout(() => {
                     if (bot.ranks.indexOf(person.role) === -1) {
-                        bot.db.models.people.findOne({
+                        bot.db.models.person.findOne({
                             username: user
                         }, (err, banner) => {
                             if (err) {
@@ -78,7 +78,7 @@ module.exports = (bot, data) => {
                             } else {
                                 banner.rank.banCount++;
                                 banner.save(() => {
-                                    bot.db.models.people.findOne({
+                                    bot.db.models.person.findOne({
                                         uid: person.id
                                     }, (err, ban) => {
                                         if (err) {
@@ -89,7 +89,7 @@ module.exports = (bot, data) => {
                                                     username: username,
                                                     uid: person.id
                                                 };
-                                                ban = new bot.db.models.people(doc);
+                                                ban = new bot.db.models.person(doc);
                                             }
                                             ban.ban.lastBan = new Date();
                                             ban.ban.count++;

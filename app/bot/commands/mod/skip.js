@@ -152,7 +152,7 @@ module.exports = (bot, data) => {
                         break;
                     case "troll":
                         if (bot.ranks.indexOf(DJ.role) === -1) {
-                            bot.db.models.people.findOne({
+                            bot.db.models.person.findOne({
                                 username: user
                             }, (err, banner) => {
                                 if (err) {
@@ -160,7 +160,7 @@ module.exports = (bot, data) => {
                                 } else {
                                     banner.rank.banCount++;
                                     banner.save(() => {
-                                        bot.db.models.people.findOne({
+                                        bot.db.models.person.findOne({
                                             uid: DJ.id
                                         }, (err, ban) => {
                                             if (err) {
@@ -172,7 +172,7 @@ module.exports = (bot, data) => {
                                                         uid: DJ.id,
                                                         "ban.count": 0
                                                     };
-                                                    ban = new bot.db.models.people(doc);
+                                                    ban = new bot.db.models.person(doc);
                                                 }
                                                 ban.ban.lastBan = new Date();
                                                 ban.ban.count++;

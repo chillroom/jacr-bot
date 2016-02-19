@@ -39,5 +39,5 @@ module.exports = (db, mongoose) => {
         username: 1,
         email: 1
     });
-    db.model("acounts", accountSchema);
+    db.model("accounts", accountSchema);
 };

@@ -36,6 +36,17 @@ server.register([
         options: {
             roles: ["ADMIN", "MANAGER", "EDITOR"]
         }
+    }, {
+        register: require("./src/plugins/mailer"),
+        options: {
+            transport: {
+                service: config.mailer.service,
+                auth: {
+                    user: config.mailer.user,
+                    pass: config.mailer.pass
+                }
+            }
+        }
     }
 ], (err) => {
     if (err) {

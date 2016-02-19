@@ -5,7 +5,7 @@ const config = require(process.cwd() + "/config");
 const internals = {};
 
 internals.verify = (decoded, req, callback) => {
-    const sessions = req.server.db;
+    const sessions = req.server.db.models.sessions;
     sessions.findOne({
         jti: decoded.jti
     }, (err, doc) => {
@@ -14,9 +14,11 @@ internals.verify = (decoded, req, callback) => {
             callback(null, false);
         } else {
             if (doc) {
-                doc.expire = Date.now() + config.jwt.ttl;
+                doc.expireAt = Date.now() + config.jwt.ttl;
                 doc.save((err) => {
-                    req.server.logger("error", "MONGO", err);
+                    if (err) {
+                        req.server.logger("error", "MONGO", err);
+                    }
                 });
                 callback(null, true);
             } else {

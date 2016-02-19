@@ -1,14 +1,14 @@
 module.exports = (bot) => {
     bot.on("user-join", (data) => {
         if (typeof(data.id) !== "undefined") {
-            bot.db.models.people.findOne({
+            bot.db.models.person.findOne({
                 uid: data.user.id
             }, (err, person) => {
                 if (err) {
                     bot.log("error", "BOT", err);
                 } else {
                     if (!person) {
-                        person = new bot.db.models.people({
+                        person = new bot.db.models.person({
                             uid: data.user.id
                         });
                     }
