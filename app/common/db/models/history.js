@@ -2,7 +2,7 @@ module.exports = (db, mongoose) => {
     const historySchema = new mongoose.Schema({
         _song: {
             type: mongoose.SchemaTypes.ObjectId,
-            ref: "song",
+            ref: "songs",
             required: true
         },
         _person: {
