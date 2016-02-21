@@ -1,10 +1,10 @@
 {
   "name": "illumibot",
-  "version": "1.19.3",
+  "version": "1.19.4",
   "description": "Just a chillroom dubtrack bot",
   "engines": {
     "node": ">= 4.3.0",
-    "npm": ">= 3.5.0"
+    "npm": ">= 2.14.0"
   },
   "main": "app.js",
   "private": true,
@@ -42,9 +42,9 @@
     "supertest": "^1.1.0"
   },
   "scripts": {
-    "preversion": "gulp config && npm run lint",
+    "preversion": "gulp config",
     "version": "git add --all",
-    "postversion": "git push",
+    "postversion": "git remote | xargs -L1 git push --all",
     "bot": "gulp mine && node ./app/bot/index.js",
     "start": "gulp mine && node app.js",
     "server": "gulp mine && node ./app/server/index.js",
