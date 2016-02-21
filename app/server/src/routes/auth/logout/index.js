@@ -4,7 +4,7 @@ const controller = require(process.cwd() + "/app/server/src/controllers/auth/log
 
 module.exports = (server) => {
     server.route({
-        method: "GET, DELETE",
+        method: "GET",
         path: "/auth/logout",
         config: {
             auth: "jwt"
