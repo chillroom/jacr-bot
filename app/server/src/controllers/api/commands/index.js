@@ -1,7 +1,7 @@
 "use strict";
 
 const Boom = require("boom");
-const config = require("config");
+const config = require(process.cwd() + "/config");
 
 module.exports = {
     get: (req, reply) => {
