@@ -1,9 +1,4 @@
 "use strict";
-const Bcrypt = require("bcryptjs");
-const Aguid = require("aguid");
-const Boom = require("boom");
-const JWT = require("jsonwebtoken");
-const config = require(process.cwd() + "/config");
 
 module.exports = (req, reply) => {
     const sessions = req.server.db.models.sessions;
@@ -14,11 +9,11 @@ module.exports = (req, reply) => {
             req.server.logger("error", "MONGO", err);
         } else {
             if (doc) {
-                doc.remove(();
+                doc.remove();
                 reply({
                     statusCode: 200,
                     message: "Successfully logged out."
-                });
+                }).unstate("token");
             } else {
                 reply({
                     statusCode: 200,

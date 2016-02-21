@@ -1,6 +1,7 @@
 "use strict";
 
 const Boom = require("boom");
+const config = require("config");
 
 module.exports = {
     get: (req, reply) => {
@@ -25,13 +26,13 @@ module.exports = {
             if (err) {
                 req.server.logger("error", "MONGO", JSON.stringify(err));
                 reply(Boom.badImplementation(err)).header("Authorization", req.headers.authorization).state("token", req.state.token, {
-					ttl: config.jwt.ttl
-				});
+                    ttl: config.jwt.ttl
+                });
             } else {
                 if (doc) {
                     reply(Boom.conflict("Command already exists")).header("Authorization", req.headers.authorization).state("token", req.state.token, {
-    					ttl: config.jwt.ttl
-    				});
+                        ttl: config.jwt.ttl
+                    });
                 } else {
                     let resp;
                     if (req.payload.response.indexOf(",") > -1) {
@@ -47,21 +48,21 @@ module.exports = {
                         if (err) {
                             req.server.logger("error", "MONGO", JSON.stringify(err));
                             if (err.errors.cmdType) {
-                                reply(Boom.badRequest(err,errors.cmdType.message)).header("Authorization", req.headers.authorization).state("token", req.state.token, {
-                					ttl: config.jwt.ttl
-                				});
+                                reply(Boom.badRequest(err.errors.cmdType.message)).header("Authorization", req.headers.authorization).state("token", req.state.token, {
+                                    ttl: config.jwt.ttl
+                                });
                             } else {
                                 reply(Boom.badImplementation()).header("Authorization", req.headers.authorization).state("token", req.state.token, {
-                					ttl: config.jwt.ttl
-                				});
+                                    ttl: config.jwt.ttl
+                                });
                             }
                         } else {
                             reply({
                                 statusCode: 200,
                                 message: "Command added"
                             }).header("Authorization", req.headers.authorization).state("token", req.state.token, {
-            					ttl: config.jwt.ttl
-            				});
+                                ttl: config.jwt.ttl
+                            });
                         }
                     });
                 }
@@ -78,15 +79,15 @@ module.exports = {
             if (err) {
                 req.server.logger("error", "MONGO", JSON.stringify(err));
                 reply(Boom.badImplementation(err)).header("Authorization", req.headers.authorization).state("token", req.state.token, {
-					ttl: config.jwt.ttl
-				});
+                    ttl: config.jwt.ttl
+                });
             } else {
                 if (doc) {
                     if (doc.aliasOf) {
                         if (doc.aliasOf.alias.indexOf(req.payload.name) > -1) {
                             reply(Boom.badRequest("Alias already exists")).header("Authorization", req.headers.authorization).state("token", req.state.token, {
-            					ttl: config.jwt.ttl
-            				});
+                                ttl: config.jwt.ttl
+                            });
                         } else {
                             commands.findOne({
                                 name: doc.aliasOf.name
@@ -96,8 +97,8 @@ module.exports = {
                                     if (err) {
                                         req.server.logger("error", "MONGO", JSON.stringify(err));
                                         reply(Boom.badImplementation(err)).header("Authorization", req.headers.authorization).state("token", req.state.token, {
-                        					ttl: config.jwt.ttl
-                        				});
+                                            ttl: config.jwt.ttl
+                                        });
                                     } else {
                                         commands.create({
                                             name: req.payload.name,
@@ -107,15 +108,15 @@ module.exports = {
                                             if (err) {
                                                 req.server.logger("error", "MONGO", JSON.stringify(err));
                                                 reply(Boom.badImplementation(err)).header("Authorization", req.headers.authorization).state("token", req.state.token, {
-                                					ttl: config.jwt.ttl
-                                				});
+                                                    ttl: config.jwt.ttl
+                                                });
                                             } else {
                                                 reply({
                                                     statusCode: 200,
                                                     message: "Alias added"
                                                 }).header("Authorization", req.headers.authorization).state("token", req.state.token, {
-                                					ttl: config.jwt.ttl
-                                				});
+                                                    ttl: config.jwt.ttl
+                                                });
                                             }
                                         });
                                     }
@@ -125,16 +126,16 @@ module.exports = {
                     } else {
                         if (doc.alias.indexOf(req.payload.name) > -1) {
                             reply(Boom.badRequest("Alias already exists")).header("Authorization", req.headers.authorization).state("token", req.state.token, {
-            					ttl: config.jwt.ttl
-            				});
+                                ttl: config.jwt.ttl
+                            });
                         } else {
                             doc.alias.push(req.payload.name);
                             doc.save((err, command) => {
                                 if (err) {
                                     req.server.logger("error", "MONGO", JSON.stringify(err));
                                     reply(Boom.badImplementation(err)).header("Authorization", req.headers.authorization).state("token", req.state.token, {
-                    					ttl: config.jwt.ttl
-                    				});
+                                        ttl: config.jwt.ttl
+                                    });
                                 } else {
                                     commands.create({
                                         name: req.payload.name,
@@ -144,15 +145,15 @@ module.exports = {
                                         if (err) {
                                             req.server.logger("error", "MONGO", JSON.stringify(err));
                                             reply(Boom.badImplementation(err)).header("Authorization", req.headers.authorization).state("token", req.state.token, {
-                            					ttl: config.jwt.ttl
-                            				});
+                                                ttl: config.jwt.ttl
+                                            });
                                         } else {
                                             reply({
                                                 statusCode: 200,
                                                 message: "Alias added"
                                             }).header("Authorization", req.headers.authorization).state("token", req.state.token, {
-                            					ttl: config.jwt.ttl
-                            				});
+                                                ttl: config.jwt.ttl
+                                            });
                                         }
                                     });
                                 }
@@ -161,8 +162,8 @@ module.exports = {
                     }
                 } else {
                     reply(Boom.badRequest("Cannot create alias \"" + req.payload.name + "\" because \"" + req.payload.alias + "\" does not exist")).header("Authorization", req.headers.authorization).state("token", req.state.token, {
-    					ttl: config.jwt.ttl
-    				});
+                        ttl: config.jwt.ttl
+                    });
                 }
             }
         });
