@@ -12,8 +12,10 @@ server.connection({
         stripTrailingSlash: true
     },
     routes: {
-        "cors": {
-            "headers": ["Accept", "Authorization", "Content-Type", "If-None-Match", "Accept-language"]
+        cors: {
+            origin: [config.origins],
+            headers: ["Accept", "Authorization", "Content-Type", "If-None-Match", "Accept-language"],
+            credentials: true
         }
     }
 });

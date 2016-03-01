@@ -1,6 +1,7 @@
 module.exports = {
     ipaddress: process.env.OPENSHIFT_NODEJS_IP,
-	port: process.env.OPENSHIFT_NODEJS_PORT,
+	  port: process.env.OPENSHIFT_NODEJS_PORT,
+    origins: process.env.ORIGINS,
     bot: {
         name: process.env.BOT_NAME,
         pass: process.env.BOT_PASS,
