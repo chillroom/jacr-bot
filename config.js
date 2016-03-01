@@ -14,7 +14,7 @@ module.exports = {
 			encoding: "none",
 			isSecure: false,
 			isHttpOnly: true,
-			clearInvalid: true,
+			clearInvalid: false,
 			strictHeader: true,
 			domain: process.env.PUBLIC_HOST,
 			path: "/"
