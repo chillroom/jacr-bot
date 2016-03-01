@@ -13,7 +13,7 @@ server.connection({
     },
     routes: {
         cors: {
-            origin: [config.origins],
+            origin: ["https://*.plugable.info", "https://*.dubtrack.fm", "http://just-a-chill-room.net"],
             headers: ["Accept", "Authorization", "Content-Type", "If-None-Match", "Accept-language"],
             credentials: true
         }
