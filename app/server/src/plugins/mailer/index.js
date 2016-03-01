@@ -50,7 +50,7 @@ internals.renderTemplate = (signature, context, callback) => {
 module.exports.register = (server, options, next) => {
     Joi.assert(options, internals.schema);
     const config = Hoek.applyToDefaults(internals.defaults, options);
-    const transport = Nodemailer.createTransport(SGTransport(config.transport));;
+    const transport = Nodemailer.createTransport(SGTransport(config.transport));
     if (config.inlineImages) {
         transport.use("compile", InlineBase64);
     }

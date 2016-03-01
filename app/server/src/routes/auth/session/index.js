@@ -7,8 +7,8 @@ module.exports = (server) => {
         method: "GET",
         path: "/auth/session",
         config: {
-          auth: "jwt",
-          state: {
+            auth: "jwt",
+            state: {
               parse: true,
               failAction: "error"
           }

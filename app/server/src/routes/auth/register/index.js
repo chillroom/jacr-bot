@@ -10,8 +10,8 @@ module.exports = (server) => {
         config: {
             auth: "jwt",
             plugins: {
-              hapiAuthorization: {
-                roles: ["ADMIN", "MANAGER"]
+                hapiAuthorization: {
+                  roles: ["ADMIN", "MANAGER"]
               }
             },
             validate: {
