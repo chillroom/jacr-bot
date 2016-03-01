@@ -11,7 +11,7 @@ module.exports = (server) => {
             state: {
               parse: true,
               failAction: "error"
-          }
+            }
         },
         handler: controller
     });
