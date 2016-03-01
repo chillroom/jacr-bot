@@ -1,4 +1,5 @@
 "use strict";
+
 const Joi = require("joi");
 const controller = require(process.cwd() + "/app/server/src/controllers/auth/register");
 
@@ -9,19 +10,19 @@ module.exports = (server) => {
         config: {
             auth: "jwt",
             plugins: {
-                hapiAuthorization: {
-                    roles: ["ADMIN", "MANAGER"]
-                }
+              hapiAuthorization: {
+                roles: ["ADMIN", "MANAGER"]
+              }
             },
             validate: {
                 payload: {
-                    username: Joi.string().required(),
+                    username: Joi.string().min(3).max(16).required(),
                     email: Joi.string().lowercase().email().required(),
                     password: Joi.string().regex(/^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])[\w\d!£€@#$%_]{10,}$/).options({
                         language: {
                             string: {
                                 regex: {
-                                    base: "must contain at least one uppercase, one lowercase, one special character and be at least 10 characters long."
+                                    base: "must contain one uppercase, one lowercase, one special character and be at least 10 characters long."
                                 }
                             }
                         }

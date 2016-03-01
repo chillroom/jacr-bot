@@ -1,4 +1,5 @@
 "use strict";
+
 const Bcrypt = require("bcryptjs");
 const Crypto = require("crypto");
 const Aguid = require("aguid");
@@ -14,8 +15,8 @@ module.exports = (req, reply) => {
         email: Aguid(req.payload.email)
     }, (err, doc) => {
         if (err) {
-            reply(Boom.badImplementation());
-            req.server.logger("error", "MONGO", err);
+            req.server.logger("error", "MONGO", JSON.stringify(err));
+            reply(Boom.badImplementation(err));
         } else {
             if (doc) {
                 reply(Boom.conflict("Email address already in use."));
@@ -27,8 +28,8 @@ module.exports = (req, reply) => {
                         Bcrypt.hash(req.payload.password, passwordSalt, (err, passHash) => {
                             passwordHash = passHash;
                             if (err) {
-                                reply(Boom.badImplementation());
                                 req.server.logger("error", "BCRYPT", err);
+                                reply(Boom.badImplementation());
                             } else {
                                 Bcrypt.genSalt(10, (err, tokenSalt) => {
                                     if (err) {
@@ -38,8 +39,8 @@ module.exports = (req, reply) => {
                                         Bcrypt.hash(token, tokenSalt, (err, tokHash) => {
                                             tokenHash = tokHash;
                                             if (err) {
-                                                reply(Boom.badImplementation());
-                                                req.server.logger("error", "BCRYPT", err);
+                                                req.server.logger("error", "BCRYPT", JSON.stringify(err));
+                                                reply(Boom.badImplementation(err));
                                             } else {
                                                 const user_data = {
                                                     username: req.payload.username,
@@ -53,12 +54,12 @@ module.exports = (req, reply) => {
                                                 };
                                                 db.models.accounts.create(user_data, (err, doc) => {
                                                     if (err) {
-                                                        reply(Boom.badImplementation());
-                                                        req.server.logger("error", "MONGO", err);
+                                                        req.server.logger("error", "MONGO", JSON.stringify(err));
+                                                        reply(Boom.badImplementation(err));
                                                     } else {
                                                         const mailer = req.server.plugins["mailer"];
                                                         const send_data = {
-                                                            from: "IllumiBot <no_reply@plugable.info>",
+                                                            from: "IllumiBot <support@plugable.info>",
                                                             to: req.payload.email,
                                                             subject: "Email Verification",
                                                             html: {
@@ -76,8 +77,8 @@ module.exports = (req, reply) => {
                                                         mailer.send(send_data, (err) => {
                                                             if (err) {
                                                                 doc.remove();
-                                                                reply(Boom.badImplementation());
-                                                                req.server.logger("error", "MAILER", err);
+                                                                req.server.logger("error", "MAILER", JSON.stringify(err));
+                                                                reply(Boom.badImplementation(err));
                                                             } else {
                                                                 reply({
                                                                     statusCode: 200,

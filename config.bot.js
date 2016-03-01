@@ -6,11 +6,6 @@ module.exports = {
         pass: process.env.BOT_PASS,
         URL: process.env.BOT_URL
     },
-    jenkins: {
-        user: process.env.JENKINS_USER,
-        token: process.env.JENKINS_TOKEN,
-        URL: process.env.JENKINS_SITE
-    },
     jwt: {
 		key: process.env.JWT_KEY,
 		ttl: 7 * 24 * 60 * 60 * 1000,
@@ -26,9 +21,7 @@ module.exports = {
 		}
 	},
     mailer: {
-		service: process.env.MAILER_SERVICE,
-		user: process.env.MAILER_USER,
-		pass: process.env.MAILER_PASS
+		api_key: process.env.MAILER_API
 	},
     mongoURL: process.env.MONGO_URL,
     slack: {

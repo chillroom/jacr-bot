@@ -12,6 +12,7 @@ module.exports = (req, reply) => {
         }
     }, (err, resp, body) => {
         if (err) {
+
             reply({
                 status: 200,
                 code: "something_wrong",

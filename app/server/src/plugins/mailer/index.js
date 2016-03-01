@@ -6,18 +6,22 @@ const Hoek = require("hoek");
 const Items = require("items");
 const Joi = require("joi");
 const Nodemailer = require("nodemailer");
+const SGTransport = require("nodemailer-sendgrid-transport");
 const Handlebars = require("handlebars");
 const InlineBase64 = require("nodemailer-plugin-inline-base64");
 
 const internals = {};
 
 internals.defaults = {
-    transport: {},
     inlineImages: false
 };
 
 internals.schema = Joi.object({
-    transport: Joi.object(),
+    transport: {
+        auth: {
+            api_key: Joi.string()
+        }
+    },
     inlineImages: Joi.boolean()
 });
 
@@ -43,10 +47,10 @@ internals.renderTemplate = (signature, context, callback) => {
     });
 };
 
-exports.register = function(server, options, next) {
+module.exports.register = (server, options, next) => {
     Joi.assert(options, internals.schema);
     const config = Hoek.applyToDefaults(internals.defaults, options);
-    const transport = Nodemailer.createTransport(config.transport);
+    const transport = Nodemailer.createTransport(SGTransport(config.transport));;
     if (config.inlineImages) {
         transport.use("compile", InlineBase64);
     }
@@ -71,6 +75,6 @@ exports.register = function(server, options, next) {
     next();
 };
 
-exports.register.attributes = {
+module.exports.register.attributes = {
     name: "mailer"
 };
