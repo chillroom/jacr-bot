@@ -7,7 +7,11 @@ module.exports = (server) => {
         method: "GET",
         path: "/auth/logout",
         config: {
-            auth: "jwt"
+            auth: "jwt",
+            state: {
+                parse: true,
+                failAction: "error"
+            }
         },
         handler: controller
     });
