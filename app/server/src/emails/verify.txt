@@ -1,7 +1,8 @@
 Verify Your Account
 
-Welcome to IllumiBot, {{username}}! Before we get started, please confirm your
+Welcome to IllumiBot Dashboard, {{username}}! Before we get started, please confirm your
 email address by clicking on the link below or, copy and paste it into your browser:
+
 {{link}}
 ________________________________________________________________________
 This email was sent to  {{email}}

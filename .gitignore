@@ -40,3 +40,4 @@ checkstyle-result.xml
 
 #ignore random files
 lmao.json
+test.js

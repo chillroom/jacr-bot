@@ -12,7 +12,9 @@ server.connection({
         stripTrailingSlash: true
     },
     routes: {
-        cors: true
+        "cors": {
+            "headers": ["Accept", "Authorization", "Content-Type", "If-None-Match", "Accept-language"]
+        }
     }
 });
 
@@ -40,10 +42,8 @@ server.register([
         register: require("./src/plugins/mailer"),
         options: {
             transport: {
-                service: config.mailer.service,
                 auth: {
-                    user: config.mailer.user,
-                    pass: config.mailer.pass
+                    api_key: config.mailer.api_key
                 }
             }
         }

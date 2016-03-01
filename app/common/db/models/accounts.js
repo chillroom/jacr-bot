@@ -33,6 +33,9 @@ module.exports = (db, mongoose) => {
                 type: Boolean
             },
             token: String
+        },
+        reset: {
+            token: String
         }
     });
     accountSchema.index({

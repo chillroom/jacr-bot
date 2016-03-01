@@ -1,4 +1,5 @@
 "use strict";
+
 const Bcrypt = require("bcryptjs");
 const Aguid = require("aguid");
 const Boom = require("boom");
@@ -28,6 +29,7 @@ module.exports = (req, reply) => {
                                 const session_data = {
                                     expireAt: expire,
                                     jti: Aguid(),
+                                    email: req.payload.email,
                                     username: doc.username,
                                     role: doc.role
                                 };
