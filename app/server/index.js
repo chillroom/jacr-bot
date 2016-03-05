@@ -1,5 +1,6 @@
 "use strict";
 
+const Newrelic = require("newrelic");
 const Hapi = require("hapi");
 const logger = require("jethro");
 const config = require(process.cwd() + "/config");
