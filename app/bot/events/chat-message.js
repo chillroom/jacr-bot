@@ -36,7 +36,7 @@ module.exports = (bot) => {
             if (data.message.match(/(\[AFK\].*https?:\/\/.*\.(?:png|jpg|gif))/i)) {
                 bot.moderateDeleteChat(data.raw.chatid);
                 bot.sendChat(bot.identifier + "@" + data.user.username + " nitroghost is a sour puss and has banned image/gif AFK responses. pls change it, k thanks bai!");
-            } else if (data.message.match(/(.*https?:\/\/stg.plug.dj\/.*)/i)) {
+            } else if (data.message.match(/.*(https?:\/\/stg.plug.dj\/.*)\s.*/i)) {
               bot.moderateDeleteChat(data.raw.chatid);
               bot.sendChat(bot.identifier + "@" + data.user.username + " please do not post links to plug mmkay?");
             } else {
