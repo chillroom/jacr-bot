@@ -41,3 +41,6 @@ checkstyle-result.xml
 #ignore random files
 lmao.json
 test.js
+
+# Ignore PM2 configuration
+pm2.json
