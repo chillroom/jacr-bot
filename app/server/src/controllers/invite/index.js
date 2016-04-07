@@ -11,7 +11,7 @@ module.exports = (req, reply) => {
                 email: req.payload.email,
                 channels: config.slack.channels,
                 token: config.slack.token,
-                extra_message: config.slack.message,
+                // extra_message: config.slack.message,
                 set_active: true,
                 _attempts: 1
             }

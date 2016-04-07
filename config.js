@@ -29,7 +29,7 @@ module.exports = {
     URL: process.env.SLACK_URL,
     channels: process.env.SLACK_CHANNELS,
     message: process.env.SLACK_MESSAGE,
-    Token: process.env.SLACK_TOKEN
+    token: process.env.SLACK_TOKEN
   },
   socialLink: process.env.SOCIAL_LINK
 };
