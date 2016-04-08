@@ -43,4 +43,4 @@ lmao.json
 test.js
 
 # Ignore PM2 configuration
-pm2.json
+.pm2*
