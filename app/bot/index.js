@@ -81,7 +81,7 @@ new DubAPI({
     //setup > vip ranks
     bot.vips = ["5615fa9ae596154a5c000000", "5615fd84e596150061000003", "52d1ce33c38a06510c000001", "5615fe1ee596154fc2000001"];
     //setup devs
-    bot.devs = ["nitroghost"];
+    bot.devs = ["qaisjp"];
     //setup bot.identifier
     bot.identifier = ":white_small_square: ";
     //setup protection for double skips
