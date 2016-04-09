@@ -7,15 +7,23 @@ module.exports = (bot) => {
         if (bot.started) {
             if (typeof(data.media) !== "undefined") {
                 const user = data.user.id;
+                const username = data.user.username
+                bot.log("info", "ROOM", username + " ( " + user + " ) is now playing")
+
                 bot.db.models.songs.findOne({
                     fkid: data.media.fkid
                 }, (err, song) => {
                     if (err) {
                         bot.log("error", "MONGO", err);
                     } else {
-                        const skip = (msg) => {
+                        const skip = (msg, move) => {
                             bot.moderateSkip(() => {
                                 bot.sendChat(bot.identifier + msg);
+                                bot.log("info", "ROOM", username + " ( " + user + " ) has been skipped")
+                                if (move) {
+                                    bot.moderateMoveDJ(user, 1);
+                                    bot.log("info", "ROOM", username + " ( " + user + " ) has been moved to the front")
+                                }
                             });
                         };
                         if (!song) {
@@ -46,10 +54,8 @@ module.exports = (bot) => {
                                 const lastPlay = new Date(song.lastPlay);
                                 const compare = new Date(date);
                                 if (song.plays > doc[0].avgPlays && moment(lastPlay).isAfter(compare)) {
-                                    skip("Because I'm super awesome, I have deduced that this song has been overplayed recently. Please pick another song. You can check when it was last played with !check [artist - song name]");
-                                    setTimeout(() => {
-                                        bot.moderateMoveDJ(user, 1);
-                                    }, 6000);
+                                    bot.log("info", "ROOM", username + " ( " + user + " ) is playing an OP song")
+                                    skip("Song has been recently flagged as overplayed. Please pick another song.", true);
                                 } else {
                                     if (song.forbidden) {
                                         setTimeout(() => {
@@ -61,10 +67,7 @@ module.exports = (bot) => {
                                         }, 3000);
                                     } else if (song.unavailable) {
                                         setTimeout(() => {
-                                            skip("Song has been recently flagged as unavailable for all users. Please pick another song");
-                                            setTimeout(() => {
-                                                bot.moderateMoveDJ(user, 1);
-                                            }, 6000);
+                                            skip("Song has been recently flagged as unavailable for all users. Please pick another song", true);
                                         }, 3000);
                                     } else if (!song.theme) {
                                         setTimeout(() => {
