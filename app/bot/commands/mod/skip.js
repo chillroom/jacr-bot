@@ -191,7 +191,7 @@ module.exports = (bot, data) => {
                         }
                         break;
                     default:
-                        bot.sendChat(bot.identifier + "Parameter not recognised, but you can suggest it here: https://bitbucket.org/dubbot/dubbot/issues?status=new&status=open");
+                        bot.sendChat(bot.identifier + "Parameter not recognised, but you can suggest it here: https://bitbucket.org/dubbot/illumibot/");
                     }
                 }
             } else {
