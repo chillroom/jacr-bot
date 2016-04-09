@@ -21,7 +21,7 @@ new DubAPI({
     }
     bot.log("info", "BOT", "DubAPI Version: " + bot.version);
     bot.on("connected", (name) => {
-        bot.sendChat(bot.identifier + "online! ver: " + pkg.version);
+        // bot.sendChat(bot.identifier + "online! ver: " + pkg.version);
         bot.log("info", "BOT", "Bot Version: " + pkg.version);
         bot.log("info", "BOT", "Bot connected to: " + name);
         bot.log("info", "BOT", "Bot ID: " + bot._.self.id);
