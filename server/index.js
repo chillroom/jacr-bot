@@ -22,9 +22,9 @@ server.connection({
 
 server.register([
     {
-        register: require(process.cwd() + "/app/server/src/plugins/db")
+        register: require(process.cwd() + "/server/src/plugins/db")
     }, {
-        register: require(process.cwd() + "/app/server/src/plugins/logger"),
+        register: require(process.cwd() + "/server/src/plugins/logger"),
         options: {
             timeformat: "YYYY-MM-DD HH:mm:ss:SSS",
             output: {
@@ -34,7 +34,7 @@ server.register([
             }
         }
     }, {
-        register: require(process.cwd() + "/app/server/src/plugins/jwt")
+        register: require(process.cwd() + "/server/src/plugins/jwt")
     }, {
         register: require("hapi-authorization"),
         options: {

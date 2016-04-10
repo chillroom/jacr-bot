@@ -1,6 +1,6 @@
 "use strict";
 
-const controller = require(process.cwd() + "/app/server/src/controllers/api/history/user");
+const controller = require(process.cwd() + "/server/src/controllers/api/history/user");
 
 module.exports = (server) => {
     server.route({

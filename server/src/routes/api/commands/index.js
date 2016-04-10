@@ -1,7 +1,7 @@
 "use strict";
 
 const Joi = require("joi");
-const controller = require(process.cwd() + "/app/server/src/controllers/api/commands");
+const controller = require(process.cwd() + "/server/src/controllers/api/commands");
 
 module.exports = (server) => {
     server.route([{

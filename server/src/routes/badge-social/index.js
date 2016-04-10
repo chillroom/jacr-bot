@@ -1,6 +1,6 @@
 "use strict";
 
-const controller = require(process.cwd() + "/app/server/src/controllers/badge-social");
+const controller = require(process.cwd() + "/server/src/controllers/badge-social");
 
 module.exports = (server) => {
     server.route({

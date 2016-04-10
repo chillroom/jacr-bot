@@ -3,7 +3,7 @@ var Fs = require("fs"),
 
 module.exports = (bot) => {
     var commands = {},
-        cmd = process.cwd() + "/app/bot/commands";
+        cmd = process.cwd() + "/bot/commands";
     const walk = (dir) => {
         Fs.readdirSync(dir).forEach((file) => {
             var _path = Path.resolve(dir, file);

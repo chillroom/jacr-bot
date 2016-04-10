@@ -34,7 +34,7 @@ internals.renderTemplate = (signature, context, callback) => {
     if (internals.templateCache[signature]) {
         callback(null, internals.templateCache[signature](context));
     }
-    const filePath = Path.resolve(process.cwd() + "/app/server/src/emails/", signature);
+    const filePath = Path.resolve(process.cwd() + "/server/src/emails/", signature);
     const options = {
         encoding: "utf-8"
     };

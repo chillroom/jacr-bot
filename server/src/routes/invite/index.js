@@ -1,6 +1,6 @@
 "use strict";
 
-const controller = require(process.cwd() + "/app/server/src/controllers/invite");
+const controller = require(process.cwd() + "/server/src/controllers/invite");
 
 module.exports = (server) => {
     server.route({
