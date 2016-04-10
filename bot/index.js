@@ -74,7 +74,7 @@ new DubAPI({
     });
     connect();
     //setup db
-    bot.db = require(process.cwd() + "/common/db");
+    bot.db = require(process.cwd() + "/db");
 
     //setup > mod ranks
     bot.ranks = ["5615fa9ae596154a5c000000", "5615fd84e596150061000003", "52d1ce33c38a06510c000001"];
