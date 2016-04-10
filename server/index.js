@@ -22,7 +22,7 @@ server.connection({
 
 server.register([
     {
-        register: {require(process.cwd() + "/server/src/plugins/db")}
+        register: require(process.cwd() + "/server/src/plugins/db")
     }, {
         register: require(process.cwd() + "/server/src/plugins/logger"),
         options: {
