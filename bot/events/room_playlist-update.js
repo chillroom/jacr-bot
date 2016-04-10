@@ -21,8 +21,10 @@ module.exports = (bot) => {
                                 bot.sendChat(bot.identifier + msg);
                                 bot.log("info", "ROOM", username + " ( " + user + " ) has been skipped")
                                 if (move) {
-                                    bot.moderateMoveDJ(user, 1);
-                                    bot.log("info", "ROOM", username + " ( " + user + " ) has been moved to the front")
+                                    bot.once("room_playlist-queue-update-dub", () => {
+                                        bot.moderateMoveDJ(user, 0);
+                                        bot.log("info", "ROOM", username + " ( " + user + " ) has been moved to the front v3")
+                                    })
                                 }
                             });
                         };
