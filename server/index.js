@@ -22,7 +22,7 @@ server.connection({
 
 server.register([
     {
-        register: require(process.cwd() + "/server/src/plugins/db")
+        register: {require(process.cwd() + "/server/src/plugins/db")}
     }, {
         register: require(process.cwd() + "/server/src/plugins/logger"),
         options: {
@@ -30,20 +30,6 @@ server.register([
             output: {
                 timestampOpts: {
                     utc: true
-                }
-            }
-        }
-    }, {
-        register: require("hapi-authorization"),
-        options: {
-            roles: ["ADMIN", "MANAGER", "EDITOR"]
-        }
-    }, {
-        register: require("./src/plugins/mailer"),
-        options: {
-            transport: {
-                auth: {
-                    api_key: config.mailer.api_key
                 }
             }
         }
