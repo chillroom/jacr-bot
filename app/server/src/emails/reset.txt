@@ -1,9 +1,0 @@
-Verify Your Account
-
-Hey, {{username}}. We received a request to change your password for your account. If you did not make this request, please ignore this email. Otherwise click on the link below or, copy and paste it into your browser:
-
-{{link}}
-________________________________________________________________________
-This email was sent to  {{email}}
-
-Made by IllumiBot https://illumibot.plugable.info
