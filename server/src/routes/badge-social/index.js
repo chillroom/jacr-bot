@@ -1,8 +1,6 @@
 "use strict";
 
-const controller = require(process.cwd() + "/server/src/controllers/badge-social");
-
-var deliver = (err, resp, body) => {
+var deliver = (err, resp, body, reply) => {
     if (err) {
         return reply({
             status: 200,
@@ -39,7 +37,7 @@ var controller = (req, reply) => {
             token: config.slack.token,
             presence: 1
         }
-    }, deliver)
+    }, (err, resp, body) => { deliver(err, resp, body, reply) })
 };
 
 module.exports = (server) => {
