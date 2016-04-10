@@ -27,9 +27,6 @@
     "eslint": "^1.10.3"
   },
   "scripts": {
-    "preversion": "gulp config",
-    "version": "git add --all",
-    "postversion": "git remote | xargs -L1 git push --all",
     "lint": "node_modules/.bin/eslint app --fix"
   }
 }
