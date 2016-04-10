@@ -13,7 +13,7 @@ server.connection({
     },
     routes: {
         cors: {
-            origin: ["https://*.plugable.info", "https://*.dubtrack.fm", "http://just-a-chill-room.net"],
+            origin: ["https://api.just-a-chill-room.net", "https://*.dubtrack.fm", "http://just-a-chill-room.net"],
             headers: ["Accept", "Authorization", "Content-Type", "If-None-Match", "Accept-language"],
             credentials: true
         }
