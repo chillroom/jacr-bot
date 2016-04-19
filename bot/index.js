@@ -73,8 +73,12 @@ new DubAPI({
         bot.log("error", "BOT", err);
     });
     connect();
+
     //setup db
     bot.db = require(process.cwd() + "/db");
+
+    // set up scrobbler
+    // bot.lastfm = require("./lastfm")
 
     //setup > mod ranks
     bot.ranks = ["5615fa9ae596154a5c000000", "5615fd84e596150061000003", "52d1ce33c38a06510c000001"];

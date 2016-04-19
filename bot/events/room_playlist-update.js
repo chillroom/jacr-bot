@@ -5,6 +5,7 @@
 "use strict";
 
 var moment = require("moment")
+var sprintf = require("sprintf-js").sprintf
 
 module.exports = (bot) => {
     bot.on("room_playlist-update", (data) => {onUpdate(bot, data)})
@@ -23,17 +24,25 @@ function onUpdate(bot, data) {
     onUpdateLog(bot, data);
 }
 
+function botLogUser(bot, mode, scope, message, user) {
+    if (user == null) {
+        user = {
+            username: "?",
+            id: "?"
+        }
+    }
+
+    var username = sprintf("%s (%s)", user.id, user.username);
+    bot.log(mode, scope, sprintf(message, username))
+}
+
+
 function onUpdateLog(bot, data) {
     if (typeof(data.media) === "undefined") {
-        return;
-    }
-    else if (typeof(data.user) === "undefined") {
         return
     }
 
-    const user = data.user.id;
-    const username = data.user.username
-    bot.log("info", "ROOM", username + " ( " + user + " ) is now playing")
+    botLogUser(bot, "info", "ROOM", "%s is now playing", data.user)
 
     bot.db.models.songs.findOne({
         fkid: data.media.fkid
@@ -45,11 +54,13 @@ function onUpdateLog(bot, data) {
         const skip = (msg, move) => {
             bot.moderateSkip(() => {
                 bot.sendChat(bot.identifier + msg);
-                bot.log("info", "ROOM", username + " ( " + user + " ) has been skipped")
+                botLogUser(bot, "info", "ROOM", "%s has been skipped", data.user)
                 if (move) {
                     bot.once("room_playlist-queue-update-dub", () => {
-                        bot.moderateMoveDJ(user, 0);
-                        bot.log("info", "ROOM", username + " ( " + user + " ) has been moved to the front v3")
+                        if (data.user != null) {
+                            bot.moderateMoveDJ(data.user, 0);
+                        }
+                        botLogUser(bot, "info", "ROOM", "%s has been moved to the front", data.user)
                     })
                 }
             });
@@ -83,8 +94,8 @@ function onUpdateLog(bot, data) {
             const lastPlay = new Date(song.lastPlay);
             const compare = new Date(date);
             if (song.plays > doc[0].avgPlays && moment(lastPlay).isAfter(compare)) {
-                bot.log("info", "ROOM", username + " ( " + user + " ) is playing an OP song")
-                skip("Song has been recently flagged as overplayed. Please pick another song.", true);
+                botLogUser(bot, "info", "ROOM", "%s is playing an OP song", data.user)
+                skip("This song appears to be overplayed. Please pick another song.", true);
             } else {
                 if (song.forbidden) {
                     setTimeout(() => {
