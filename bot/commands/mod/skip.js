@@ -114,7 +114,7 @@ module.exports = (bot, data) => {
                             bot.moderateMoveDJ(DJ.id, 1);
                         }, 5000);
                         break;
-                    case "unv":
+                    case "unav":
                         bot.db.models.songs.findOne({
                             fkid: media.fkid
                         }, (err, doc) => {
@@ -132,7 +132,7 @@ module.exports = (bot, data) => {
                             bot.moderateMoveDJ(DJ.id, 1);
                         }, 5000);
                         break;
-                    case "unvailable":
+                    case "unavailable":
                         bot.db.models.songs.findOne({
                             fkid: media.fkid
                         }, (err, doc) => {
