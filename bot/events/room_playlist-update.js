@@ -27,7 +27,7 @@ function onUpdateLog(bot, data) {
     if (typeof(data.media) === "undefined") {
         return;
     }
-    else if (typeof(data.media) === "undefined") {
+    else if (typeof(data.user) === "undefined") {
         return
     }
 
