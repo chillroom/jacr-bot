@@ -58,7 +58,7 @@ function onUpdateLog(bot, data) {
                 if (move) {
                     bot.once("room_playlist-queue-update-dub", () => {
                         if (data.user != null) {
-                            bot.moderateMoveDJ(data.user, 0);
+                            bot.moderateMoveDJ(data.user.id, 0);
                         }
                         botLogUser(bot, "info", "ROOM", "%s has been moved to the front", data.user)
                     })
