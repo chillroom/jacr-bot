@@ -22,6 +22,7 @@ function onUpdate(bot, data) {
 
     onUpdateEmoji(bot, data);
     onUpdateLog(bot, data);
+    onUpdateLastfm(bot, data)
 }
 
 function botLogUser(bot, mode, scope, message, user) {
@@ -36,6 +37,38 @@ function botLogUser(bot, mode, scope, message, user) {
     bot.log(mode, scope, sprintf(message, username))
 }
 
+function onUpdateLastfm(bot, data) {
+    var result = {}
+
+    if (data.lastPlay.media != null) {
+        result.scrobble = {
+            title: data.lastPlay.media.name,
+            duration: data.lastPlay.media.songLength / 1000
+        }
+    }
+    
+    if (data.media != null) {
+        result.nowPlaying = {
+            title: data.media.name,
+            duration: data.media.songLength / 1000
+        }
+    }
+
+    if (result.scrobble || result.nowPlaying) {
+        const config = require(process.cwd() + "/config");
+        
+        var json = JSON.stringify(result)
+
+
+        const execFile = require('child_process').execFile;
+        execFile("/home/qaisjp/jacr/illumibot/bot/events/lastfm", [json], {env: config.lastfm}, (err, stdout) => {
+            if (err != null) {
+                bot.log("debug", "lastfm_err", err)
+            }
+            bot.log("debug", "lastfm_stdout", stdout)
+        })
+    }
+}
 
 function onUpdateLog(bot, data) {
     if (typeof(data.media) === "undefined") {

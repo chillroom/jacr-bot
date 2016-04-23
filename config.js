@@ -14,5 +14,12 @@ module.exports = {
     message: process.env.SLACK_MESSAGE,
     token: process.env.SLACK_TOKEN
   },
-  socialLink: process.env.SOCIAL_LINK
+  socialLink: process.env.SOCIAL_LINK,
+
+  "lastfm": {
+    LFM_APIKEY: process.env.LFM_APIKEY,
+    LFM_APISECRET: process.env.LFM_APISECRET,
+    LFM_USERNAME: process.env.LFM_USERNAME,
+    LFM_PASSWORD: process.env.LFM_PASSWORD
+  }
 };
