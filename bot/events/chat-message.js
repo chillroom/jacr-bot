@@ -1,41 +1,44 @@
+// jshint esversion: 6
+// jshint strict: true
+// jshint node: true
+// jshint asi: true
+"use strict";
+
 var Fs = require("fs"),
     Path = require("path");
 
 module.exports = (bot) => {
-    var commands = {},
-        cmd = process.cwd() + "/bot/commands";
-    const walk = (dir) => {
-        Fs.readdirSync(dir).forEach((file) => {
-            var _path = Path.resolve(dir, file);
-            Fs.stat(_path, (err, stat) => {
-                if (stat && stat.isDirectory()) {
-                    walk(_path);
-                } else {
-                    if (file.indexOf(".js") > -1) {
-                        // add extra commands set in file if they exist
-                        if(typeof(require(_path).extra) !== "undefined") {
-                            if(Array.isArray(require(_path).extra)) {
-                                // add each command in array into overall commands
-                                require(_path).extra.forEach((command) => {
-                                    commands[command] = require(_path);
-                                });
-                            }
-                            else {
-                                throw new TypeError("Invalid extra commands export for file: " + _path);
-                            }
+    var commands = {};
+    var dir = process.cwd() + "/bot/commands";
+    
+    Fs.readdirSync(dir).forEach((file) => {
+        var _path = Path.resolve(dir, file);
+        Fs.stat(_path, (err, stat) => {
+            if (stat && !stat.isDirectory()) {
+                if (file.indexOf(".js") > -1) {
+                    // add extra commands set in file if they exist
+                    if(typeof(require(_path).extra) !== "undefined") {
+                        if(Array.isArray(require(_path).extra)) {
+                            // add each command in array into overall commands
+                            require(_path).extra.forEach((command) => {
+                                commands[command] = require(_path);
+                            });
                         }
-                        commands[file.split(".")[0]] = require(_path);
+                        else {
+                            throw new TypeError("Invalid extra commands export for file: " + _path);
+                        }
                     }
+                    commands[file.split(".")[0]] = require(_path);
                 }
-            });
+            }
         });
-    };
-    walk(cmd);
+    });
+
     bot.on("chat-message", (data) => {
         if (typeof(data.user) !== "undefined") {
             if (data.message.match(/(\[AFK\].*https?:\/\/.*\.(?:png|jpg|gif))/i)) {
                 bot.moderateDeleteChat(data.raw.chatid);
-                bot.sendChat(bot.identifier + "@" + data.user.username + " nitroghost is a sour puss and has banned image/gif AFK responses. pls change it, k thanks bai!");
+                bot.sendChat(bot.identifier + "@" + data.user.username + " - image/gif AFK responses are not allowed.");
             } else if (data.message.match(/stg\.plug\.dj/i)) {
               bot.moderateDeleteChat(data.raw.chatid);
               // bot.sendChat(bot.identifier + "@" + data.user.username + " please do not post links to plug mmkay?");
