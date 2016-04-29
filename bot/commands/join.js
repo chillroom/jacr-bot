@@ -16,17 +16,16 @@ module.exports = (bot, data) => {
             if (!bot.getQueue().some((v) => { return data.user.id.indexOf(v.uid) >= 0; })) {
                 return bot.sendChat(bot.identifier + "@" + data.user.username + " you must be in the queue to enter the raffle!");
             }
-            if (bot.getQueuePosition(data.user.id) === 0) {
+            else if (bot.getQueuePosition(data.user.id) === 0) {
                 return bot.sendChat(bot.identifier + "@" + data.user.username + " you're already at #1!");
             }
-            bot.moderateDeleteChat(data.raw.chatid, () => {
-                doc.raffle.users.push({"id": data.user.id, "username": data.user.username});
-                doc.save((err) => {
-                    if (err) {
-                        bot.log("error", "MONGO", err);
-                    }
-                });
+            doc.raffle.users.push({"id": data.user.id, "username": data.user.username});
+            doc.save((err) => {
+                if (err) {
+                    bot.log("error", "MONGO", err);
+                }
             });
+            return bot.sendChat("@" + data.user.username + ", you have entered the raffle!");
         }
     });
 };
