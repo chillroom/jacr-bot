@@ -2,6 +2,7 @@
 // jshint strict: true
 // jshint node: true
 // jshint asi: true
+// Copyright (c) Qais Patankar 2016 - MIT License
 "use strict";
 
 var Raffle = {
@@ -149,14 +150,4 @@ Raffle.updateState = function(bot, forceStart) {
     } )
 }
 
-
 module.exports = Raffle
-
-// bot.db.models.settings.findOne({id: "s3tt1ng5"}, (err, doc) => {
-//     if (err) { bot.log("error", "MONGO", err); return; }
-
-// })
- 
-// doc.save((err) => {
-
-// })
