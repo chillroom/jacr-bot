@@ -79,6 +79,7 @@ function docCover(processor) {
 
 Raffle.start = docCover(function(bot, doc) {
     doc.raffle.started = true;
+    doc.raffle.nextRaffleSong = doc.songCount + 13
     return (bot) => Raffle.updateState(bot, true)
 })
 
@@ -138,7 +139,7 @@ Raffle.updateState = function(bot, forceStart) {
         }
 
         // We should not start if we don't meet the interval requirements
-        if (doc.songCount && doc.raffle.interval !== 0) { return }
+        if (doc.songCount < doc.raffle.nextRaffleSong) { return }
 
         var raffleCallback = Raffle.start(bot, doc)
 

@@ -28,12 +28,11 @@ module.exports = (db, mongoose) => {
                     default: false
                 }
             },
-            interval: {
+            nextRaffleSong: {
                 type: Number,
-                default: 12
+                default: -1
             },
-            users: [],
-            lockedNumberOne: String
+            users: []
         },
         emoji: {
             paused: {

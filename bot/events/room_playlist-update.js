@@ -66,7 +66,7 @@ function onUpdateLastfm(bot, data) {
             if (err != null) {
                 bot.log("debug", "lastfm_err", err)
             }
-            bot.log("debug", "lastfm_stdout", stdout)
+            // bot.log("debug", "lastfm_stdout", stdout)
         })
     }
 }
