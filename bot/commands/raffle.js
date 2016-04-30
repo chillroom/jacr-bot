@@ -14,7 +14,7 @@ module.exports = (bot, data) => {
     }
 
     if (data.params.length === 0) {
-        bot.sendChat("@"+data.user.username+": !raffle (enable|disable|start|stop)")
+        bot.sendChat("@"+data.user.username+": !raffle (enable|disable|start|stop|status)")
         return
     }
 
@@ -43,6 +43,16 @@ module.exports = (bot, data) => {
         case "stop":
             onSave = Raffle.stop(bot,doc);
             bot.sendChat("/me stopped the current raffle");
+            break;
+        case "status":
+            var _, status = Raffle.status(bot, doc)
+            var message = "Raffles: "
+            message += status.enabled ? "enabled" : "disabled"
+            message += ", "
+            message += status.started ? "active" : "waiting"
+            message += ", "
+            message += "next raffle in " + status.songsLeft + " songs"
+            bot.sendChat(message)
             break;
         }
 

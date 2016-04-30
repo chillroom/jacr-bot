@@ -2,6 +2,7 @@ const DubAPI = require("dubapi");
 const log = require("jethro");
 const pkg = require(process.cwd() + "/package.json");
 const config = require(process.cwd() + "/config");
+const Raffle = require("./raffle.js")
 
 log.setUTC(true);
 
@@ -17,15 +18,13 @@ new DubAPI({
     bot.log = require("jethro");
     bot.log.setUTC(true);
 
-    function connect() {
-        bot.connect(config.bot.URL);
-    }
     bot.log("info", "BOT", "DubAPI Version: " + bot.version);
     bot.on("connected", (name) => {
         // bot.sendChat(bot.identifier + "online! ver: " + pkg.version);
         bot.log("info", "BOT", "Bot Version: " + pkg.version);
         bot.log("info", "BOT", "Bot connected to: " + name);
         bot.log("info", "BOT", "Bot ID: " + bot._.self.id);
+        Raffle.updateState(bot)
         var users = bot.getUsers();
         users.forEach((user) => {
             if (typeof(user.id) !== "undefined") {
@@ -73,10 +72,13 @@ new DubAPI({
     bot.on("error", function(err) {
         bot.log("error", "BOT", err);
     });
-    connect();
+
 
     //setup db
     bot.db = require(process.cwd() + "/db");
+    
+    // connect
+    bot.connect(config.bot.URL);
 
     //setup > mod ranks
     bot.ranks = ["5615fa9ae596154a5c000000", "5615fd84e596150061000003", "52d1ce33c38a06510c000001"];

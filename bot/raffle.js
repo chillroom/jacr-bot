@@ -53,12 +53,12 @@ function warningTimerCallback(bot) {
     })
 }
 
-function docCover(processor) {
+function docCover(processor, onSave) {
     return function(bot, doc) {
         // Were we already given a document?
         // It is the caller's responsibility to flush docs.
         if (doc != null) {
-            return processor.apply(this, arguments)
+            return onSave || null, processor.apply(this, arguments)
         }
 
         bot.db.models.settings.findOne({id: "s3tt1ng5"}, (err, doc) => {
@@ -71,8 +71,8 @@ function docCover(processor) {
 
             doc.save((err) => {
                 if (err) { bot.log("error", "MONGO", err); }
-                if (callback != null) { callback(bot) }
-            })
+                if (onSave != null) { onSave(bot) }
+            })  
         })
     }
 }
@@ -80,8 +80,7 @@ function docCover(processor) {
 Raffle.start = docCover(function(bot, doc) {
     doc.raffle.started = true;
     doc.raffle.nextRaffleSong = doc.songCount + 13
-    return (bot) => Raffle.updateState(bot, true)
-})
+}, (bot) => Raffle.updateState(bot, true))
 
 Raffle.stop = docCover(function(bot, doc) {
     doc.raffle.users = [];
@@ -96,12 +95,19 @@ Raffle.stop = docCover(function(bot, doc) {
 
 Raffle.enable = docCover(function(bot, doc) {
     doc.raffle.enabled = true
-    return (bot) => Raffle.updateState(bot, true)
-})
+}, (bot) => Raffle.updateState(bot))
 
 Raffle.disable = docCover(function(bot, doc) {
     Raffle.stop(bot, doc)
     doc.raffle.enabled = false
+})
+
+Raffle.status = docCover(function(bot, doc) {
+    return {
+        started: doc.raffle.started,
+        enabled: doc.raffle.enabled,
+        songsLeft: doc.raffle.nextRaffleSong - doc.songCount
+    }
 })
 
 // This checks whether we need to start any raffle timers
@@ -140,13 +146,14 @@ Raffle.updateState = function(bot, forceStart) {
 
         // We should not start if we don't meet the interval requirements
         if (doc.songCount < doc.raffle.nextRaffleSong) { return }
-
         var raffleCallback = Raffle.start(bot, doc)
-
+        bot.log("info", "raffle", "Automatically starting a raffle...")
         doc.save( (err) => {
             if (err) { bot.log("error", "MONGO", err); return; }
             bot.sendChat(Raffle.raffleStartingMessage);
-            raffleCallback(bot)
+            if (raffleCallback != null) {
+                raffleCallback(bot)
+            }
         } )
     } )
 }
