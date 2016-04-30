@@ -41,7 +41,7 @@ function botLogUser(bot, mode, scope, message, user) {
 function onUpdateLastfm(bot, data) {
     var result = {}
 
-    if (data.lastPlay.media != null) {
+    if (data.lastPlay != null && data.lastPlay.media != null) {
         result.scrobble = {
             title: data.lastPlay.media.name,
             duration: data.lastPlay.media.songLength / 1000
