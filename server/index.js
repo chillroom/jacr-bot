@@ -42,6 +42,51 @@ server.register([
         server.start(() => {
             logger("info", "API", "server running at " + server.info.uri);
         });
-        require("./src/router.js")(server);
+        
+        require("./src/badge-social.js")(server);
+        server.route({
+            method: "GET",
+            path: "/api/current-song",
+            config: {
+                auth: false
+            },
+            handler: require(process.cwd() + "/server/src/controllers/api/currentSong")
+        });
+
+        server.route({
+            method: "GET",
+            path: "/api/op",
+            config: {
+                auth: false
+            },
+            handler: require(process.cwd() + "/server/src/controllers/api/op")
+        });
+
+        server.route({
+            method: "GET",
+            path: "/api/history/{user}",
+            config: {
+                auth: false
+            },
+            handler: require(process.cwd() + "/server/src/controllers/api/history/user")
+        });
+
+        server.route({
+            method: "GET",
+            path: "/api/history",
+            config: {
+                auth: false
+            },
+            handler: require(process.cwd() + "/server/src/controllers/api/history")
+        });
+
+        server.route({
+            method: "POST",
+            path: "/invite",
+            config: {
+                auth: false
+            },
+            handler: require(process.cwd() + "/server/src/controllers/invite")
+        });
     }
 });
