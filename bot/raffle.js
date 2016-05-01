@@ -43,6 +43,11 @@ function finalTimerCallback(bot) {
 }
 
 function warningTimerCallback(bot) {
+    if (Raffle.finalTimer) {
+        bot.log("error", "RAFFLE", "warningTimerCallback somehow being called again...")
+        return
+    }
+
     bot.db.models.settings.findOne({id: "s3tt1ng5"}, (err, doc) => {
         if (err) { bot.log("error", "MONGO", err); return; }
 
@@ -88,8 +93,12 @@ Raffle.stop = docCover(function(bot, doc) {
 
     if (Raffle.timerStarted) {
         Raffle.timerStarted = false
-        clearTimeout(Raffle.warningTimerCallback)
+        
+        clearTimeout(Raffle.warningTimer)
+        Raffle.warningTimer = null
+        
         clearTimeout(Raffle.finalTimer)
+        Raffle.finalTimer = null
     }
 })
 
@@ -119,6 +128,10 @@ Raffle.updateState = function(bot, forceStart) {
     if (Raffle.timerStarted) { return }
 
     var startRaffleTimer = () => {
+        if (Raffle.finalTimer || Raffle.warningTimer) {
+            bot.log("error", "RAFFLE", "startRaffleTimer somehow being called again...")
+            return
+        }
         Raffle.timerStarted = true
         setTimeout(warningTimerCallback, 100000, bot)
     }
@@ -136,7 +149,7 @@ Raffle.updateState = function(bot, forceStart) {
         if (!doc.raffle.enabled) { return }
 
 
-        if (doc.raffle.started) {
+        if (doc.raffle.started && !Raffle.finalTimer && !Raffle.warningTimer) {
             // Already started database side?
             // Silently start.
             bot.log("info", "raffle", "Silently continuing timers...")
