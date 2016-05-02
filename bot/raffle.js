@@ -22,6 +22,7 @@ function finalTimerCallback(bot) {
         if (numberEntered === 0) {
             bot.sendChat("No one entered the raffle! Be sure to pay attention for the next one!");
             Raffle.stop(bot, doc)
+            doc.save((err) => {if (err) {bot.log("error", "MONGO", err);}});
             return;
         }
         
@@ -140,6 +141,9 @@ Raffle.updateState = function(bot, forceStart) {
         return
     }
 
+    // Require at least five users
+    if (bot.getUsers().length < 5) { return }
+
     // We should check the database and see if we should start
     bot.db.models.settings.findOne( {id: "s3tt1ng5"}, (err, doc) => {
         if (err) { bot.log("error", "MONGO", err); return; }
@@ -158,6 +162,7 @@ Raffle.updateState = function(bot, forceStart) {
 
         // We should not start if we don't meet the interval requirements
         if (doc.songCount < doc.raffle.nextRaffleSong) { return }
+
         var raffleCallback = Raffle.start(bot, doc)
         bot.log("info", "raffle", "Automatically starting a raffle...")
         doc.save( (err) => {
