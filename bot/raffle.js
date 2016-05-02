@@ -15,7 +15,6 @@ var Raffle = {
 }
 
 function finalTimerCallback(bot) {
-    Raffle.timerStarted = false;
     bot.db.models.settings.findOne({id: "s3tt1ng5"}, (err, doc) => {
         if (err) { bot.log("error", "MONGO", err); return; }
 
