@@ -54,7 +54,7 @@ function warningTimerCallback(bot) {
         var numberEntered = doc.raffle.users.length;
         bot.sendChat("The raffle expires in 20 seconds, " + numberEntered + " user" + (numberEntered == 1 ? " is" : "s are") + " participating! Hurry @djs and \"!join\"");
 
-        Raffle.finalTimer = setTimeout(finalTimerCallback, 20000, bot)
+        Raffle.finalTimer = setTimeout(finalTimerCallback, 1000 * 20, bot)
     })
 }
 
@@ -133,7 +133,7 @@ Raffle.updateState = function(bot, forceStart) {
             return
         }
         Raffle.timerStarted = true
-        setTimeout(warningTimerCallback, 100000, bot)
+        setTimeout(warningTimerCallback, 1000 * 60 * 2, bot)
     }
 
     if (forceStart) {
@@ -142,7 +142,10 @@ Raffle.updateState = function(bot, forceStart) {
     }
 
     // Require at least five users
-    if (bot.getUsers().length < 5) { return }
+    if (bot.getQueue().length < 5) {
+        // bot.log("info", "RAFFLE", "There are not enough songs in the queue for a raffle.")
+        return
+    }
 
     // We should check the database and see if we should start
     bot.db.models.settings.findOne( {id: "s3tt1ng5"}, (err, doc) => {
@@ -151,8 +154,7 @@ Raffle.updateState = function(bot, forceStart) {
         // Not enabled?
         if (!doc.raffle.enabled) { return }
 
-
-        if (doc.raffle.started && !Raffle.finalTimer && !Raffle.warningTimer) {
+        if (doc.raffle.started) {
             // Already started database side?
             // Silently start.
             bot.log("info", "raffle", "Silently continuing timers...")
