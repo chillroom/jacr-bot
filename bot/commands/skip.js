@@ -20,7 +20,7 @@ module.exports = (bot, data) => {
     }, 5000);
     bot.moderateSkip();
     bot.log("info", "SKIP", user + " skipped the current song.")
-    
+
     if (data.params.length == 0) {
         bot.sendChat(bot.identifier + "No reason given. If you supply a reason (op, forbidden, unavailable, nsfw, theme), I will be able to autoskip it next time");
         return
@@ -125,42 +125,7 @@ module.exports = (bot, data) => {
         break;
     case "troll":
         if (bot.ranks.indexOf(DJ.role) === -1) {
-            bot.db.models.person.findOne({
-                username: user
-            }, (err, banner) => {
-                if (err) {
-                    bot.log("error", "BOT", err);
-                } else {
-                    banner.rank.banCount++;
-                    banner.save(() => {
-                        bot.db.models.person.findOne({
-                            uid: DJ.id
-                        }, (err, ban) => {
-                            if (err) {
-                                bot.log("error", "BOT", err);
-                            } else {
-                                if (!ban) {
-                                    const doc = {
-                                        username: DJ.username,
-                                        uid: DJ.id,
-                                        "ban.count": 0
-                                    };
-                                    ban = new bot.db.models.person(doc);
-                                }
-                                ban.ban.lastBan = new Date();
-                                ban.ban.count++;
-                                ban.ban.by = banner.username;
-                                ban.save(() => {
-                                    bot.db.models.bans.create({
-                                        _person: ban._id
-                                    });
-                                });
-                                bot.moderateBanUser(DJ.id, 0);
-                            }
-                        });
-                    });
-                }
-            });
+            bot.moderateBanUser(DJ.id, 0);
         }
         break;
     default:
