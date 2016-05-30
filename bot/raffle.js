@@ -54,7 +54,7 @@ function warningTimerCallback(bot) {
         var numberEntered = doc.raffle.users.length;
         bot.sendChat("The raffle expires in 20 seconds, " + numberEntered + " user" + (numberEntered == 1 ? " is" : "s are") + " participating! Hurry @djs and \"!join\"");
 
-        Raffle.finalTimer = setTimeout(finalTimerCallback, 1000 * 20, bot)
+        Raffle.finalTimer = setTimeout(finalTimerCallback, 1000 * 20, bot) // 20 seconds = 1000 milliseconds (1 second)
     })
 }
 
@@ -63,7 +63,12 @@ function docCover(processor, onSave) {
         // Were we already given a document?
         // It is the caller's responsibility to flush docs.
         if (doc != null) {
-            return onSave || null, processor.apply(this, arguments)
+        	var results = processor.apply(this, arguments)
+        	if (results != null) {
+        		return onSave||null, results
+        	}
+        	
+            return onSave || null
         }
 
         bot.db.models.settings.findOne({id: "s3tt1ng5"}, (err, doc) => {
@@ -85,6 +90,7 @@ function docCover(processor, onSave) {
 Raffle.start = docCover(function(bot, doc) {
     doc.raffle.started = true;
     doc.raffle.nextRaffleSong = doc.songCount + 13
+    return null
 }, (bot) => Raffle.updateState(bot, true))
 
 Raffle.stop = docCover(function(bot, doc) {
@@ -100,15 +106,18 @@ Raffle.stop = docCover(function(bot, doc) {
         clearTimeout(Raffle.finalTimer)
         Raffle.finalTimer = null
     }
+    return null
 })
 
 Raffle.enable = docCover(function(bot, doc) {
     doc.raffle.enabled = true
+    return null
 }, (bot) => Raffle.updateState(bot))
 
 Raffle.disable = docCover(function(bot, doc) {
     Raffle.stop(bot, doc)
     doc.raffle.enabled = false
+    return null
 })
 
 Raffle.status = docCover(function(bot, doc) {
@@ -133,7 +142,7 @@ Raffle.updateState = function(bot, forceStart) {
             return
         }
         Raffle.timerStarted = true
-        setTimeout(warningTimerCallback, 1000 * 60 * 2, bot)
+        setTimeout(warningTimerCallback, 1000 * 100, bot) // 100 seconds = 1 minutes 40 seconds
     }
 
     if (forceStart) {
