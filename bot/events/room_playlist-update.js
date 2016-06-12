@@ -124,9 +124,9 @@ function onUpdateLog(bot, data) {
                 bot.log("error", "MONGO", err);
                 return;
             } 
-            const date = new Date() - (1000 * 60 * 60 * 24 * 14);
             const lastPlay = new Date(song.lastPlay);
-            const compare = new Date(date);
+            const date = new Date() - (1000 * 60 * 60 * 24 * 14); // 14 days ago
+            const compare = new Date(date); 
             if (song.plays > doc[0].avgPlays && moment(lastPlay).isAfter(compare)) {
                 botLogUser(bot, "info", "ROOM", "%s is playing an OP song", data.user)
                 skip("This song appears to be overplayed. Please pick another song.", true);
