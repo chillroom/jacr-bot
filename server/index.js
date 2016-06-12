@@ -80,13 +80,5 @@ server.register([
             handler: require(process.cwd() + "/server/src/controllers/api/history")
         });
 
-        server.route({
-            method: "POST",
-            path: "/invite",
-            config: {
-                auth: false
-            },
-            handler: require(process.cwd() + "/server/src/controllers/invite")
-        });
     }
 });
