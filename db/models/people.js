@@ -15,28 +15,12 @@ module.exports = (db, mongoose) => {
         lastChat: {
             type: Date
         },
-        ban: {
-            lastBan: {
-                type: Date
-            },
-            count: {
-                type: Number,
-                default: 0
-            },
-            by: {
-                type: String
-            }
-        },
         rank: {
             name: {
                 type: String
             },
             rid: {
                 type: String
-            },
-            banCount: {
-                type: Number,
-                default: 0
             }
         }
     });
