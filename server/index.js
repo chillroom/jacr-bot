@@ -43,7 +43,6 @@ server.register([
             logger("info", "API", "server running at " + server.info.uri);
         });
         
-        require("./src/badge-social.js")(server);
         server.route({
             method: "GET",
             path: "/api/current-song",
