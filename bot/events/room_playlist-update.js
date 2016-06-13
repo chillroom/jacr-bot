@@ -20,8 +20,6 @@ function onUpdate(bot, data) {
         bot.started = true
         return
     }
-
-    onUpdateEmoji(bot, data);
     onUpdateLog(bot, data);
     onUpdateLastfm(bot, data)
 }
@@ -198,78 +196,4 @@ function onUpdateLog(bot, data) {
             });
         });
     });
-}
-
-function onUpdateEmoji(bot, data) {
-    const date = new Date();
-
-    //for the off chance that the bot is started for the first time during a period where it needs to track emojis
-    //need to set a time out to make sure the settings in bot.sendMotd() has been created.
-    setTimeout(() => {
-        //checks to see if it's within the first hour of the day
-        if (date.getUTCHours() === 0) {
-            bot.db.models.settings.findOne({
-                id: "s3tt1ng5"
-            }, (err, doc) => {
-                if (err) {
-                    bot.log("error", "MONGO", err);
-                }
-                if (!doc.emoji.paused) {
-                    var emojis = [];
-                    bot.emojis.forEach((emoji, index, arr) => {
-                        bot.db.models.emojiCount.findOne({
-                            emoji: emoji
-                        }, (err, doc) => {
-                            if (err) {
-                                bot.log("error", "MONGO", err);
-                            }
-                            if (doc) {
-                                const count = {
-                                    emojiName: emoji,
-                                    count: doc.count
-                                };
-                                emojis.push(count);
-                                doc.count = 0;
-                                doc.save();
-                            }
-                        });
-                        if (index === arr.length - 1) {
-                            setTimeout(() => {
-                                bot.db.models.emojiTrackDays.create({
-                                    emojis: emojis
-                                }, (err) => {
-                                    if (err) {
-                                        bot.log("error", "MONGO", err);
-                                    }
-
-                                });
-                            }, 6000);
-                        }
-                    });
-                    doc.emoji.paused = true;
-                    doc.save();
-                }
-            });
-
-            bot.db.models.chat.find({}).sort({
-                time: -1
-            }).skip(100).remove().exec((err) => {
-                if (err) {
-                    bot.log("error", "MONGO", err);
-                }
-            });
-        } else {
-            bot.db.models.settings.findOne({
-                id: "s3tt1ng5"
-            }, (err, doc) => {
-                if (err) {
-                    bot.log("error", "MONGO", err);
-                }
-                if (doc.emoji.paused) {
-                    doc.emoji.paused = false;
-                    doc.save();
-                }
-            });
-        }
-    }, 6000);
 }

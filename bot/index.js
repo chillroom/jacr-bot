@@ -92,8 +92,7 @@ new DubAPI({
     bot.protection = false;
     //stop bot from inputting song/history twice
     bot.started = false;
-    //setup emojis
-    bot.emojis = require("./emojis");
+
     require("./events")(bot);
     require("./utils")(bot);
     module.exports = bot;

@@ -130,34 +130,7 @@ module.exports = (bot) => {
                             }
                         }
                     }
-                    //check to see if any of the words match an emoji
-                    else if (bot.emojis.indexOf(token) > -1) {
-                        //if it does, find or create db entery, incrementing the count
-                        setTimeout(() => {
-                            bot.db.models.emojiCount.findOne({
-                                emoji: token
-                            }, (err, doc) => {
-                                if (doc) {
-                                    doc.count++;
-                                    doc.save();
-                                } else {
-                                    doc = {
-                                        emoji: token,
-                                        count: 0
-                                    };
-                                    doc.count++;
-                                    bot.db.models.emojiCount.create(doc, (err) => {
-                                        if (err) {
-                                            bot.log("error", "BOT", err);
-                                        }
-                                    });
-                                }
-                                if (err) {
-                                    bot.log("error", "BOT", err);
-                                }
-                            });
-                        }, 2000);
-                    }
+
                 });
                 //DB store
                 //only storing the chat ID's, user IDs, and username so that the DB file doesn't get too big yo!
