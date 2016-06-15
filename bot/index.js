@@ -85,6 +85,18 @@ new DubAPI({
         });
     };
 
+    module.exports = bot;
+});
+
+var started = false;
+function onReady(bot) {
+    if (started) { return bot.log("warning", "loader", "Trying to start when already started") }
+    if (bot.db == null) { return bot.log("warning", "loader", "Mongo isn't ready") }
+    if (bot.rethink == null) { return bot.log("warning", "loader", "RethinkDB isn't ready") }
+    if (bot.dubtrackReady == null) { return bot.log("warning", "loader", "Dubtrack isn't ready") }
+    bot.log("info", "loader", "We are ready!")
+    started = true
+
     const baseDir = process.cwd() + "/bot/";
     const folders = ["events"]
     for (var i = folders.length - 1; i >= 0; i--) {
@@ -97,17 +109,7 @@ new DubAPI({
 
     }
 
-    module.exports = bot;
-});
 
-var started = false;
-function onReady(bot) {
-    if (started) { return bot.log("warning", "loader", "Trying to start when already started") }
-    if (bot.db == null) { return bot.log("warning", "loader", "Mongo isn't ready") }
-    if (bot.rethink == null) { return bot.log("warning", "loader", "RethinkDB isn't ready") }
-    if (bot.dubtrackReady == null) { return bot.log("warning", "loader", "Dubtrack isn't ready") }
-    bot.log("info", "loader", "We are ready!")
-    started = true
 
     Raffle.updateState(bot)
     
