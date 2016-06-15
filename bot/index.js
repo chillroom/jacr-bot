@@ -25,8 +25,8 @@ new DubAPI({
         bot.log("info", "BOT", "Bot Version: " + pkg.version);
         bot.log("info", "BOT", "Bot connected to: " + name);
         bot.log("info", "BOT", "Bot ID: " + bot._.self.id);
-        
-        onReady(bot)
+        bot.dubtrackReady = true
+        onReady(bot)   
     });
 
     bot.on("disconnected", (name) => {
@@ -39,7 +39,10 @@ new DubAPI({
 
 
     //setup mongodb
-    bot.db = require(process.cwd() + "/db");
+    require(process.cwd() + "/db")( (db) => {
+        bot.db = db
+        onReady(bot)
+    })
 
     require("./db.js")(bot.log, (conn) => {
         bot.rethink = conn
@@ -97,10 +100,14 @@ new DubAPI({
     module.exports = bot;
 });
 
-
+var started = false;
 function onReady(bot) {
+    if (started) { return bot.log("warning", "loader", "Trying to start when already started") }
     if (bot.db == null) { return bot.log("warning", "loader", "Mongo isn't ready") }
     if (bot.rethink == null) { return bot.log("warning", "loader", "RethinkDB isn't ready") }
+    if (bot.dubtrackReady == null) { return bot.log("warning", "loader", "Dubtrack isn't ready") }
+    bot.log("info", "loader", "We are ready!")
+    started = true
 
     Raffle.updateState(bot)
     

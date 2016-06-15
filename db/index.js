@@ -12,12 +12,14 @@ mongoose.connect(config.mongoURL, {
 });
 
 const db = mongoose.connection;
+var callback;
 
 db.on("error", (err) => {
     log("error", "MONGO", "Connection error:" + err);
 });
 db.on("connected", () => {
     log("info", "MONGO", "Connected!");
+    callback(db)
 });
 db.on("disconnected", () => {
     log("warning", "MONGO", "Disconnected!");
@@ -33,4 +35,6 @@ db.on("reconnected", () => {
 
 require("./models")(db, mongoose);
 
-module.exports = db;
+module.exports = function(cb) {
+    callback = cb
+}
