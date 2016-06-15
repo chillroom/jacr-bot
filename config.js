@@ -21,5 +21,11 @@ module.exports = {
     LFM_APISECRET: process.env.LFM_APISECRET,
     LFM_USERNAME: process.env.LFM_USERNAME,
     LFM_PASSWORD: process.env.LFM_PASSWORD
+  },
+
+  rethinkdb: {
+    database: process.env.RETHINKDB_DATABSE,
+    username: process.env.RETHINKDB_USERNAME,
+    password: process.env.RETHINKDB_PASSWORD
   }
 };
