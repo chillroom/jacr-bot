@@ -35,99 +35,97 @@ module.exports = (bot) => {
     });
 
     bot.on("chat-message", (data) => {
-        if (typeof(data.user) !== "undefined") {
-            if (data.message.match(/(\[AFK\].*https?:\/\/.*\.(?:png|jpg|gif))/i)) {
-                bot.moderateDeleteChat(data.raw.chatid);
-                bot.sendChat(bot.identifier + "@" + data.user.username + " - image/gif AFK responses are not allowed.");
-            } else if (data.message.match(/stg\.plug\.dj/i)) {
-              bot.moderateDeleteChat(data.raw.chatid);
-              // bot.sendChat(bot.identifier + "@" + data.user.username + " please do not post links to plug mmkay?");
-            } else {
-                bot.db.models.person.findOne({
+        if (typeof(data.user) === "undefined") {
+            return
+        }
+
+        if (data.message.match(/(\[AFK\].*https?:\/\/.*\.(?:png|jpg|gif))/i)) {
+            bot.moderateDeleteChat(data.raw.chatid);
+            bot.sendChat(bot.identifier + "@" + data.user.username + " - image/gif AFK responses are not allowed.");
+            return
+        } 
+
+
+        bot.db.models.person.findOne({
+            uid: data.user.id
+        }, (err, person) => {
+            if (err) {
+                bot.log("error", "BOT", err);
+                return
+            } 
+
+            if (!person) {
+                person = new bot.db.models.person({
                     uid: data.user.id
-                }, (err, person) => {
-                    if (err) {
-                        bot.log("error", "BOT", err);
-                    } else {
-                        if (!person) {
-                            person = new bot.db.models.person({
-                                uid: data.user.id
-                            });
-                        }
-
-                        person.username = data.user.username;
-                        person.dubs = data.user.dubs;
-                        person.lastChat = new Date();
-                        person.save();
-                    }
-                });
-                var cmd = data.message,
-                    //split the whole message words into tokens
-                    tokens = cmd.split(" "),
-                    // array of the command triggers
-                    parsedCommands = [];
-                //command handler
-                tokens.forEach((token) => {
-                    if (token.charAt(0) === "!" && parsedCommands.indexOf(token.substr(1)) == -1) {
-                        // add the command used to the data sent from the chat to be used later
-                        data.trigger = token.substr(1).toLowerCase();
-                        parsedCommands.push(data.trigger);
-                        //if very first token, it's a command and we need to grab the params (if any) and add to the data sent from chat
-                        if (tokens.indexOf(token) === 0) {
-                            //the params are an array of the remaining tokens
-                            data.params = tokens.slice(1);
-                            //exec command
-                            if (typeof(commands[data.trigger]) !== "undefined") {
-                                commands[data.trigger](bot, data);
-                            } else {
-                                bot.db.models.commands.findOne({
-                                    name: data.trigger
-                                }).populate("aliasOf").exec( (err, doc) => {
-                                    if (err) {
-                                        bot.log("error", "MONGO", err);
-                                    } else {
-                                        if (doc) {
-                                            if (doc.aliasOf) {
-                                                if (doc.cmdType === "img") {
-                                                    const img = doc.aliasOf.response[Math.floor(Math.random() * doc.aliasOf.response.length)];
-                                                    bot.sendChat(img);
-                                                } else if (doc.aliasOf.cmdType === "txt") {
-                                                    const txt = doc.aliasOf.response[Math.floor(Math.random() * doc.aliasOf.response.length)];
-                                                    bot.sendChat(bot.identifier + txt);
-                                                } else if (doc.aliasOf.cmdType === "info") {
-                                                    bot.sendChat(bot.identifier + doc.aliasOf.response);
-                                                }
-                                            } else {
-                                                if (doc.cmdType === "img") {
-                                                    const image = doc.response[Math.floor(Math.random() * doc.response.length)];
-                                                    bot.sendChat(image);
-                                                } else if (doc.cmdType === "txt") {
-                                                    const text = doc.response[Math.floor(Math.random() * doc.response.length)];
-                                                    bot.sendChat(bot.identifier + text);
-                                                } else if (doc.cmdType === "info") {
-                                                    bot.sendChat(bot.identifier + doc.response);
-                                                }
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    }
-
-                });
-                //DB store
-                //only storing the chat ID's, user IDs, and username so that the DB file doesn't get too big yo!
-                const chatSchema = {
-                    username: data.user.username,
-                    chatid: data.raw.chatid
-                };
-                bot.db.models.chat.create(chatSchema, (err) => {
-                    if (err) {
-                        bot.log("error", "BOT", err);
-                    }
                 });
             }
-        }
+
+            person.username = data.user.username;
+            person.dubs = data.user.dubs;
+            person.lastChat = new Date();
+            person.save();
+        });
+
+        var cmd = data.message,
+            //split the whole message words into tokens
+            tokens = cmd.split(" "),
+            // array of the command triggers
+            parsedCommands = [];
+
+        //command handler
+        tokens.forEach((token) => {
+            if (token.charAt(0) === "!" && parsedCommands.indexOf(token.substr(1)) == -1) {}
+            else { return }
+
+            // add the command used to the data sent from the chat to be used later
+            data.trigger = token.substr(1).toLowerCase();
+            parsedCommands.push(data.trigger);
+
+            //if very first token, it's a command and we need to grab the params (if any) and add to the data sent from chat
+            if (tokens.indexOf(token) !== 0) {
+                return
+            }
+
+            //the params are an array of the remaining tokens
+            data.params = tokens.slice(1);
+            //exec command
+            if (typeof(commands[data.trigger]) !== "undefined") {
+                commands[data.trigger](bot, data);
+                return
+            } 
+            
+            bot.db.models.commands.findOne({
+                name: data.trigger
+            }).populate("aliasOf").exec( (err, doc) => {
+                if (err) {
+                    bot.log("error", "MONGO", err);
+                    return
+                } 
+                if (doc) {
+                    if (doc.aliasOf) {
+                        doc = doc.aliasOf
+                    }
+                
+                    if ((doc.cmdType === "img")||(doc.cmdType==="info")) {
+                        const image = doc.response[Math.floor(Math.random() * doc.response.length)];
+                        bot.sendChat(image);
+                    } else if (doc.cmdType === "info") {
+                        bot.sendChat(doc.response);
+                    }
+                }
+            });
+        });
+        //DB store
+        //only storing the chat ID's, user IDs, and username so that the DB file doesn't get too big yo!
+        const chatSchema = {
+            username: data.user.username,
+            chatid: data.raw.chatid
+        };
+        bot.db.models.chat.create(chatSchema, (err) => {
+            if (err) {
+                bot.log("error", "BOT", err);
+            }
+        });
+        
     });
 };
