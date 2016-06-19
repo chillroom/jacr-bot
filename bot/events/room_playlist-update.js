@@ -7,13 +7,14 @@
 var moment = require("moment")
 var sprintf = require("sprintf-js").sprintf
 var Raffle = require("../raffle.js")
+var MOTD = require("../motd.js")
 
 module.exports = (bot) => {
     bot.on("room_playlist-update", (data) => {onUpdate(bot, data)})
 };
 
 function onUpdate(bot, data) {
-    bot.sendMotd()
+    MOTD.onAdvance()
     Raffle.updateState(bot)
 
     if (!bot.started) {

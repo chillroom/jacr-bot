@@ -43,7 +43,7 @@ module.exports = (_bot) => {
 var responses = {}
 const r = require ("rethinkdb")
 function loadResponses() {
-    r.db("jacr").table('responses').filter(r.row.getField("site").eq("dubtrack"), {default:true}).run(bot.rethink, function(err, cursor) {
+    r.table('responses').filter(r.row.getField("site").eq("dubtrack"), {default:true}).run(bot.rethink, function(err, cursor) {
         if (err) throw err;
         cursor.toArray(function(err, result) {
             if (err) throw err;

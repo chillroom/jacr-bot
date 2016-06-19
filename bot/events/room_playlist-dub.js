@@ -12,23 +12,6 @@ module.exports = (bot) => {
                             uid: data.user.id
                         });
                     }
-                    var moderator = {
-                        isMod: false
-                    };
-                    if (bot.isMod(data.user)) {
-                        moderator["type"] = "mod";
-                        moderator["isMod"] = true;
-                    } else if (bot.isManager(data.user)) {
-                        moderator["type"] = "manager";
-                        moderator["isMod"] = true;
-                    } else if (bot.isOwner(data.user)) {
-                        moderator["type"] = "co-owner";
-                        moderator["isMod"] = true;
-                    }
-                    if (moderator.isMod) {
-                        person.rank.name = moderator.type;
-                        person.rank.rid = data.user.role;
-                    }
                     person.username = data.user.username;
                     person.dubs = data.user.dubs;
                     person.save();
