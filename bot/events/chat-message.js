@@ -9,7 +9,7 @@ var Fs = require("fs"),
 var bot
 var commands = {};
 
-module.exports = (_bot) => {
+var ChatMessageEvent = function (_bot) {
     var dir = process.cwd() + "/bot/commands";
     
     Fs.readdirSync(dir).forEach((file) => {
@@ -40,6 +40,12 @@ module.exports = (_bot) => {
     _bot.on("chat-message", onChatMessage)
 };
 
+ChatMessageEvent.AddCommand = function(cmd, fn) {
+    commands[cmd] = fn;
+}
+
+module.exports = ChatMessageEvent
+
 var responses = {}
 const r = require ("rethinkdb")
 function loadResponses() {
@@ -59,6 +65,8 @@ function loadResponses() {
     });
 }
 
+const MOTD = require("../motd.js")
+
 function onChatMessage (data) {
     if (typeof(data.user) === "undefined") {
         return
@@ -69,6 +77,9 @@ function onChatMessage (data) {
         bot.sendChat(bot.identifier + "@" + data.user.username + " - image/gif AFK responses are not allowed.");
         return
     } 
+
+    // Alert the MOTD manager to the message
+    MOTD.onChat();
 
 
     bot.db.models.person.findOne({
