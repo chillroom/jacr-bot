@@ -74,12 +74,12 @@ function onCommand(bot, data) {
     	updateSettings();
     	break;
     case "interval":
-    	var interval = parseInt(data.params[1])
+    	var interval = parseInt(data.params[1]);
     	if (isNaN(interval)) {
-    		bot.sendChat("Could not update MOTD interval")
+    		bot.sendChat("Could not update MOTD interval");
     		return;
     	}
-    	bot.sendChat("Updated MOTD interval to " + interval)
+    	bot.sendChat("Updated MOTD interval to " + interval);
     	MOTD.settings.interval = interval;
     	updateSettings();
     	break;
@@ -93,13 +93,31 @@ function onCommand(bot, data) {
     	bot.sendChat(message)
     	break;
     case "list":
-    	var message = "MOTD messages: ||||    "
+    	var message = "MOTD messages: ||||"
     	message += MOTD.settings.messages.join("    ||||     ")
     	bot.sendChat(message)
     	break;
     case "reload":
     	bot.sendChat("MOTD reloading...");
     	MOTD.reload();
+    	break;
+    case "del":
+    	var k = parseInt(data.params[1]);
+    	if (isNaN(k) || MOTD.settings.messages[k-1] == null) {
+    		bot.sendChat("Could not find MOTD")
+    		return;
+    	}
+    	bot.sendChat("Deleting MOTD \"" + MOTD.settings.messages[k-1] + "\"");
+    	MOTD.settings.messages.splice(k-1, 1);
+    	updateSettings();
+    	break;
+    case "show":
+   	 	var k = parseInt(data.params[1]);
+    	if (isNaN(k) || MOTD.settings.messages[k-1] == null) {
+    		bot.sendChat("Could not find MOTD");
+    		return;
+    	}
+    	bot.sendChat("MOTD: \"" + MOTD.settings.messages[k-1] + "\"");
     	break;
     }
 }

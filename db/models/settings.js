@@ -4,19 +4,7 @@ module.exports = (db, mongoose) => {
             type: String,
             unique: true
         },
-        motd: {
-            msg: {
-                type: String
-            },
-            interval: {
-                type: Number,
-                default: 15
-            },
-            enabled: {
-                type: Boolean,
-                default: false
-            }
-        },
+        
         raffle: {
             enabled: {
                 type: Boolean,
@@ -33,16 +21,6 @@ module.exports = (db, mongoose) => {
                 default: -1
             },
             users: []
-        },
-        emoji: {
-            paused: {
-                type: Boolean,
-                default: false
-            },
-            reset: {
-                type: Boolean,
-                default: false
-            }
         },
         songCount: {
             type: Number,
