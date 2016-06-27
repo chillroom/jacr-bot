@@ -57,7 +57,7 @@ Raffle.stop = function() {
 
 	// Restart our timer
 	// Our next raffle is in fifteen minutes!
-	Raffle.nextTimer = setTimeout(Raffle.start, 1000 * 60 * 15);
+	Raffle.nextTimer = setTimeout(Raffle.start, 1000 * 60 * 35);
 	bot.log("info", "raffle", "The next raffle has been scheduled");
 
 	// Commit the state
@@ -154,11 +154,11 @@ var informationReady = function() {
 		return;
 	}
 
-	var nextRaffleTime = moment(Raffle.state.lastRaffleTime).add(15, "minutes");
+	var nextRaffleTime = moment(Raffle.state.lastRaffleTime).add(35, "minutes");
 	
-	// If 15 minutes has passed since the last time
+	// If 35 minutes has passed since the last time
 	if (nextRaffleTime.isBefore()) {
-		bot.log("info", "raffle", "Starting a raffle in 10 seconds (15 minute boot threshold)");
+		bot.log("info", "raffle", "Starting a raffle in 10 seconds (35 minute boot threshold)");
 		setTimeout(Raffle.start, 1000 * 10, false, false); // quiet = false, force = false
 		return;
 	}
