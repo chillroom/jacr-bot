@@ -155,7 +155,7 @@ var informationReady = function() {
 	}
 
 	var nextRaffleTime = moment(Raffle.state.lastRaffleTime).add(45, "minutes");
-	
+	// console.log("Now: " + nextRaffleTime)
 	// If 45 minutes has passed since the last time
 	if (nextRaffleTime.isBefore()) {
 		bot.log("info", "raffle", "Starting a raffle in 10 seconds (45 minute boot threshold)");
@@ -163,8 +163,9 @@ var informationReady = function() {
 		return;
 	}
 
-	var duration = moment().sub(nextRaffleTime).duration().get("milliseconds");
-	console.log(duration/1000 + " seconds left");
+	Raffle.stop();
+	// var duration = moment().sub(nextRaffleTime).duration().get("milliseconds");
+	// console.log(duration/1000 + " seconds left");
 };
 
 // States should only be accessed by one bot at a time
