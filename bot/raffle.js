@@ -162,6 +162,9 @@ var informationReady = function() {
 		setTimeout(Raffle.start, 1000 * 10, false, false); // quiet = false, force = false
 		return;
 	}
+
+	var duration = moment().sub(nextRaffleTime).duration().get("milliseconds");
+	console.log(duration/1000 + " seconds left");
 };
 
 // States should only be accessed by one bot at a time
