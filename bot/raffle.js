@@ -157,8 +157,8 @@ var informationReady = function() {
 	
 	// If 15 minutes has passed since the last time
 	if (nextRaffleTime.isBefore()) {
-		bot.log("info", "raffle", "Starting a raffle (15 minute boot threshold)");
-		Raffle.start(false, false); // quiet = false, force = false
+		bot.log("info", "raffle", "Starting a raffle in 10 seconds (15 minute boot threshold)");
+		setTimeout(Raffle.start, 1000 * 10, false, false); // quiet = false, force = false
 		return;
 	}
 };
