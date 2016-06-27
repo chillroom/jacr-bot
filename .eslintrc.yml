@@ -3,3 +3,17 @@ rules:
   indent:
     - error
     - tab
+  max-len:
+    - off
+  new-cap:
+    - off
+  no-eq-null:
+    - off
+  eqeqeq:
+    - error
+    - allow-null
+  require-jsdoc:
+    - off
+  no-trailing-spaces:
+    - error
+    - skipBlankLines: true

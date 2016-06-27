@@ -1,19 +1,16 @@
-// jshint esversion: 6
-// jshint strict: true
-// jshint node: true
-// jshint asi: true
 // Copyright (c) Qais Patankar 2016 - MIT License
 "use strict";
 
-const r = require("rethinkdb")
-const moment = require("moment")
+const r = require("rethinkdb");
+const moment = require("moment");
 
 var MOTD = {
 	onAdvance: () => {},
-	messageCount: 0,
-}
+	messageCount: 0
+};
 var bot;
 
+/* Logs a simple RethinkDB error */
 function errLog(err, doc) {
 	if (err) {
 		bot.log("error", "RETHINK", err);
@@ -26,8 +23,8 @@ MOTD.init = function(receivedBot) {
 	bot = receivedBot;
 
 	// Add the command counter
-	const event = require("./events/chat-message.js")
-	event.AddCommand("motd", onCommand)
+	const event = require("./events/chat-message.js");
+	event.AddCommand("motd", onCommand);
 
 	MOTD.reload();
 };
@@ -43,8 +40,8 @@ MOTD.onChat = function() {
 // TODO: Only update individual field!
 MOTD.setEnabled = function(b) {
 	MOTD.settings.enabled = b;
-	updateSettings()
-}
+	updateSettings();
+};
 
 // TODO: Don't update the entire state or all the settings!!
 function onCommand(bot, data) {
@@ -54,72 +51,75 @@ function onCommand(bot, data) {
 	}
 
 	switch (data.params[0]) {
-    case "enable":
-    	bot.sendChat("MOTD enabled");
-    	MOTD.setEnabled(true)
-    	break;
-    case "disable":
-    	bot.sendChat("MOTD disabled");
-    	MOTD.setEnabled(false)
-    	break;
-    case "clear":
-    	bot.sendChat("MOTD cleared");
-    	MOTD.settings.messages = []
-    	MOTD.settings.enabled = false
-    	updateSettings();
-    	break;
-    case "add":
-    	bot.sendChat("MOTD added");
-    	MOTD.settings.messages.push(data.params.slice(1).join(" "));
-    	updateSettings();
-    	break;
-    case "interval":
-    	var interval = parseInt(data.params[1]);
-    	if (isNaN(interval)) {
-    		bot.sendChat("Could not update MOTD interval");
-    		return;
-    	}
-    	bot.sendChat("Updated MOTD interval to " + interval);
-    	MOTD.settings.interval = interval;
-    	updateSettings();
-    	break;
-    case "status":
-    	var message = ""
-    	message += "There are " + MOTD.settings.messages.length + " messages. "
-    	message += "Enable state: " + MOTD.settings.enabled + ". "
-    	message += "Interval: " + MOTD.settings.interval + ". "
-    	message += "Next message: " + MOTD.state.nextMessage + ". "
-    	message += "Last announce: " + MOTD.state.lastAnnounceTime + ". "
-    	bot.sendChat(message)
-    	break;
-    case "list":
-    	var message = "MOTD messages: ||||"
-    	message += MOTD.settings.messages.join("    ||||     ")
-    	bot.sendChat(message)
-    	break;
-    case "reload":
-    	bot.sendChat("MOTD reloading...");
-    	MOTD.reload();
-    	break;
-    case "del":
-    	var k = parseInt(data.params[1]);
-    	if (isNaN(k) || MOTD.settings.messages[k-1] == null) {
-    		bot.sendChat("Could not find MOTD")
-    		return;
-    	}
-    	bot.sendChat("Deleting MOTD \"" + MOTD.settings.messages[k-1] + "\"");
-    	MOTD.settings.messages.splice(k-1, 1);
-    	updateSettings();
-    	break;
-    case "show":
-   	 	var k = parseInt(data.params[1]);
-    	if (isNaN(k) || MOTD.settings.messages[k-1] == null) {
-    		bot.sendChat("Could not find MOTD");
-    		return;
-    	}
-    	bot.sendChat("MOTD: \"" + MOTD.settings.messages[k-1] + "\"");
-    	break;
-    }
+	default:
+		bot.sendChat("@" + data.user.username + ": !motd (enable|disable|clear|add TEXT|interval X|status|list|reload|del X|show X)");
+		break;
+	case "enable":
+		bot.sendChat("MOTD enabled");
+		MOTD.setEnabled(true);
+		break;
+	case "disable":
+		bot.sendChat("MOTD disabled");
+		MOTD.setEnabled(false);
+		break;
+	case "clear":
+		bot.sendChat("MOTD cleared");
+		MOTD.settings.messages = [];
+		MOTD.settings.enabled = false;
+		updateSettings();
+		break;
+	case "add":
+		bot.sendChat("MOTD added");
+		MOTD.settings.messages.push(data.params.slice(1).join(" "));
+		updateSettings();
+		break;
+	case "interval":
+		var interval = parseInt(data.params[1], 10);
+		if (isNaN(interval)) {
+			bot.sendChat("Could not update MOTD interval");
+			return;
+		}
+		bot.sendChat("Updated MOTD interval to " + interval);
+		MOTD.settings.interval = interval;
+		updateSettings();
+		break;
+	case "status":
+		var message = "";
+		message += "There are " + MOTD.settings.messages.length + " messages. ";
+		message += "Enable state: " + MOTD.settings.enabled + ". ";
+		message += "Interval: " + MOTD.settings.interval + ". ";
+		message += "Next message: " + MOTD.state.nextMessage + ". ";
+		message += "Last announce: " + MOTD.state.lastAnnounceTime + ". ";
+		bot.sendChat(message);
+		break;
+	case "list":
+		var listMessage = "MOTD messages: ||||";
+		listMessage += MOTD.settings.messages.join("    ||||     ");
+		bot.sendChat(listMessage);
+		break;
+	case "reload":
+		bot.sendChat("MOTD reloading...");
+		MOTD.reload();
+		break;
+	case "del":
+		var delItem = parseInt(data.params[1], 10) - 1;
+		if (isNaN(delItem) || MOTD.settings.messages[delItem] == null) {
+			bot.sendChat("Could not find MOTD");
+			return;
+		}
+		bot.sendChat("Deleting MOTD \"" + MOTD.settings.messages[delItem] + "\"");
+		MOTD.settings.messages.splice(delItem, 1);
+		updateSettings();
+		break;
+	case "show":
+		var showItem = parseInt(data.params[1], 10) - 1;
+		if (isNaN(showItem) || MOTD.settings.messages[showItem] == null) {
+			bot.sendChat("Could not find MOTD");
+			return;
+		}
+		bot.sendChat("MOTD: \"" + MOTD.settings.messages[showItem] + "\"");
+		break;
+	}
 }
 
 // This is called when one piece of data has been loaded.
@@ -134,15 +134,21 @@ var informationReady = function() {
 		sendMOTD();
 		return;
 	}
-	
-}
+};
 
+// States should only be accessed by one bot at a time
 function updateState() {
-	r.table("settings").get("motd.dubtrack").update(MOTD.state).run(bot.rethink, errLog)
+	r.table("settings").get("motd.dubtrack")
+		.update(MOTD.state).run(bot.rethink, errLog);
 }
 
-function updateSettings() {
-	r.table("settings").get("motd").update(MOTD.settings).run(bot.rethink, errLog)
+// Commits the local settings to database
+function updateSettings(key) {
+	if (key == null) {
+		r.table("settings").get("motd").update(MOTD.settings).run(bot.rethink, errLog);
+	} else {
+		r.table("settings").get("motd").update({[key]: MOTD.settings[key]}).run(bot.rethink, errLog);
+	}
 }
 
 function sendMOTD() {
@@ -159,7 +165,7 @@ function sendMOTD() {
 		// if there are any messages at all before we do anything.
 		if (MOTD.settings.messages.length === 0) {
 			// TODO: Turn off MOTD
-			console.log("Tried broadcasting message without any messages")
+			console.log("Tried broadcasting message without any messages");
 			MOTD.setEnabled(false);
 			return;
 		}
@@ -171,42 +177,42 @@ function sendMOTD() {
 	}
 
 	// Awesome. Now let's just send the message!
-	bot.sendChat(currentMessage)
+	bot.sendChat(currentMessage);
 
 	// Update the state
 	MOTD.state.lastAnnounceTime = new Date(); // now!
-	MOTD.state.nextMessage += 1 // Increment the nextMessage counter
+	MOTD.state.nextMessage += 1; // Increment the nextMessage counter
 
 	// Commit the state to database
-	updateState()
+	updateState();
 }
 
 // updateInformation triggers information reloading
 MOTD.reload = function() {
 	// reset our settings and state objects
-	MOTD.settings = null
-	MOTD.state = null
-	
+	MOTD.settings = null;
+	MOTD.state = null;
+
 	// get global settings
 	r.table('settings').get("motd").run(bot.rethink, function(err, doc) {
-        if (err) {
-    	 	bot.log("error", "RETHINK", err);
-        	return;
-        }
+		if (err) {
+			bot.log("error", "RETHINK", err);
+			return;
+		}
 
-        MOTD.settings = doc
-        informationReady()
-    });
+		MOTD.settings = doc;
+		informationReady();
+	});
 
-    r.table('settings').get("motd.dubtrack").run(bot.rethink, function(err, doc) {
-        if (err) {
-    	 	bot.log("error", "RETHINK", err);
-        	return;
-        }
+	r.table('settings').get("motd.dubtrack").run(bot.rethink, function(err, doc) {
+		if (err) {
+			bot.log("error", "RETHINK", err);
+			return;
+		}
 
-        MOTD.state = doc
-        informationReady()
-    });
+		MOTD.state = doc;
+		informationReady();
+	});
 };
 
 module.exports = MOTD;

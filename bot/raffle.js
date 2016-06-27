@@ -1,189 +1,153 @@
-// jshint esversion: 6
-// jshint strict: true
-// jshint node: true
-// jshint asi: true
 // Copyright (c) Qais Patankar 2016 - MIT License
 "use strict";
 
+const r = require("rethinkdb");
+const moment = require("moment");
+
 var Raffle = {
-    raffleStartingMessage: "@djs Type \"!join\" to join the raffle and have a chance to get moved to spot 2! Good luck.",
-    
-    // Timer information
-    timerStarted: false,
-    warningTimer: null, // The timer started after it being announced (on trigger, says "20 seconds left!")
-    finalTimer: null, // The timer after final warning (on trigger, says "you won the raffle!")
+	onAdvance: () => {},
+	state: null,
+	settings: null
+};
+var bot;
+
+/* Logs a simple RethinkDB error */
+function errLog(err, doc) {
+	if (err) {
+		bot.log("error", "RETHINK.RAFFLE", err);
+		return true;
+	}
+	return false;
 }
 
-function finalTimerCallback(bot) {
-    bot.db.models.settings.findOne({id: "s3tt1ng5"}, (err, doc) => {
-        if (err) { bot.log("error", "MONGO", err); return; }
+Raffle.init = function(receivedBot) {
+	bot = receivedBot;
 
-        var numberEntered = doc.raffle.users.length;
-        if (numberEntered === 0) {
-            bot.sendChat("No one entered the raffle! Be sure to pay attention for the next one!");
-            Raffle.stop(bot, doc)
-            doc.save((err) => {if (err) {bot.log("error", "MONGO", err);}});
-            return;
-        }
-        
-        var randomWinner = doc.raffle.users[Math.floor(Math.random() * doc.raffle.users.length)];
-        if (bot.getQueuePosition(randomWinner.id) > 0) {
-            bot.moderateMoveDJ(randomWinner.id, 1);
-        }
-        
-        if (numberEntered == 1) {
-            bot.sendChat("The raffle has ended! 1 user participated and our lucky winner is: @" + randomWinner.username + "!");
-        } else {
-            bot.sendChat("The raffle has ended! " + numberEntered + " users participated and our lucky winner is: @" + randomWinner.username + "!");
-        }
+	// Add the command counter
+	const event = require("./events/chat-message.js");
+	event.AddCommand("raffle", onCommand);
 
-        Raffle.stop(bot, doc)
-        doc.save((err) => {if (err) {bot.log("error", "MONGO", err);}});
-    })
+	Raffle.reload();
+};
+
+// TODO: Don't update the entire state or all the settings!!
+function onCommand(bot, data) {
+	// ensure we're a moderator
+	if (bot.ranks.indexOf(data.user.role) === -1) {
+		return;
+	}
+
+	switch (data.params[0]) {
+	default:
+		bot.sendChat("@" + data.user.username + ": !raffle (enable|disable|start|stop|status)");
+		break;
+	case "enable":
+		bot.sendChat("Raffle enabled");
+		Raffle.setEnabled(true);
+		break;
+	case "disable":
+		bot.sendChat("Raffle disabled");
+		Raffle.setEnabled(false);
+		break;
+	case "start":
+		Raffle.start(false); // quiet = false
+		break;
+	case "stop":
+		Raffle.stop();
+		break;
+	case "status":
+		var message = "Raffles: ";
+		message += Raffle.status.enabled ? "enabled" : "disabled";
+		message += ", ";
+		message += Raffle.state.started ? "active" : "waiting";
+		message += ", ";
+		message += "next raffle in " + Raffle.status.songsLeft + " songs";
+		bot.sendChat(message);
+		break;
+	}
 }
 
-function warningTimerCallback(bot) {
-    if (Raffle.finalTimer) {
-        bot.log("error", "RAFFLE", "warningTimerCallback somehow being called again...")
-        return
-    }
+// This is called when one piece of data has been loaded.
+var informationReady = function() {
+	if (Raffle.settings == null || Raffle.state == null) {
+		// Not quite ready yet!
+		return;
+	}
 
-    bot.db.models.settings.findOne({id: "s3tt1ng5"}, (err, doc) => {
-        if (err) { bot.log("error", "MONGO", err); return; }
+	// // Does a raffle already exist?
+	// if (Raffle.state.started === true) {
+	// 	Raffle.start(true); // quiet = true
+	// 	return;
+	// }
 
-        var numberEntered = doc.raffle.users.length;
-        bot.sendChat("The raffle expires in 20 seconds, " + numberEntered + " user" + (numberEntered == 1 ? " is" : "s are") + " participating! Hurry @djs and \"!join\"");
+	var nextRaffleTime = moment(Raffle.state.lastRaffleTime).add(15, "minutes");
+	
+	// If 15 minutes has passed since the last time
+	if (nextRaffleTime.isBefore()) {
+		// Raffle.start(false); // quiet = false
+		return;
+	}
+};
 
-        Raffle.finalTimer = setTimeout(finalTimerCallback, 1000 * 20, bot) // 20 seconds = 1000 milliseconds (1 second)
-    })
+// States should only be accessed by one bot at a time
+function updateState() {
+	r.table("settings").get("raffle.dubtrack")
+		.update(Raffle.state).run(bot.rethink, errLog);
 }
 
-function docCover(processor, onSave) {
-    return function(bot, doc) {
-        // Were we already given a document?
-        // It is the caller's responsibility to flush docs.
-        if (doc != null) {
-        	var results = processor.apply(this, arguments)
-        	if (results != null) {
-        		return onSave||null, results
-        	}
-        	
-            return onSave || null
-        }
-
-        bot.db.models.settings.findOne({id: "s3tt1ng5"}, (err, doc) => {
-            if (err) { bot.log("error", "MONGO", err); return; }
-
-            // update "doc"
-            arguments[1] = doc
-
-            var callback = processor.apply(this, arguments)
-
-            doc.save((err) => {
-                if (err) { bot.log("error", "MONGO", err); }
-                if (onSave != null) { onSave(bot) }
-            })  
-        })
-    }
+// Commits the local settings to database
+function updateSettings(key) {
+	if (key == null) {
+		r.table("settings").get("raffle").update(Raffle.settings).run(bot.rethink, errLog);
+	} else {
+		r.table("settings").get("raffoe").update({[key]: Raffle.settings[key]}).run(bot.rethink, errLog);
+	}
 }
 
-Raffle.start = docCover(function(bot, doc) {
-    doc.raffle.started = true;
-    doc.raffle.nextRaffleSong = doc.songCount + 13
-    return null
-}, (bot) => Raffle.updateState(bot, true))
+Raffle.setEnabled = function(b) {
+	Raffle.settings.enabled = b;
+	Raffle.state.started = false;
+	updateSettings("enabled");
+};
 
-Raffle.stop = docCover(function(bot, doc) {
-    doc.raffle.users = [];
-    doc.raffle.started = false;
+Raffle.start = function(quietMode) {
+	if (!Raffle.settings.enabled) {
+		return;
+	}
 
-    if (Raffle.timerStarted) {
-        Raffle.timerStarted = false
-        
-        clearTimeout(Raffle.warningTimer)
-        Raffle.warningTimer = null
-        
-        clearTimeout(Raffle.finalTimer)
-        Raffle.finalTimer = null
-    }
-    return null
-})
+	// Update the state
+	Raffle.state.lastRaffleTime = new Date(); // now!
 
-Raffle.enable = docCover(function(bot, doc) {
-    doc.raffle.enabled = true
-    return null
-}, (bot) => Raffle.updateState(bot))
+	// Commit the state to database
+	updateState();
+};
 
-Raffle.disable = docCover(function(bot, doc) {
-    Raffle.stop(bot, doc)
-    doc.raffle.enabled = false
-    return null
-})
+// updateInformation triggers information reloading
+Raffle.reload = function() {
+	// reset our settings and state objects
+	Raffle.settings = null;
+	Raffle.state = null;
 
-Raffle.status = docCover(function(bot, doc) {
-    return {
-        started: doc.raffle.started,
-        enabled: doc.raffle.enabled,
-        songsLeft: doc.raffle.nextRaffleSong - doc.songCount
-    }
-})
+	// get global settings
+	r.table('settings').get("raffle").run(bot.rethink, function(err, doc) {
+		if (err) {
+			bot.log("error", "RETHINK", err);
+			return;
+		}
 
-// This checks whether we need to start any raffle timers
-// Call it whenever the doc.raffle.started key is updated remotely
-// You can also start the raffle without the database
-// knowing it has started (users will still flush)
-Raffle.updateState = function(bot, forceStart) {
-    // Should we start any raffle timers?
-    if (Raffle.timerStarted) { return }
+		Raffle.settings = doc;
+		informationReady();
+	});
 
-    var startRaffleTimer = () => {
-        if (Raffle.finalTimer || Raffle.warningTimer) {
-            bot.log("error", "RAFFLE", "startRaffleTimer somehow being called again...")
-            return
-        }
-        Raffle.timerStarted = true
-        setTimeout(warningTimerCallback, 1000 * 100, bot) // 100 seconds = 1 minutes 40 seconds
-    }
+	r.table('settings').get("raffle.dubtrack").run(bot.rethink, function(err, doc) {
+		if (err) {
+			bot.log("error", "RETHINK", err);
+			return;
+		}
 
-    if (forceStart) {
-        startRaffleTimer()
-        return
-    }
+		Raffle.state = doc;
+		informationReady();
+	});
+};
 
-    // Require at least five users
-    if (bot.getQueue().length < 5) {
-        // bot.log("info", "RAFFLE", "There are not enough songs in the queue for a raffle.")
-        return
-    }
-
-    // We should check the database and see if we should start
-    bot.db.models.settings.findOne( {id: "s3tt1ng5"}, (err, doc) => {
-        if (err) { bot.log("error", "MONGO", err); return; }
-        
-        // Not enabled?
-        if (!doc.raffle.enabled) { return }
-
-        if (doc.raffle.started) {
-            // Already started database side?
-            // Silently start.
-            bot.log("info", "raffle", "Silently continuing timers...")
-            startRaffleTimer()
-            return
-        }
-
-        // We should not start if we don't meet the interval requirements
-        if (doc.songCount < doc.raffle.nextRaffleSong) { return }
-
-        var raffleCallback = Raffle.start(bot, doc)
-        bot.log("info", "raffle", "Automatically starting a raffle...")
-        doc.save( (err) => {
-            if (err) { bot.log("error", "MONGO", err); return; }
-            bot.sendChat(Raffle.raffleStartingMessage);
-            if (raffleCallback != null) {
-                raffleCallback(bot)
-            }
-        } )
-    } )
-}
-
-module.exports = Raffle
+module.exports = Raffle;
