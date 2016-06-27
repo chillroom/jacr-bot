@@ -8,7 +8,7 @@ var Raffle = {
 	onAdvance: () => {},
 	state: null,
 	settings: null,
-	startingMessage: "@djs Type \"!raffle\" to join the raffle and have a chance to get moved to the front! Good luck.",
+	startingMessage: "@djs Type \"!join\" to join the raffle and have a chance to get moved to the front! Good luck.",
 
 	warningTimer: null,
 	finalTimer: null,
@@ -31,7 +31,7 @@ Raffle.init = function(receivedBot) {
 	// Add the command counter
 	const event = require("./events/chat-message.js");
 	event.AddCommand("raffle", onCommand);
-	event.AddCommand("join", onCommand);
+	event.AddCommand("join", onJoinCommand);
 
 	Raffle.reload();
 };
@@ -63,6 +63,40 @@ Raffle.stop = function() {
 	// Commit the state
 	updateState();
 };
+
+function onJoinCommand(bot, data) {
+	if (!Raffle.state.started) {
+		bot.sendChat("There isn't a raffle at this time!");
+		return;
+	}
+
+	var presence = v => {
+		return data.user.id.indexOf(v.uid) >= 0;
+	};
+
+	// Already entered?
+	if (Raffle.state.users.some(presence)) {
+		return bot.sendChat("@" + data.user.username + " you've already entered the raffle!");
+	}
+    
+    // Not in queue?
+	if (!bot.getQueue().some(presence)) {
+		return bot.sendChat("@" + data.user.username + " you must be in the queue to enter the raffle!");
+	}
+
+	if (bot.getQueuePosition(data.user.id) === 0) {
+		return bot.sendChat("@" + data.user.username + " you're already at #1!");
+	}
+
+	var entrant = {uid: data.user.id, username: data.user.username};
+	Raffle.state.users.push(entrant);
+
+	r.table("settings").get("raffle.dubtrack").update({
+		users: r.row.getField("users").append(entrant)
+	}).run(bot.rethink, errLog);
+
+	bot.sendChat("@" + data.user.username + ", you have entered the raffle!");
+}
 
 // TODO: Don't update the entire state or all the settings!!
 function onCommand(bot, data) {
@@ -101,40 +135,7 @@ function onCommand(bot, data) {
 		message += Raffle.state.started ? "active" : "waiting";
 		bot.sendChat(message);
 		break;
-	default:
-		if (!Raffle.state.started) {
-			bot.sendChat("There isn't a raffle at this time!");
-			return;
-		}
-
-		var presence = v => {
-			return data.user.id.indexOf(v.uid) >= 0;
-		};
-
-		// Already entered?
-		if (Raffle.state.users.some(presence)) {
-			return bot.sendChat("@" + data.user.username + " you've already entered the raffle!");
-		}
-        
-        // Not in queue?
-		if (!bot.getQueue().some(presence)) {
-			return bot.sendChat("@" + data.user.username + " you must be in the queue to enter the raffle!");
-		}
-
-		if (bot.getQueuePosition(data.user.id) === 0) {
-			return bot.sendChat("@" + data.user.username + " you're already at #1!");
-		}
-
-		var entrant = {uid: data.user.id, username: data.user.username};
-		Raffle.state.users.push(entrant);
-
-		r.table("settings").get("raffle.dubtrack").update({
-			users: r.row.getField("users").append(entrant)
-		}).run(bot.rethink, errLog);
-
-		bot.sendChat("@" + data.user.username + ", you have entered the raffle!");
-		
-		break;
+	default:	
 	}
 }
 
@@ -260,7 +261,7 @@ function warningTimerCallback() {
 	Raffle.warningTimer = null;
 
 	var numberEntered = Raffle.state.users.length;
-	bot.sendChat("The raffle expires in 20 seconds, " + numberEntered + " user" + (numberEntered === 1 ? " is" : "s are") + " participating! Hurry @djs and \"!raffle\"");
+	bot.sendChat("The raffle expires in 20 seconds, " + numberEntered + " user" + (numberEntered === 1 ? " is" : "s are") + " participating! Hurry @djs and \"!join\"");
 
 	Raffle.finalTimer = setTimeout(finalTimerCallback, 1000 * 20, bot); // 20 seconds = 1000 milliseconds (1 second)
 }
