@@ -7,7 +7,12 @@ const moment = require("moment");
 var Raffle = {
 	onAdvance: () => {},
 	state: null,
-	settings: null
+	settings: null,
+	startingMessage: "@djs Type \"!raffle\" to join the raffle and have a chance to get moved to the front! Good luck.",
+
+	warningTimer: null,
+	finalTimer: null,
+	nextTimer: null
 };
 var bot;
 
@@ -26,8 +31,37 @@ Raffle.init = function(receivedBot) {
 	// Add the command counter
 	const event = require("./events/chat-message.js");
 	event.AddCommand("raffle", onCommand);
+	event.AddCommand("join", onCommand);
 
 	Raffle.reload();
+};
+
+Raffle.stop = function() {
+	// Clean up our timers
+	if (Raffle.warningTimer != null) {
+		clearTimeout(Raffle.warningTimer);
+		Raffle.warningTimer = null;
+	}
+	if (Raffle.finalTimer != null) {
+		clearTimeout(Raffle.finalTimer);
+		Raffle.finalTimer = null;
+	}
+	if (Raffle.nextTimer != null) {
+		clearTimeout(Raffle.nextTimer);
+		Raffle.nextTimer = null;
+	}
+
+	// Set our known states
+	Raffle.state.users = [];
+	Raffle.state.started = false;
+
+	// Restart our timer
+	// Our next raffle is in fifteen minutes!
+	Raffle.nextTimer = setTimeout(Raffle.start, 1000 * 60 * 15);
+	bot.log("info", "raffle", "The next raffle has been scheduled");
+
+	// Commit the state
+	updateState();
 };
 
 // TODO: Don't update the entire state or all the settings!!
@@ -38,7 +72,7 @@ function onCommand(bot, data) {
 	}
 
 	switch (data.params[0]) {
-	default:
+	case "help":
 		bot.sendChat("@" + data.user.username + ": !raffle (enable|disable|start|stop|status)");
 		break;
 	case "enable":
@@ -50,19 +84,56 @@ function onCommand(bot, data) {
 		Raffle.setEnabled(false);
 		break;
 	case "start":
-		Raffle.start(false); // quiet = false
+		if (Raffle.state.started) {
+			bot.sendChat("Raffle is already started!");
+			return;
+		}
+
+		Raffle.start(false, true); // quiet = false, force = true
 		break;
 	case "stop":
 		Raffle.stop();
 		break;
 	case "status":
 		var message = "Raffles: ";
-		message += Raffle.status.enabled ? "enabled" : "disabled";
-		message += ", ";
+		message += Raffle.settings.enabled ? "enabled" : "disabled";
+		message += ", and ";
 		message += Raffle.state.started ? "active" : "waiting";
-		message += ", ";
-		message += "next raffle in " + Raffle.status.songsLeft + " songs";
 		bot.sendChat(message);
+		break;
+	default:
+		if (!Raffle.state.started) {
+			bot.sendChat("There isn't a raffle at this time!");
+			return;
+		}
+
+		var presence = v => {
+			return data.user.id.indexOf(v.uid) >= 0;
+		};
+
+		// Already entered?
+		if (Raffle.state.users.some(presence)) {
+			return bot.sendChat("@" + data.user.username + " you've already entered the raffle!");
+		}
+        
+        // Not in queue?
+		if (!bot.getQueue().some(presence)) {
+			return bot.sendChat("@" + data.user.username + " you must be in the queue to enter the raffle!");
+		}
+
+		if (bot.getQueuePosition(data.user.id) === 0) {
+			return bot.sendChat("@" + data.user.username + " you're already at #1!");
+		}
+
+		var entrant = {uid: data.user.id, username: data.user.username};
+		Raffle.state.users.push(entrant);
+
+		r.table("settings").get("raffle.dubtrack").update({
+			users: r.row.getField("users").append(entrant)
+		}).run(bot.rethink, errLog);
+
+		bot.sendChat("@" + data.user.username + ", you have entered the raffle!");
+		
 		break;
 	}
 }
@@ -74,17 +145,20 @@ var informationReady = function() {
 		return;
 	}
 
-	// // Does a raffle already exist?
-	// if (Raffle.state.started === true) {
-	// 	Raffle.start(true); // quiet = true
-	// 	return;
-	// }
+	// Does a raffle already exist?
+	if (Raffle.state.started === true) {
+		bot.log("info", "raffle", "Starting a raffle (already started on boot)");
+		Raffle.state.started = false; // explicitly circumvent over-starting prevention mechanism
+		Raffle.start(true); // quiet = true
+		return;
+	}
 
 	var nextRaffleTime = moment(Raffle.state.lastRaffleTime).add(15, "minutes");
 	
 	// If 15 minutes has passed since the last time
 	if (nextRaffleTime.isBefore()) {
-		// Raffle.start(false); // quiet = false
+		bot.log("info", "raffle", "Starting a raffle (15 minute boot threshold)");
+		Raffle.start(false, false); // quiet = false, force = false
 		return;
 	}
 };
@@ -100,7 +174,7 @@ function updateSettings(key) {
 	if (key == null) {
 		r.table("settings").get("raffle").update(Raffle.settings).run(bot.rethink, errLog);
 	} else {
-		r.table("settings").get("raffoe").update({[key]: Raffle.settings[key]}).run(bot.rethink, errLog);
+		r.table("settings").get("raffle").update({[key]: Raffle.settings[key]}).run(bot.rethink, errLog);
 	}
 }
 
@@ -110,13 +184,44 @@ Raffle.setEnabled = function(b) {
 	updateSettings("enabled");
 };
 
-Raffle.start = function(quietMode) {
-	if (!Raffle.settings.enabled) {
+Raffle.start = function(quietMode, force) {
+	// Kill our next timer
+	if (Raffle.nextTimer != null) {
+		clearTimeout(Raffle.nextTimer);
+		Raffle.nextTimer = null;
+	}
+
+	// No over-starting, even if forced.
+	if (Raffle.state.started) {
+		bot.log("warn", "raffle", "Overstarting has been blocked");
 		return;
+	}
+
+	// unless force....
+	if (!force) {
+		// make sure we're enabled
+		if (!Raffle.settings.enabled) {
+			return;
+		}
+
+		// and we have enough people
+		if (bot.getQueue().length < 5) {
+			bot.log("info", "raffle", "Postponing raffle (not enough people)");
+			Raffle.nextTimer = setTimeout(Raffle.start, 1000 * 60 * 5); // try starting again in five minutes
+			return;
+		}
+	}
+
+	if (!quietMode) {
+		bot.sendChat(Raffle.startingMessage);
 	}
 
 	// Update the state
 	Raffle.state.lastRaffleTime = new Date(); // now!
+	Raffle.state.started = true;
+
+	// Start our timer
+	Raffle.warningTimer = setTimeout(warningTimerCallback, 1000 * 100); // 100 seconds = 1 minutes 40 seconds
 
 	// Commit the state to database
 	updateState();
@@ -149,5 +254,46 @@ Raffle.reload = function() {
 		informationReady();
 	});
 };
+
+function warningTimerCallback() {
+	// Clean up our timer
+	Raffle.warningTimer = null;
+
+	var numberEntered = Raffle.state.users.length;
+	bot.sendChat("The raffle expires in 20 seconds, " + numberEntered + " user" + (numberEntered === 1 ? " is" : "s are") + " participating! Hurry @djs and \"!raffle\"");
+
+	Raffle.finalTimer = setTimeout(finalTimerCallback, 1000 * 20, bot); // 20 seconds = 1000 milliseconds (1 second)
+}
+
+function finalTimerCallback() {
+	// Clean up our timer
+	Raffle.finalTimer = null;
+
+	var users = Raffle.state.users;
+	// Nobody joined the raffle?!
+	if (users.length === 0) {
+		bot.sendChat("No one entered the raffle! Be sure to pay attention for the next one!");
+		Raffle.stop();
+		return;
+	}
+	
+	// Decide a random winner
+	var randomWinner = users[Math.floor(Math.random() * users.length)];
+
+	// Move the random winner to the second-front
+	if (bot.getQueuePosition(randomWinner.uid) > 0) {
+		bot.moderateMoveDJ(randomWinner.uid, 1);
+	}
+	
+	// Announce the winner
+	if (users.length === 1) {
+		bot.sendChat("The raffle has ended! 1 user participated and our \"lucky\" winner is: @" + randomWinner.username + "!");
+	} else {
+		bot.sendChat("The raffle has ended! " + users.length + " users participated and our lucky winner is: @" + randomWinner.username + "!");
+	}
+
+	// Clean up
+	Raffle.stop();
+}
 
 module.exports = Raffle;

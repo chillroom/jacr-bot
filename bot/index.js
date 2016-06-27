@@ -30,11 +30,11 @@ new DubAPI({
 
 	bot.on("disconnected", name => {
 		bot.log("error", "BOT", "Disconnected from " + name);
-		process.exit(1);
+		process.exitCode = 1;
 	});
 	bot.on("error", function(err) {
 		bot.log("error", "BOT", err);
-		process.exit(1);
+		process.exitCode = 1;
 	});
 
 	// setup mongodb

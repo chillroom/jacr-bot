@@ -224,7 +224,7 @@ function onUpdateLog(bot, data) {
 				save(true);
 				return;
 			}
-			console.log(song.plays + "out of " + doc[0].avgPlays);
+			
 			const nextAllowed = moment(song.lastPlay).add(14, "days");
 			if (song.plays > doc[0].avgPlays && !moment(nextAllowed).isBefore()) {
 				botLogUser(bot, "info", "ROOM", "%s is playing an OP song", data.user);
