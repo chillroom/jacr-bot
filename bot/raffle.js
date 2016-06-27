@@ -206,7 +206,7 @@ Raffle.start = function(quietMode, force) {
 
 		// and we have enough people
 		if (bot.getQueue().length < 5) {
-			bot.log("info", "raffle", "Postponing raffle (not enough people)");
+			bot.log("info", "raffle", "Postponing raffle (not enough people) (5 people needed, have " + bot.getQueue().length + " people)");
 			Raffle.nextTimer = setTimeout(Raffle.start, 1000 * 60 * 5); // try starting again in five minutes
 			return;
 		}
