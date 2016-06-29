@@ -55,10 +55,12 @@ Raffle.stop = function() {
 	Raffle.state.users = [];
 	Raffle.state.started = false;
 
-	// Restart our timer
-	// Our next raffle is in fifteen minutes!
-	Raffle.nextTimer = setTimeout(Raffle.start, 1000 * 60 * 45);
-	bot.log("info", "raffle", "The next raffle has been scheduled");
+	if (Raffle.settings.enabled) {
+		// Restart our timer
+		// Our next raffle is in fifteen minutes!
+		Raffle.nextTimer = setTimeout(Raffle.start, 1000 * 60 * 45);
+		bot.log("info", "raffle", "The next raffle has been scheduled");
+	}
 
 	// Commit the state
 	updateState();
@@ -98,7 +100,6 @@ function onJoinCommand(bot, data) {
 	bot.sendChat("@" + data.user.username + ", you have entered the raffle!");
 }
 
-// TODO: Don't update the entire state or all the settings!!
 function onCommand(bot, data) {
 	// ensure we're a moderator
 	if (bot.ranks.indexOf(data.user.role) === -1) {
@@ -135,7 +136,7 @@ function onCommand(bot, data) {
 		message += Raffle.state.started ? "active" : "waiting";
 		bot.sendChat(message);
 		break;
-	default:	
+	default:
 	}
 }
 
@@ -187,6 +188,9 @@ Raffle.setEnabled = function(b) {
 	Raffle.settings.enabled = b;
 	Raffle.state.started = false;
 	updateSettings("enabled");
+
+	// clear or start any timers
+	Raffle.stop();
 };
 
 Raffle.start = function(quietMode, force) {
