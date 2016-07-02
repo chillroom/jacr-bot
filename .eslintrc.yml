@@ -1,19 +1,19 @@
 extends: google
 rules:
   indent:
-    - error
+    - 2 # Error
     - tab
   max-len:
-    - off
+    - 0 # Off
   new-cap:
-    - off
+    - 0 # Off
   no-eq-null:
-    - off
+    - 0 # Off
   eqeqeq:
-    - error
+    - 2 # Error
     - allow-null
   require-jsdoc:
-    - off
+    - 0 # Off
   no-trailing-spaces:
-    - error
+    - 2 # Error
     - skipBlankLines: true

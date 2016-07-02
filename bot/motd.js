@@ -11,7 +11,7 @@ var MOTD = {
 var bot;
 
 /* Logs a simple RethinkDB error */
-function errLog(err, doc) {
+function errLog(err) {
 	if (err) {
 		bot.log("error", "RETHINK", err);
 		return true;

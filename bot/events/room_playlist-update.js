@@ -1,7 +1,3 @@
-// jshint esversion: 6
-// jshint strict: true
-// jshint node: true
-// jshint asi: true
 "use strict";
 
 var moment = require("moment");
