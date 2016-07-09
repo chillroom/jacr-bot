@@ -25,6 +25,7 @@ MOTD.init = function(receivedBot) {
 	// Add the command counter
 	const event = require("./events/chat-message.js");
 	event.AddCommand("motd", onCommand);
+	event.AddHandler("motd", MOTD.onChat);
 
 	MOTD.reload();
 };

@@ -3,22 +3,68 @@
 var moment = require("moment");
 var sprintf = require("sprintf-js").sprintf;
 var MOTD = require("../motd.js");
+var r = require("rethinkdb");
+var bot;
 
-module.exports = bot => {
-	bot.on("room_playlist-update", data => {
-		onUpdate(bot, data);
-	});
+module.exports = receivedBot => {
+	bot = receivedBot;
+	bot.on("room_playlist-update", onUpdate);
 };
 
-function onUpdate(bot, data) {
+/* Logs a simple RethinkDB error */
+function errLog(err) {
+	if (err) {
+		bot.log("error", "RETHINK", err);
+		return true;
+	}
+	return false;
+}
+
+function onUpdate(data) {
 	MOTD.onAdvance();
 
 	if (!bot.started) {
 		bot.started = true;
 		return;
 	}
-	onUpdateLog(bot, data);
 	onUpdateLastfm(bot, data);
+
+	if (data.lastPlay != null) {
+		r
+			.table("history")
+			.filter({platform: "dubtrack", platformID: data.lastPlay.id})
+			.orderBy(r.desc("time"))
+			.limit(1)
+			.update({
+				score: {
+					up: data.lastPlay.score.updubs,
+					grab: data.lastPlay.score.grabs,
+					down: data.lastPlay.score.downdubs
+				}
+			})
+			.run(bot.rethink, errLog);
+	}
+
+	if (data.media == null) {
+		return;
+	}
+
+	botLogUser(bot, "info", "ROOM", "%s is now playing", data.user);
+
+	// First we get "all" the songs that match the fkid
+	r
+		.table('songs')
+		.getAll(data.media.fkid, {index: "fkid"})
+		.filter({type: data.media.type}) // and the same type
+		.run(bot.rethink, function(err, cursor) {
+			if (errLog(err)) {
+				return;
+			}
+
+			cursor.toArray().then(results => {
+				onUpdateLog(data, results);
+			}).error(errLog);
+		});
 }
 
 function botLogUser(bot, mode, scope, message, user) {
@@ -62,172 +108,130 @@ function onUpdateLastfm(bot, data) {
 			if (err != null) {
 				bot.log("debug", "lastfm_err", err);
 			}
-			// bot.log("debug", "lastfm_stdout", stdout)
 		});
 	}
 }
 
-function onUpdateLog(bot, data) {
-	if (typeof data.media === "undefined") {
+function addSongToHistory(data, songID) {
+	// Only do if the user exists
+	if (data.user == null) {
 		return;
 	}
 
-	botLogUser(bot, "info", "ROOM", "%s is now playing", data.user);
-
-	bot.db.models.songs.findOne({
-		fkid: data.media.fkid
-	}, (err, song) => {
-		if (err) {
-			bot.log("error", "MONGO", err);
-			return;
-		}
-		const skip = (msg, move) => {
-			bot.moderateSkip(() => {
-				bot.sendChat(bot.identifier + msg);
-				botLogUser(bot, "info", "ROOM", "%s has been skipped", data.user);
-				if (move) {
-					bot.once("room_playlist-queue-update-dub", () => {
-						if (data.user != null) {
-							bot.moderateMoveDJ(data.user.id, 0);
-						}
-						botLogUser(bot, "info", "ROOM", "%s has been moved to the front", data.user);
-					});
-				}
-			});
-		};
-		if (!song) {
-			const doc = {
-				name: data.media.name,
-				fkid: data.media.fkid,
-				plays: 1,
-				lastPlay: new Date()
-			};
-			song = new bot.db.models.songs(doc);
-			song.save(() => {
-				if (typeof data.user === "undefined") {
-					return;
-				}
-				bot.db.models.person.findOne({
-					uid: data.user.id
-				}, (err, person) => {
-					if (err) {
-						bot.log("error", "MONGO", err);
-						return;
-					}
-
-					if (!person) {
-						const doc = {
-							uid: data.user.id
-						};
-						person = new bot.db.models.person(doc);
-					}
-
-					person.username = data.user.username;
-					person.dubs = data.user.dubs;
-					person.save(() => {
-						bot.db.models.history.create({
-							_song: song._id,
-							_person: person._id
-						}, err => {
-							if (err) {
-								bot.log("error", "MONGO", err);
-							}
-						});
-					});
-				});
-			});
-			return;
-		}
-
-		if (song.forbidden) {
-			setTimeout(() => {
-				skip("Song has been recently flagged as forbidden. You can view the op/forbidden list here: http://just-a-chill-room.net/op-forbidden-list/");
-			}, 3000);
-		} else if (song.nsfw) {
-			setTimeout(() => {
-				skip("Song has been recently flagged as NSFW");
-			}, 3000);
-		} else if (song.unavailable) {
-			setTimeout(() => {
-				skip("Song has been recently flagged as unavailable for all users. Please pick another song", true);
-			}, 3000);
-		} else if (!song.theme) {
-			setTimeout(() => {
-				skip("Song has been recently flagged as not on theme. You can view the theme here: http://just-a-chill-room.net/rules/#theme");
-			}, 3000);
-		}
-
-		const save = function(increment) {
-			if (increment) {
-				song.plays++;
-				song.lastPlay = new Date();
-			}
-			song.save(() => {
-				if (typeof data.user === "undefined") {
-					return;
-				}
-				bot.db.models.person.findOne({
-					uid: data.user.id
-				}, (err, person) => {
-					if (err) {
-						bot.log("error", "MONGO", err);
-						return;
-					}
-
-					if (!person) {
-						const doc = {
-							uid: data.user.id
-						};
-						person = new bot.db.models.person(doc);
-					}
-
-					person.username = data.user.username;
-					person.dubs = data.user.dubs;
-					person.save(() => {
-						bot.db.models.history.create({
-							_song: song._id,
-							_person: person._id
-						}, err => {
-							if (err) {
-								bot.log("error", "MONGO", err);
-							}
-						});
-					});
-				});
-			});
-		};
-
-		bot.db.models.songs.aggregate([{
-			$match: {
-				plays: {
-					$gt: 4
-				}
-			}
-		}, {
-			$group: {
-				_id: null,
-				avgPlays: {
-					$avg: "$plays"
-				}
-			}
-		}]).exec((err, doc) => {
-			if (err) {
-				bot.log("error", "MONGO", err);
-				return;
-			}
-
-			if (doc[0] == null) {
-				save(true);
+	// Get their rethink user ID
+	r.table("users").filter({uid: "5606975b9f38870300fba19e", platform: "dubtrack"})("id").run(bot.rethink)
+		.then(result => result.toArray())
+		.error(errLog)
+		.then(function(results) {
+			// If it exists (it should), add it to the history
+			if (results[0] == null) {
+				errLog("No user with that UID: " + data.user.id);
 				return;
 			}
 			
+			let item = {
+				song: songID,
+				time: r.now(),
+				person: results[0],
+				
+				platform: "dubtrack",
+				platformID: data.id,
+
+				score: {
+					up: 0,
+					grab: 0,
+					down: 0
+				}
+			};
+
+			return r.table("history").insert(item).run(bot.rethink, errLog);
+		})
+		.error(errLog);
+}
+
+function onUpdateLog(data, results) {
+	var song = results[0];
+	if (results.length > 1) {
+		errLog(song.fkid + " song multple existence");
+		return;
+	}
+
+	// If there is no song, create a new song
+	if (song == null) {
+		let song = {
+			fkid: data.media.fkid,
+			name: data.media.name,
+			type: data.media.type,
+			lastPlay: r.now(),
+			skipReason: null,
+			plays: 1
+		};
+
+		r.table("songs").insert(song).run(bot.rethink, function(err, result) {
+			if (errLog(err)) {
+				return;
+			}
+
+			// Get the song ID
+			var songID = result.generated_keys[0];
+			addSongToHistory(data, songID);
+		});
+
+		return;
+	}
+
+	// adds the song to the history
+	addSongToHistory(data, song.id);
+
+	const skip = (msg, move) => {
+		bot.moderateSkip(() => {
+			bot.sendChat(msg);
+			botLogUser(bot, "info", "ROOM", "%s has been skipped", data.user);
+			if (move) {
+				bot.once("room_playlist-queue-update-dub", () => {
+					if (data.user != null) {
+						bot.moderateMoveDJ(data.user.id, 1);
+					}
+					botLogUser(bot, "info", "ROOM", "%s has been moved to the front", data.user);
+				});
+			}
+		});
+	};
+
+	var skipReason = null;
+	var shouldLockskip = false;
+	if (song.skipReason === "forbidden") {
+		skipReason = "Song has been recently flagged as forbidden. You can view the op/forbidden list here: http://just-a-chill-room.net/op-forbidden-list/";
+	} else if (song.skipReason === "nsfw") {
+		skipReason = "Song has been recently flagged as NSFW";
+	} else if (song.skipReason === "unavailable") {
+		skipReason = "Song has been recently flagged as unavailable for all users. Please pick another song";
+		shouldLockskip = true;
+	} else if (song.skipReason === "theme") {
+		skipReason = "Song has been recently flagged as not on theme. You can view the theme here: http://just-a-chill-room.net/rules/#theme";
+	}
+
+	if (skipReason != null) {
+		skip(skipReason, shouldLockskip);
+		return;
+	}
+
+	// OP checker
+	r.table("songs").filter(r.row.getField("plays").gt(4)).avg("plays").default(100)
+		.run(bot.rethink)
+		.then(avgPlays => {
 			const nextAllowed = moment(song.lastPlay).add(14, "days");
-			if (song.plays > doc[0].avgPlays && !moment(nextAllowed).isBefore()) {
+
+			if (song.plays > avgPlays && !moment(nextAllowed).isBefore()) {
 				botLogUser(bot, "info", "ROOM", "%s is playing an OP song", data.user);
 				skip("This song appears to be overplayed. Please pick another song.", true);
-				save(false);
+				return;
 			}
-			save(true);
-		});
-	});
+
+			r.table("songs").get(song.id).update({
+				plays: r.row("plays").add(1),
+				lastPlay: r.now()
+			}).run(bot.rethink, errLog);
+		})
+		.error(errLog);
 }

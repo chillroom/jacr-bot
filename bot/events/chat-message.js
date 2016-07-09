@@ -3,6 +3,14 @@ var Path = require("path");
 var bot;
 var commands = {};
 
+function errLog(err) {
+	if (err != null) {
+		bot.log("error", "RETHINK", err);
+		return true;
+	}
+	return false;
+}
+
 var ChatMessageEvent = function(_bot) {
 	var dir = process.cwd() + "/bot/commands";
 	
@@ -31,8 +39,15 @@ var ChatMessageEvent = function(_bot) {
 	bot.on("chat-message", onChatMessage);
 };
 
+// Create a new command handler
 ChatMessageEvent.AddCommand = function(cmd, fn) {
 	commands[cmd] = fn;
+};
+
+var handlers = {};
+// Create a new onChat event handler
+ChatMessageEvent.AddHandler = function(key, fn) {
+	handlers[key] = fn;
 };
 
 module.exports = ChatMessageEvent;
@@ -41,7 +56,7 @@ const r = require("rethinkdb");
 var responses = {};
 
 function loadResponses() {
-	r.table('responses').filter(r.row.getField("site").eq("dubtrack"), {default: true}).run(bot.rethink, function(err, cursor) {
+	r.table('responses').filter(r.row.getField("platform").eq("dubtrack"), {default: true}).run(bot.rethink, function(err, cursor) {
 		if (err) throw err;
 		cursor.toArray(function(err, result) {
 			if (err) throw err;
@@ -57,8 +72,6 @@ function loadResponses() {
 	});
 }
 
-const MOTD = require("../motd.js");
-
 function onChatMessage(data) {
 	if (typeof data.user === "undefined") {
 		return;
@@ -70,28 +83,21 @@ function onChatMessage(data) {
 		return;
 	}
 
-	// Alert the MOTD manager to the message
-	MOTD.onChat();
+	var keys = Object.keys(handlers);
+	for (var i = keys.length - 1; i >= 0; i--) {
+		handlers[keys[i]](data);
+	}
 
-	bot.db.models.person.findOne({
-		uid: data.user.id
-	}, (err, person) => {
-		if (err) {
-			bot.log("error", "BOT", err);
-			return;
-		}
+	// Update name if different
+	r
+		.table('users')
+		.getAll("dubtrack", {index: "platform"})
+		.filter({uid: data.user.id})
+		.filter(r.row.getField("username").eq(data.user.username).not())
+		.update({username: data.user.username})
+		.run(bot.rethink, errLog);
 
-		if (!person) {
-			person = new bot.db.models.person({
-				uid: data.user.id
-			});
-		}
-
-		person.username = data.user.username;
-		person.dubs = data.user.dubs;
-		person.lastChat = new Date();
-		person.save();
-	});
+	// Handle commands
 
 	// split the whole message words into tokens
 	var args = data.message.split(" ");
@@ -104,7 +110,7 @@ function onChatMessage(data) {
 	var cmd = args[0].substr(1).toLowerCase();
 
 	// Any response?
-	if (responses[data.trigger] != null) {
+	if (responses[cmd] != null) {
 		var resp = responses[cmd];
 		const image = resp[Math.floor(Math.random() * resp.length)];
 		bot.sendChat(image);
@@ -112,7 +118,7 @@ function onChatMessage(data) {
 	}
 
 	// Does the command exist?
-	if (commands[data.trigger] == null) {
+	if (commands[cmd] == null) {
 		return;
 	}
 

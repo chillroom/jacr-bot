@@ -14,6 +14,15 @@ new DubAPI({
 		return log("error", "BOT", err);
 	}
 
+	/* Logs a simple RethinkDB error */
+	bot.errLog = err => {
+		if (err) {
+			bot.log("error", "RETHINK", err);
+			return true;
+		}
+		return false;
+	};
+
 	// setup logger
 	bot.log = require("jethro");
 	bot.log.setUTC(true);
@@ -35,12 +44,6 @@ new DubAPI({
 	bot.on("error", function(err) {
 		bot.log("error", "BOT", err);
 		process.exitCode = 1;
-	});
-
-	// setup mongodb
-	require(process.cwd() + "/db")(db => {
-		bot.db = db;
-		onReady(bot);
 	});
 
 	require("./db.js")(bot.log, conn => {
@@ -78,9 +81,6 @@ function onReady(bot) {
 		return bot.log("warning", "loader", "Trying to start when already started");
 	}
 
-	if (bot.db == null) {
-		return bot.log("warning", "loader", "Mongo isn't ready");
-	}
 	if (bot.rethink == null) {
 		return bot.log("warning", "loader", "RethinkDB isn't ready");
 	}
@@ -103,26 +103,4 @@ function onReady(bot) {
 
 	require("./motd.js").init(bot);
 	require("./raffle.js").init(bot);
-	
-	var users = bot.getUsers();
-	users.forEach(user => {
-		if (typeof user.id !== "undefined") {
-			bot.db.models.person.findOne({
-				uid: user.id
-			}, (err, person) => {
-				if (err) {
-					bot.log("error", "BOT", err);
-					return;
-				}
-				if (!person) {
-					var doc = {
-						username: user.username,
-						uid: user.id,
-						dubs: user.dubs
-					};
-					person = new bot.db.models.person(doc);
-				}
-			});
-		}
-	});
 }

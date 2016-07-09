@@ -23,7 +23,7 @@ function processJoin(data, results) {
 	// If there is no user, create a new user
 	if (results.length === 0) {
 		user.uid = data.user.id;
-		user.site = "dubtrack";
+		user.platform = "dubtrack";
 
 		r.table("users").insert(user).run(bot.rethink, errLog);
 		return;
@@ -43,7 +43,7 @@ function onJoin(data) {
 
 	r
 		.table('users')
-		.getAll("dubtrack", {index: "site"})
+		.getAll("dubtrack", {index: "platform"})
 		.filter({uid: data.user.id})
 		.pluck("username")
 		.run(bot.rethink, function(err, cursor) {
@@ -65,7 +65,7 @@ function onUpdate(data) {
 
 	r
 		.table('users')
-		.getAll("dubtrack", {index: "site"})
+		.getAll("dubtrack", {index: "platform"})
 		.filter({uid: data.user.id})
 		.update({username: data.user.username})
 		.run(bot.rethink, errLog);
