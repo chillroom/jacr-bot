@@ -119,7 +119,7 @@ function addSongToHistory(data, songID) {
 	}
 
 	// Get their rethink user ID
-	r.table("users").filter({uid: "5606975b9f38870300fba19e", platform: "dubtrack"})("id").run(bot.rethink)
+	r.table("users").filter({uid: data.user.id, platform: "dubtrack"})("id").run(bot.rethink)
 		.then(result => result.toArray())
 		.error(errLog)
 		.then(function(results) {
