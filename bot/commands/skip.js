@@ -33,9 +33,7 @@ module.exports = (bot, data) => {
 			}
 
 			bot.once("room_playlist-queue-update-dub", () => {
-				if (data.user != null) {
-					bot.moderateMoveDJ(DJ.id, 1);
-				}
+				bot.moderateMoveDJ(DJ.id, 1);
 			});
 		});
 	};
