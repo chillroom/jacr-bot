@@ -132,7 +132,7 @@ function addSongToHistory(data, songID) {
 			let item = {
 				song: songID,
 				time: r.now(),
-				person: results[0],
+				user: results[0],
 				
 				platform: "dubtrack",
 				platformID: data.id,
