@@ -143,7 +143,7 @@ var informationReady = function() {
 	if (Raffle.state.started === true) {
 		bot.log("info", "raffle", "Starting a raffle (already started on boot)");
 		Raffle.state.started = false; // explicitly circumvent over-starting prevention mechanism
-		Raffle.start(true); // quiet = true
+		Raffle.start(true, true); // quiet = true, force = true
 		return;
 	}
 
