@@ -137,11 +137,7 @@ function addSongToHistory(data, songID) {
 				platform: "dubtrack",
 				platformID: data.id,
 
-				score: {
-					up: 0,
-					grab: 0,
-					down: 0
-				}
+				score: null
 			};
 
 			return r.table("history").insert(item).run(bot.rethink, errLog);
