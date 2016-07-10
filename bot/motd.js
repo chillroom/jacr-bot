@@ -62,7 +62,7 @@ function onCommand(bot, data) {
 		updateSettings();
 		break;
 	case "add":
-		bot.sendChat("MOTD added");
+		bot.moderateDeleteChat(data.id);
 		MOTD.settings.messages.push(data.params.slice(1).join(" "));
 		updateSettings();
 		break;
@@ -72,7 +72,7 @@ function onCommand(bot, data) {
 			bot.sendChat("Could not update MOTD interval");
 			return;
 		}
-		bot.sendChat("Updated MOTD interval to " + interval);
+		bot.moderateDeleteChat(data.id);
 		MOTD.settings.interval = interval;
 		updateSettings();
 		break;
@@ -86,12 +86,10 @@ function onCommand(bot, data) {
 		bot.sendChat(message);
 		break;
 	case "list":
-		var listMessage = "MOTD messages: ||||";
-		listMessage += MOTD.settings.messages.join("    ||||     ");
-		bot.sendChat(listMessage);
+		bot.sendChat("Please see https://api.just-a-chill-room.net/motd/list?mode=pretty");
 		break;
 	case "reload":
-		bot.sendChat("MOTD reloading...");
+		bot.moderateDeleteChat(data.id);
 		MOTD.reload();
 		break;
 	case "del":
@@ -100,7 +98,7 @@ function onCommand(bot, data) {
 			bot.sendChat("Could not find MOTD");
 			return;
 		}
-		bot.sendChat("Deleting MOTD \"" + MOTD.settings.messages[delItem] + "\"");
+		bot.moderateDeleteChat(data.id);
 		MOTD.settings.messages.splice(delItem, 1);
 		updateSettings();
 		break;
@@ -157,7 +155,6 @@ function sendMOTD() {
 		// Let's try to send the first message. Let's check
 		// if there are any messages at all before we do anything.
 		if (MOTD.settings.messages.length === 0) {
-			// TODO: Turn off MOTD
 			console.log("Tried broadcasting message without any messages");
 			MOTD.setEnabled(false);
 			return;
