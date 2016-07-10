@@ -1,18 +1,9 @@
-const r = require("rethinkdb");
-
+var r;
 var bot;
-
-function errLog(err) {
-	if (err != null) {
-		bot.log("error", "RETHINK", err);
-		return true;
-	}
-	return false;
-}
 
 function processJoin(data, results) {
 	if (results.length > 1) {
-		errLog(results[0].uid + " user multple existence");
+		bot.errLog(results[0].uid + " user multple existence");
 		return;
 	}
 
@@ -25,7 +16,7 @@ function processJoin(data, results) {
 		user.uid = data.user.id;
 		user.platform = "dubtrack";
 
-		r.table("users").insert(user).run(bot.rethink, errLog);
+		r.table("users").insert(user).run().error(bot.errLog);
 		return;
 	} else if (results[0].username === user.username) {
 		// No need to update their username if it is the same username
@@ -33,7 +24,7 @@ function processJoin(data, results) {
 	}
 
 	// Otherwise update existing object
-	r.table("users").get(results[0].id).update(user).run(bot.rethink, errLog);
+	r.table("users").get(results[0].id).update(user).run().error(bot.errLog);
 }
 
 function onJoin(data) {
@@ -46,15 +37,7 @@ function onJoin(data) {
 		.getAll("dubtrack", {index: "platform"})
 		.filter({uid: data.user.id})
 		.pluck("username")
-		.run(bot.rethink, function(err, cursor) {
-			if (errLog(err)) {
-				return;
-			}
-
-			cursor.toArray().then(results => {
-				processJoin(data, results);
-			}).error(errLog);
-		});
+		.run().then(results => processJoin(data, results)).error(bot.errLog);
 }
 
 // Performed when nicknames change
@@ -68,11 +51,12 @@ function onUpdate(data) {
 		.getAll("dubtrack", {index: "platform"})
 		.filter({uid: data.user.id})
 		.update({username: data.user.username})
-		.run(bot.rethink, errLog);
+		.run().error(bot.errLog);
 }
 
 module.exports = receivedBot => {
 	bot = receivedBot;
+	r = bot.rethink;
 	bot.on("user-join", onJoin);
 	bot.on("user-update", onUpdate);
 };

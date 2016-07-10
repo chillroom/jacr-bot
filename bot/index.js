@@ -14,6 +14,8 @@ new DubAPI({
 		return log("error", "BOT", err);
 	}
 
+	bot.rethink = require("rethinkdbdash")(config.rethinkdb);
+
 	/* Logs a simple RethinkDB error */
 	bot.errLog = err => {
 		if (err) {
@@ -45,11 +47,6 @@ new DubAPI({
 		bot.log("error", "BOT", err);
 		process.exitCode = 1;
 	});
-
-	require("./db.js")(bot.log, conn => {
-		bot.rethink = conn;
-		onReady(bot);
-	});
 	
 	// connect
 	bot.connect(config.bot.URL);
@@ -80,13 +77,10 @@ function onReady(bot) {
 	if (started) {
 		return bot.log("warning", "loader", "Trying to start when already started");
 	}
-
-	if (bot.rethink == null) {
-		return bot.log("warning", "loader", "RethinkDB isn't ready");
-	}
 	if (bot.dubtrackReady == null) {
 		return bot.log("warning", "loader", "Dubtrack isn't ready");
 	}
+
 	bot.log("info", "loader", "We are ready!");
 	started = true;
 

@@ -1,15 +1,8 @@
 var Fs = require("fs");
 var Path = require("path");
 var bot;
+var r;
 var commands = {};
-
-function errLog(err) {
-	if (err != null) {
-		bot.log("error", "RETHINK", err);
-		return true;
-	}
-	return false;
-}
 
 var ChatMessageEvent = function(_bot) {
 	var dir = process.cwd() + "/bot/commands";
@@ -35,9 +28,12 @@ var ChatMessageEvent = function(_bot) {
 	});
 
 	bot = _bot;
+	r = bot.rethink;
 	loadResponses();
 	bot.on("chat-message", onChatMessage);
 };
+
+module.exports = ChatMessageEvent;
 
 // Create a new command handler
 ChatMessageEvent.AddCommand = function(cmd, fn) {
@@ -50,16 +46,10 @@ ChatMessageEvent.AddHandler = function(key, fn) {
 	handlers[key] = fn;
 };
 
-module.exports = ChatMessageEvent;
-
-const r = require("rethinkdb");
 var responses = {};
-
 function loadResponses() {
-	r.table('responses').filter(r.row.getField("platform").eq("dubtrack"), {default: true}).run(bot.rethink, function(err, cursor) {
-		if (err) throw err;
-		cursor.toArray(function(err, result) {
-			if (err) throw err;
+	r.table('responses').filter(r.row.getField("platform").eq("dubtrack"), {default: true}).run().then(
+		function(result) {
 			for (var i = result.length - 1; i >= 0; i--) {
 				var doc = result[i];
 				responses[doc.name] = doc.responses;
@@ -68,8 +58,8 @@ function loadResponses() {
 					responses[doc.aliases[k]] = doc.responses;
 				}
 			}
-		});
-	});
+		}
+	).error(bot.errLog);
 }
 
 function onChatMessage(data) {
@@ -95,7 +85,7 @@ function onChatMessage(data) {
 		.filter({uid: data.user.id})
 		.filter(r.row.getField("username").eq(data.user.username).not())
 		.update({username: data.user.username})
-		.run(bot.rethink, errLog);
+		.run().error(bot.errLog);
 
 	// Handle commands
 

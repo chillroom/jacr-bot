@@ -23,7 +23,7 @@
     "request": "^2.67.0",
     "soupselect": "^0.2.0",
     "sprintf-js": "^1.0.3",
-    "rethinkdb": "2.*"
+    "rethinkdbdash": "2.*"
   },
   "devDependencies": {
     "eslint": "^1.10.3"

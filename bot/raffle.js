@@ -1,7 +1,7 @@
 // Copyright (c) Qais Patankar 2016 - MIT License
 "use strict";
 
-const r = require("rethinkdb");
+var r;
 const moment = require("moment");
 
 var Raffle = {
@@ -16,17 +16,9 @@ var Raffle = {
 };
 var bot;
 
-/* Logs a simple RethinkDB error */
-function errLog(err, doc) {
-	if (err) {
-		bot.log("error", "RETHINK.RAFFLE", err);
-		return true;
-	}
-	return false;
-}
-
 Raffle.init = function(receivedBot) {
 	bot = receivedBot;
+	r = bot.rethink;
 
 	// Add the command counter
 	const event = require("./events/chat-message.js");
@@ -95,7 +87,7 @@ function onJoinCommand(bot, data) {
 
 	r.table("settings").get("raffle.dubtrack").update({
 		users: r.row.getField("users").append(entrant)
-	}).run(bot.rethink, errLog);
+	}).run().error(bot.errLog);
 
 	bot.sendChat("@" + data.user.username + ", you have entered the raffle!");
 }
@@ -172,15 +164,15 @@ var informationReady = function() {
 // States should only be accessed by one bot at a time
 function updateState() {
 	r.table("settings").get("raffle.dubtrack")
-		.update(Raffle.state).run(bot.rethink, errLog);
+		.update(Raffle.state).run().error(bot.errLog);
 }
 
 // Commits the local settings to database
 function updateSettings(key) {
 	if (key == null) {
-		r.table("settings").get("raffle").update(Raffle.settings).run(bot.rethink, errLog);
+		r.table("settings").get("raffle").update(Raffle.settings).run().error(bot.errLog);
 	} else {
-		r.table("settings").get("raffle").update({[key]: Raffle.settings[key]}).run(bot.rethink, errLog);
+		r.table("settings").get("raffle").update({[key]: Raffle.settings[key]}).run().error(bot.errLog);
 	}
 }
 
@@ -243,25 +235,15 @@ Raffle.reload = function() {
 	Raffle.state = null;
 
 	// get global settings
-	r.table('settings').get("raffle").run(bot.rethink, function(err, doc) {
-		if (err) {
-			bot.log("error", "RETHINK", err);
-			return;
-		}
-
+	r.table('settings').get("raffle").run().then(function(doc) {
 		Raffle.settings = doc;
 		informationReady();
-	});
+	}).error(bot.errLog);
 
-	r.table('settings').get("raffle.dubtrack").run(bot.rethink, function(err, doc) {
-		if (err) {
-			bot.log("error", "RETHINK", err);
-			return;
-		}
-
+	r.table('settings').get("raffle.dubtrack").run().then(function(doc) {
 		Raffle.state = doc;
 		informationReady();
-	});
+	}).error(bot.errLog);
 };
 
 function warningTimerCallback() {

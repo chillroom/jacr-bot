@@ -1,6 +1,5 @@
-var r = require("rethinkdb");
-
 module.exports = (bot, data) => {
+	const r = bot.rethink
 	const DJ = bot.getDJ();
 	const user = data.user.username;
 	const rank = data.user.role;
@@ -94,6 +93,6 @@ module.exports = (bot, data) => {
 	skip();
 
 	if (skipReason != null) {
-		r.table("songs").filter({type: media.type, fkid: media.fkid}).update({skipReason: skipReason}).run(bot.rethink, bot.errLog);
+		r.table("songs").filter({type: media.type, fkid: media.fkid}).update({skipReason: skipReason}).run().error(bot.errLog);
 	}
 };

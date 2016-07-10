@@ -24,8 +24,10 @@ module.exports = {
 	},
 
 	rethinkdb: {
-		database: process.env.RETHINKDB_DATABASE,
-		username: process.env.RETHINKDB_USERNAME,
-		password: process.env.RETHINKDB_PASSWORD
+		db: process.env.RETHINKDB_DATABASE,
+		user: process.env.RETHINKDB_USERNAME,
+		password: process.env.RETHINKDB_PASSWORD,
+		host: "localhost",
+		port: 28015
 	}
 };

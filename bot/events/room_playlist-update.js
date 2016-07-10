@@ -3,22 +3,14 @@
 var moment = require("moment");
 var sprintf = require("sprintf-js").sprintf;
 var MOTD = require("../motd.js");
-var r = require("rethinkdb");
+var r;
 var bot;
 
 module.exports = receivedBot => {
 	bot = receivedBot;
+	r = bot.rethink;
 	bot.on("room_playlist-update", onUpdate);
 };
-
-/* Logs a simple RethinkDB error */
-function errLog(err) {
-	if (err) {
-		bot.log("error", "RETHINK", err);
-		return true;
-	}
-	return false;
-}
 
 function onUpdate(data) {
 	MOTD.onAdvance();
@@ -42,7 +34,7 @@ function onUpdate(data) {
 					down: data.lastPlay.score.downdubs
 				}
 			})
-			.run(bot.rethink, errLog);
+			.run().error(bot.errLog);
 	}
 
 	if (data.media == null) {
@@ -56,15 +48,7 @@ function onUpdate(data) {
 		.table('songs')
 		.getAll(data.media.fkid, {index: "fkid"})
 		.filter({type: data.media.type}) // and the same type
-		.run(bot.rethink, function(err, cursor) {
-			if (errLog(err)) {
-				return;
-			}
-
-			cursor.toArray().then(results => {
-				onUpdateLog(data, results);
-			}).error(errLog);
-		});
+		.run().then(results => onUpdateLog(data, results)).error(bot.errLog);
 }
 
 function botLogUser(bot, mode, scope, message, user) {
@@ -119,13 +103,11 @@ function addSongToHistory(data, songID) {
 	}
 
 	// Get their rethink user ID
-	r.table("users").filter({uid: data.user.id, platform: "dubtrack"})("id").run(bot.rethink)
-		.then(result => result.toArray())
-		.error(errLog)
+	r.table("users").filter({uid: data.user.id, platform: "dubtrack"})("id").run()
 		.then(function(results) {
 			// If it exists (it should), add it to the history
 			if (results[0] == null) {
-				errLog("No user with that UID: " + data.user.id);
+				bot.errLog("No user with that UID: " + data.user.id);
 				return;
 			}
 			
@@ -140,15 +122,15 @@ function addSongToHistory(data, songID) {
 				score: null
 			};
 
-			return r.table("history").insert(item).run(bot.rethink, errLog);
+			return r.table("history").insert(item).run().error(bot.errLog);
 		})
-		.error(errLog);
+		.error(bot.errLog);
 }
 
 function onUpdateLog(data, results) {
 	var song = results[0];
 	if (results.length > 1) {
-		errLog(song.fkid + " song multple existence");
+		bot.errLog(song.fkid + " song multple existence");
 		return;
 	}
 
@@ -163,15 +145,11 @@ function onUpdateLog(data, results) {
 			plays: 1
 		};
 
-		r.table("songs").insert(song).run(bot.rethink, function(err, result) {
-			if (errLog(err)) {
-				return;
-			}
-
+		r.table("songs").insert(song).run().then(function(result) {
 			// Get the song ID
 			var songID = result.generated_keys[0];
 			addSongToHistory(data, songID);
-		});
+		}).error(bot.errLog);
 
 		return;
 	}
@@ -214,7 +192,7 @@ function onUpdateLog(data, results) {
 
 	// OP checker
 	r.table("songs").filter(r.row.getField("plays").gt(4)).avg("plays").default(100)
-		.run(bot.rethink)
+		.run()
 		.then(avgPlays => {
 			const nextAllowed = moment(song.lastPlay).add(14, "days");
 
@@ -227,7 +205,7 @@ function onUpdateLog(data, results) {
 			r.table("songs").get(song.id).update({
 				plays: r.row("plays").add(1),
 				lastPlay: r.now()
-			}).run(bot.rethink, errLog);
+			}).run().error(bot.errLog);
 		})
-		.error(errLog);
+		.error(bot.errLog);
 }

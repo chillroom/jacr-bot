@@ -1,8 +1,8 @@
 // Copyright (c) Qais Patankar 2016 - MIT License
 "use strict";
 
-const r = require("rethinkdb");
 const moment = require("moment");
+var r;
 
 var MOTD = {
 	onAdvance: () => {},
@@ -10,17 +10,9 @@ var MOTD = {
 };
 var bot;
 
-/* Logs a simple RethinkDB error */
-function errLog(err) {
-	if (err) {
-		bot.log("error", "RETHINK", err);
-		return true;
-	}
-	return false;
-}
-
 MOTD.init = function(receivedBot) {
 	bot = receivedBot;
+	r = bot.rethink;
 
 	// Add the command counter
 	const event = require("./events/chat-message.js");
@@ -140,15 +132,15 @@ var informationReady = function() {
 // States should only be accessed by one bot at a time
 function updateState() {
 	r.table("settings").get("motd.dubtrack")
-		.update(MOTD.state).run(bot.rethink, errLog);
+		.update(MOTD.state).run().error(bot.errLog);
 }
 
 // Commits the local settings to database
 function updateSettings(key) {
 	if (key == null) {
-		r.table("settings").get("motd").update(MOTD.settings).run(bot.rethink, errLog);
+		r.table("settings").get("motd").update(MOTD.settings).run().error(bot.errLog);
 	} else {
-		r.table("settings").get("motd").update({[key]: MOTD.settings[key]}).run(bot.rethink, errLog);
+		r.table("settings").get("motd").update({[key]: MOTD.settings[key]}).run().error(bot.errLog);
 	}
 }
 
@@ -195,25 +187,15 @@ MOTD.reload = function() {
 	MOTD.state = null;
 
 	// get global settings
-	r.table('settings').get("motd").run(bot.rethink, function(err, doc) {
-		if (err) {
-			bot.log("error", "RETHINK", err);
-			return;
-		}
-
+	r.table('settings').get("motd").run().then(function(doc) {
 		MOTD.settings = doc;
 		informationReady();
-	});
+	}).error(bot.errLog);
 
-	r.table('settings').get("motd.dubtrack").run(bot.rethink, function(err, doc) {
-		if (err) {
-			bot.log("error", "RETHINK", err);
-			return;
-		}
-
+	r.table('settings').get("motd.dubtrack").run().then(function(doc) {
 		MOTD.state = doc;
 		informationReady();
-	});
+	}).error(bot.errLog);
 };
 
 module.exports = MOTD;
