@@ -159,7 +159,10 @@ function onUpdateLog(data, results) {
 
 	const skip = (msg, move) => {
 		bot.moderateSkip(() => {
-			bot.sendChat(msg);
+			if (msg != null) {
+				bot.sendChat(msg);
+			}
+
 			botLogUser(bot, "info", "ROOM", "%s has been skipped", data.user);
 			if (move) {
 				bot.once("room_playlist-queue-update-dub", () => {
@@ -171,6 +174,38 @@ function onUpdateLog(data, results) {
 			}
 		});
 	};
+
+
+	const checkAvailability = (shouldSkip) => {
+		if (data.media.type !== "youtube") {
+			return;
+		}
+
+		var request = require("request");
+		request("https://www.googleapis.com/youtube/v3/videos?part=status&key=***REMOVED***&id=" + data.media.fkid, function(error, response, body) {
+			if ((error != null) || (response.statusCode !== 200)) {
+				return;
+			}
+
+			let availability = true;
+
+			body = JSON.parse(body);
+			console.log(body)
+			if (body.pageInfo.totalResults === 0) {
+				// handle non exist / private situation
+				availability = false;
+			} else if (body.items[0].status.uploadStatus === "rejected") {
+				availability = false;
+			}
+
+			if (!availability) {
+				bot.sendChat("This song appears to be unavailable. Please pick another song.")
+				if (shouldSkip) {
+					skip(null, true)
+				}
+			}
+		})
+	}
 
 	var skipReason = null;
 	var shouldLockskip = false;
@@ -199,6 +234,7 @@ function onUpdateLog(data, results) {
 			if (song.plays > avgPlays && !moment(nextAllowed).isBefore()) {
 				botLogUser(bot, "info", "ROOM", "%s is playing an OP song", data.user);
 				skip("This song appears to be overplayed. Please pick another song.", true);
+				checkAvailability(false); // skip = false
 				return;
 			}
 
@@ -206,6 +242,7 @@ function onUpdateLog(data, results) {
 				plays: r.row("plays").add(1),
 				lastPlay: r.now()
 			}).run().error(bot.errLog);
+			checkAvailability(true)
 		})
 		.error(bot.errLog);
 }
