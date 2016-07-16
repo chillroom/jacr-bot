@@ -142,7 +142,8 @@ function onUpdateLog(data, results) {
 			type: data.media.type,
 			lastPlay: r.now(),
 			skipReason: null,
-			plays: 1
+			totalPlays: 1,
+			recentPlays: 1,
 		};
 
 		r.table("songs").insert(song).run().then(function(result) {
@@ -226,23 +227,21 @@ function onUpdateLog(data, results) {
 	}
 
 	// OP checker
-	r.table("songs").filter(r.row.getField("plays").gt(4)).avg("plays").default(100)
-		.run()
-		.then(avgPlays => {
-			const nextAllowed = moment(song.lastPlay).add(14, "days");
+	const isOldSong = moment(song.lastPlay).add(2, 'months').isBefore();
 
-			if (song.plays > avgPlays && !moment(nextAllowed).isBefore()) {
-				botLogUser(bot, "info", "ROOM", "%s is playing an OP song", data.user);
-				skip("This song appears to be overplayed. Please pick another song.", true);
-				checkAvailability(false); // skip = false
-				return;
-			}
+	if (song.recentPlays > 10 && !isOldSong) {
+		botLogUser(bot, 'info', 'ROOM', '%s is playing an OP song', data.user);
+		skip('This song appears to be overplayed. Please pick another song.', true);
+		checkAvailability(false); // skip = false
+		return;
+	}
 
-			r.table("songs").get(song.id).update({
-				plays: r.row("plays").add(1),
-				lastPlay: r.now()
-			}).run().error(bot.errLog);
-			checkAvailability(true)
-		})
-		.error(bot.errLog);
+	r.table('songs').get(song.id).update({
+		recentPlays: isOldSong ? 0 : r.row('recentPlays').add(1),
+		totalPlays: r.row('totalPlays').add(1),
+		lastPlay: r.now(),
+	}).run().
+		error(bot.errLog);
+
+	checkAvailability(true);
 }
