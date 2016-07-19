@@ -108,7 +108,7 @@ function onCommand(bot, data) {
 			bot.sendChat("Could not find MOTD");
 			return;
 		}
-		bot.sendChat("MOTD: \"" + MOTD.settings.messages[showItem] + "\"");
+		bot.sendChat("MOTD: " + MOTD.settings.messages[showItem]);
 		break;
 	}
 }
