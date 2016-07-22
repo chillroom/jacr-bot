@@ -3,6 +3,7 @@
 var moment = require("moment");
 var sprintf = require("sprintf-js").sprintf;
 var MOTD = require("../motd.js");
+const EventManager = require("../event.js");
 var r;
 var bot;
 
@@ -159,6 +160,11 @@ function onUpdateLog(data, results) {
 	addSongToHistory(data, song.id);
 
 	const skip = (msg, move) => {
+		if (EventManager.isActive()) {
+			console.log("Will not skip song. Event is currently active.");
+			return;
+		}
+
 		bot.moderateSkip(() => {
 			if (msg != null) {
 				bot.sendChat(msg);

@@ -97,4 +97,5 @@ function onReady(bot) {
 
 	require("./motd.js").init(bot);
 	require("./raffle.js").init(bot);
+	require("./event.js").init(bot);
 }

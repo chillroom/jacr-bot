@@ -17,3 +17,5 @@ rules:
   no-trailing-spaces:
     - 2 # Error
     - skipBlankLines: true
+  quotes:
+    - 0
