@@ -112,11 +112,6 @@ function onCommand(_, data) {
 		Raffle.setEnabled(true);
 		updateState();
 		break;
-	case 'clear':
-		EventManager.state.user = null;
-		updateState("users");
-		bot.moderateDeleteChat(data.id);
-		break;
 	case 'status':
 		bot.sendChat(`Event ${EventManager.state.started ? 'active' : 'inactive'}.`);
 		break;
