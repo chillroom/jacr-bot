@@ -147,6 +147,8 @@ function onUpdateLog(data, results) {
 			recentPlays: 1,
 		};
 
+		bot.sendChat(`Nice work, ${data.user.username}, we haven't seen this song before!`);
+
 		r.table("songs").insert(song).run().then(function(result) {
 			// Get the song ID
 			var songID = result.generated_keys[0];
