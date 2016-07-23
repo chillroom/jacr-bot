@@ -1,6 +1,5 @@
 const DubAPI = require("dubapi");
 const log = require("jethro");
-const pkg = require(process.cwd() + "/package.json");
 const config = require(process.cwd() + "/config");
 const Fs = require("fs");
 
@@ -10,6 +9,8 @@ new DubAPI({
 	username: config.bot.name,
 	password: config.bot.pass
 }, function(err, bot) {
+	/* eslint no-param-reassign: ["error", { "props": false }]*/
+
 	if (err) {
 		return log("error", "BOT", err);
 	}
@@ -31,8 +32,6 @@ new DubAPI({
 
 	bot.log("info", "BOT", "DubAPI Version: " + bot.version);
 	bot.on("connected", name => {
-		// bot.sendChat(bot.identifier + "online! ver: " + pkg.version);
-		bot.log("info", "BOT", "Bot Version: " + pkg.version);
 		bot.log("info", "BOT", "Bot connected to: " + name);
 		bot.log("info", "BOT", "Bot ID: " + bot._.self.id);
 		bot.dubtrackReady = true;
@@ -69,10 +68,38 @@ new DubAPI({
 	// stop bot from inputting song/history twice
 	bot.started = false;
 
+	bot.readUsers = function readUsers(users, convertToIDs) {
+		const unseenUsers = users.slice();
+
+		// if convertToIDs has any value, use the bot to
+		// check if the user is in the room
+		const outUsers = [];
+
+		for (const user of bot.getUsers()) {
+			// if found, remove from unseen!
+			const index = unseenUsers.indexOf(`@${user.username}`);
+			if (index > -1) {
+				unseenUsers.splice(index, 1);
+				outUsers.push((convertToIDs === true) ? user.id : user.username);
+			}
+
+			if (unseenUsers.length === 0) {
+				break;
+			}
+		}
+
+		if (unseenUsers.length > 0) {
+			bot.sendChat(`Operation not completed. Could not find: ${unseenUsers.join(", ")}`);
+			return false;
+		}
+
+		return outUsers;
+	};
+
 	module.exports = bot;
 });
 
-var started = false;
+let started = false;
 function onReady(bot) {
 	if (started) {
 		return bot.log("warning", "loader", "Trying to start when already started");
@@ -84,13 +111,13 @@ function onReady(bot) {
 	bot.log("info", "loader", "We are ready!");
 	started = true;
 
-	const baseDir = process.cwd() + "/bot/";
 	const folders = ["events"];
-	for (var i = folders.length - 1; i >= 0; i--) {
-		const dir = baseDir + folders[i];
+	const base = `${process.cwd()}/bot/`;
+	for (let i = folders.length - 1; i >= 0; i--) {
+		const dir = base + folders[i];
 		Fs.readdirSync(dir).forEach(file => {
 			if (file.indexOf(".js") > -1) {
-				require(dir + "/" + file)(bot);
+				require(`${dir}/${file}`)(bot);
 			}
 		});
 	}
@@ -98,4 +125,5 @@ function onReady(bot) {
 	require("./motd.js").init(bot);
 	require("./raffle.js").init(bot);
 	require("./event.js").init(bot);
+	return true;
 }

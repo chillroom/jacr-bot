@@ -15,40 +15,18 @@ function updateState(key) {
 		error(bot.errLog);
 }
 
-function readStringUsers(users, convertToIDs) {
-	const unseenUsers = users.slice();
-
-	// if convertToIDs has any value, use the bot to
-	// check if the user is in the room
-	const outUsers = [];
-
-	for (const user of bot.getUsers()) {
-		// if found, remove from unseen!
-		const index = unseenUsers.indexOf(`@${user.username}`);
-		if (index > -1) {
-			unseenUsers.splice(index, 1);
-			outUsers.push((convertToIDs === true) ? user.id : user.username);
-		}
-
-		if (unseenUsers.length === 0) {
-			break;
-		}
-	}
-
-	if (unseenUsers.length > 0) {
-		bot.sendChat(`Operation completed without missing users: ${unseenUsers.join(", ")}`);
-	}
-
-	return outUsers;
-}
-
 function start(data) {
 	if (EventManager.state.started) {
 		bot.sendChat("Event has already started!");
 		return;
 	}
 	EventManager.state.started = true;
-	EventManager.state.user = readStringUsers(data.params.slice(1), true)[0];
+
+	const users = bot.readUsers(data.params.slice(1), true);
+	if (users === false) {
+		return;
+	}
+	EventManager.state.user = users[0];
 
 	bot.moderateLockQueue(true, () => {
 		// remove non artists
