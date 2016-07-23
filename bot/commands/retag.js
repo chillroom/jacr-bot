@@ -13,16 +13,16 @@ module.exports = (bot, data) => {
 		return;
 	}
 
-	bot.rethink.
-		table("songs").
-		update({ name: data.params.join(" ") }).
-		run().
-		then(() => {
-			bot.sendChat("Song successfully retagged");
-			return;
-		}).
-		error((err) => {
-			bot.errLog(err);
-			bot.sendChat("Internal error retagging song");
-		});
+	// bot.rethink.
+	// 	table("songs").
+	// 	update({ name: data.params.join(" ") }).
+	// 	run().
+	// 	then(() => {
+	// 		bot.sendChat("Song successfully retagged");
+	// 		return;
+	// 	}).
+	// 	error((err) => {
+	// 		bot.errLog(err);
+	// 		bot.sendChat("Internal error retagging song");
+	// 	});
 };
