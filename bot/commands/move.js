@@ -1,38 +1,43 @@
 module.exports = (bot, data) => {
-    const user = data.user.username;
-    const rank = data.user.role;
-    if (bot.devs.indexOf(user) > -1 || bot.ranks.indexOf(rank) > -1) {
-        if (typeof(data.params) !== "undefined" && data.params.length > 0) {
-            var username = data.params[0],
-                pos = 1;
-            if (data.params.length > 1) {
-                var position = data.params[1];
-                if (username.substr(0, 1) === "@") {
-                    //remove the @
-                    username = username.substr(1);
-                }
-                if (!isNaN(parseInt(position))) {
-                    pos = parseInt(position);
-                    if (pos <= 0) {
-                        pos = 0;
-                    } else if (pos >= bot.getQueue().length) {
-                        pos = bot.getQueue().length - 1;
-                    } else {
-                        pos = pos -1;
-                    }
-                }
-                var person = bot.getUserByName(username);
-                bot.moderateMoveDJ(person.id, pos);
-                var moved = pos + 1;
-                bot.sendChat(bot.identifier + username + " moved to position: " + moved);
-            } else {
-                if (username.substr(0, 1) === "@") {
-                    //remove the @
-                    username = username.substr(1);
-                }
-                bot.moderateMoveDJ(person.id, pos);
-                bot.sendChat(bot.identifier + username + " moved to position: " + moved);
-            }
-        }
-    }
+	if (bot.ranks.indexOf(data.user.role) === -1) {
+		return;
+	}
+
+	if (data.params[1] == null) {
+		bot.sendChat("Usage: !move @user +-<position> (only supply sign for relative move)");
+		return;
+	}
+
+	// remove the @
+	let username = data.params[0];
+	if (username.substr(0, 1) === "@") {
+		username = username.substr(1);
+	}
+
+	let pos = parseInt(data.params[1], 10);
+	if (isNaN(pos) || (pos === 0)) {
+		bot.sendChat("Invalid number supplied");
+		return;
+	}
+
+	const person = bot.getUserByName(username);
+	if (person == null) {
+		bot.sendChat("Could not find person. Names are case sensitive.");
+		return;
+	}
+
+	if (person.order === 99999) {
+		bot.sendChat("User is not in queue");
+		return;
+	}
+
+	if ((pos < 0) || (data.params[1].substr(0, 1) === "+")) {
+		// move relative
+		pos += person.order;
+	} else if (pos >= bot.getQueue().length) {
+		pos = bot.getQueue().length;
+	}
+
+	bot.moderateMoveDJ(person.id, pos - 1);
+	bot.sendChat(`${username} moved to position ${pos}`);
 };
