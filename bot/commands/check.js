@@ -19,7 +19,9 @@ function createResponse(bot, data, idSearch) {
 			}
 
 			const doc = results[0];
-			message += `song ${doc.name} has been played ${doc.totalPlays} time${doc.totalPlays === 1 ? "" : "s"} (${doc.recentPlays} recently). Last play: ${moment(doc.lastPlay).fromNow()}.`;
+			const isOldSong = moment(doc.lastPlay).add(2, 'months').isBefore();
+
+			message += `song ${doc.name} has been played ${doc.totalPlays} time${doc.totalPlays === 1 ? "" : "s"} (${isOldSong ? 0 : doc.recentPlays} recently). Last play: ${moment(doc.lastPlay).fromNow()}.`;
 			bot.sendChat(message);
 		},
 		err => {
