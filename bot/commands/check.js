@@ -1,66 +1,69 @@
-var moment = require("moment");
+const moment = require("moment");
 
-module.exports = function(bot, data) {
-    bot.sendChat("This command is not available right now. Please try again later.")
-    // var text = data.params.join(" ");
-    // text = text.replace(/-+/g, "").replace(/\s+/g, " ").trim();
-    // if (typeof(data.params) !== "undefined" && data.params.length > 0) {
-    //     bot.db.models.songs.aggregate([
-    //         {
-    //             $match: {
-    //                 $text: {
-    //                     $search: text
-    //                 }
-    //             }
-    //         }, {
-    //             $sort: {
-    //                 score: {
-    //                     $meta: "textScore"
-    //                 }
-    //             }
-    //         }, {
-    //             $project: {
-    //                 score: {
-    //                     $meta: "textScore"
-    //                 },
-    //                 name: 1,
-    //                 plays: 1,
-    //                 lastPlay: 1
-    //             }
-    //         }, {
-    //             $match: {
-    //                 score: {
-    //                     $gt: 1
-    //                 }
-    //             }
-    //         }, {
-    //             $limit: 1
-    //         }
-    //     ]).exec(function(err, doc) {
-    //         if (err) {
-    //             bot.sendChat(bot.identifier + "leaf me alone, I has an error");
-    //             bot.log("error", "MONGO", err);
-    //         } else {
-    //             if (doc[0]) {
-    //                 doc = doc[0];
-    //                 bot.db.models.history.find({
-    //                     _song: doc._id
-    //                 }).sort({time: -1}).limit(1).populate("_person").exec(function(err, person) {
-    //                     if (err) {
-    //                         bot.sendChat(bot.identifier + "leaf me alone, I has an error");
-    //                         bot.log("error", "MONGO", err);
-    //                     } else {
-    //                         person = person[0]._person;
-    //                         var date = new Date(doc.lastPlay);
-    //                         bot.sendChat(bot.identifier + doc.name + " has been played " + doc.plays + " times before. Last played by " + person.username + " " + moment(date).fromNow() + ".");
-    //                     }
-    //                 });
-    //             } else {
-    //                 bot.sendChat(bot.identifier + "way to go sailor, that song hasn't been played before");
-    //             }
-    //         }
-    //     });
-    // } else {
-    //     bot.sendChat(bot.identifier + "aw shucks, you didn't include a search query");
-    // }
+// see https://github.com/sindresorhus/escape-string-regexp/blob/master/index.js
+const matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g;
+
+function createResponse(bot, data, idSearch) {
+	const prefix = idSearch ? "(By ID) " : "";
+
+	return [
+		results => {
+			if (results.length === 0) {
+				bot.sendChat("Could not find song");
+				return;
+			}
+
+			let message = `${prefix}The `;
+			if (results.length > 1) {
+				message = `Found ${results.length} songs matching that title. The first `;
+			}
+
+			const doc = results[0];
+			message += `song ${doc.name} has been played ${doc.totalPlays} time${doc.totalPlays === 1 ? "" : "s"} (${doc.recentPlays} recently). Last play: ${moment(doc.lastPlay).fromNow()}.`;
+			bot.sendChat(message);
+		},
+		err => {
+			bot.errLog(err);
+			bot.sendChat(`${data.user.username}: Database search failed`);
+		},
+	];
+}
+
+module.exports = (bot, data) => {
+	if (data.params[0] == null) {
+		bot.sendChat("Usage: !check <partial song title> OR !check youtube:<id>");
+		return;
+	}
+
+	if (data.params.length === 1) {
+		const text = data.params[0];
+		const firstColon = text.indexOf(":");
+		if (firstColon !== -1) {
+			const type = text.slice(0, firstColon);
+			const fkid = text.slice(firstColon + 1);
+
+			const response = createResponse(bot, data, true);
+			bot.rethink.
+				table("songs").
+				getAll(fkid, { index: "fkid" }).
+				filter({ type }).
+				run().
+				then(response[0]).
+				error(response[1]);
+			return;
+		}
+	}
+
+	const text = data.params.join(" ").toLowerCase().replace(matchOperatorsRe, '\\$&');
+	const r = bot.rethink;
+	const response = createResponse(bot, data, false);
+	r.
+		table("songs").
+		filter(
+			r.row("name").downcase().
+			match(`(.*)${text}(.*)`)
+		).
+		run().
+		then(response[0]).
+		error(response[1]);
 };
