@@ -21,7 +21,7 @@ module.exports = (bot, data) => {
 		update({ name: data.params.join(" ") }).
 		run().
 		then(() => {
-			bot.sendChat("Song successfully retagged");
+			bot.moderateDeleteChat(data.id);
 			return;
 		}).
 		error((err) => {
