@@ -243,7 +243,7 @@ function onUpdateLog(data, results) {
 	}
 
 	r.table('songs').get(song.id).update({
-		recentPlays: isOldSong ? 0 : r.row('recentPlays').add(1),
+		recentPlays: isOldSong ? 1 : r.row('recentPlays').add(1),
 		totalPlays: r.row('totalPlays').add(1),
 		lastPlay: r.now(),
 	}).run().
