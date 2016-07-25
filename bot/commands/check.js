@@ -22,6 +22,9 @@ function createResponse(bot, data, idSearch) {
 			const isOldSong = moment(doc.lastPlay).add(2, 'months').isBefore();
 
 			message += `song ${doc.name} has been played ${doc.totalPlays} time${doc.totalPlays === 1 ? "" : "s"} (${isOldSong ? 0 : doc.recentPlays} recently). Last play: ${moment(doc.lastPlay).fromNow()}.`;
+			if (doc.skipReason != null) {
+				message += ` Skip reason: ${doc.skipReason}`;
+			}
 			bot.sendChat(message);
 		},
 		err => {
