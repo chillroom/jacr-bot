@@ -44,15 +44,17 @@ module.exports = (bot, data) => {
 			const type = text.slice(0, firstColon);
 			const fkid = text.slice(firstColon + 1);
 
-			const response = createResponse(bot, data, true);
-			bot.rethink.
-				table("songs").
-				getAll(fkid, { index: "fkid" }).
-				filter({ type }).
-				run().
-				then(response[0]).
-				error(response[1]);
-			return;
+			if (type === "youtube" || type === "soundcloud") {
+				const response = createResponse(bot, data, true);
+				bot.rethink.
+					table("songs").
+					getAll(fkid, { index: "fkid" }).
+					filter({ type }).
+					run().
+					then(response[0]).
+					error(response[1]);
+				return;
+			}
 		}
 	}
 
