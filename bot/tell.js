@@ -14,7 +14,7 @@ let TellMessages;
 
 // States should only be accessed by one bot at a time
 function updateState() {
-	r.table('settings').get('tells.dubtrack').update(TellMessages).run().
+	r.table('settings').get('tells.dubtrack').replace(TellMessages).run().
 		error(bot.errLog);
 }
 
