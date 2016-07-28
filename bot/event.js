@@ -59,7 +59,7 @@ function onCommand(_, data) {
 	}
 
 	if (data.params[0] == null) {
-		bot.sendChat("https://i0.wp.com/just-a-chill-room.net/wp-content/uploads/2016/07/4th_anniversary_flyer07.jpg?resize=750%2C1061&ext=.jpg");
+		bot.sendChat("https://i0.wp.com/just-a-chill-room.net/wp-content/uploads/2016/07/4th_anniversary_flyer08.jpg?resize=750%2C1061&ext=.jpg");
 		return;
 	}
 
