@@ -26,14 +26,14 @@ module.exports = (bot, data) => {
 		return;
 	}
 
-	if (person.order === 99999) {
+	if (!bot.getQueue().some(v => person.id === v.uid)) {
 		bot.sendChat("User is not in queue");
 		return;
 	}
 
 	if ((pos < 0) || (data.params[1].substr(0, 1) === "+")) {
 		// move relative
-		pos += person.order;
+		pos += bot.getQueuePosition(person.id);
 	} else if (pos >= bot.getQueue().length) {
 		pos = bot.getQueue().length;
 	}
