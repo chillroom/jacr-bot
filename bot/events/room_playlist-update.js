@@ -148,9 +148,8 @@ function onUpdateLog(data, results) {
 		};
 
 		r.table("songs").insert(song).run().then(function(result) {
-			// Get the song ID
-			var songID = result.generated_keys[0];
-			addSongToHistory(data, songID);
+			// Get the song ID and add it to the history
+			addSongToHistory(data, result.generated_keys[0]);
 		}).error(bot.errLog);
 
 		return;
@@ -188,7 +187,7 @@ function onUpdateLog(data, results) {
 			return;
 		}
 
-		var request = require("request");
+		const request = require("request");
 		request("https://www.googleapis.com/youtube/v3/videos?part=status&key=***REMOVED***&id=" + data.media.fkid, function(error, response, body) {
 			if ((error != null) || (response.statusCode !== 200)) {
 				return;
@@ -206,16 +205,16 @@ function onUpdateLog(data, results) {
 			}
 
 			if (!availability) {
-				bot.sendChat("This song appears to be unavailable. Please pick another song.")
+				bot.sendChat("This song appears to be unavailable. Please pick another song.");
 				if (shouldSkip) {
-					skip(null, true)
+					skip(null, true);
 				}
 			}
-		})
-	}
+		});
+	};
 
-	var skipReason = null;
-	var shouldLockskip = false;
+	let skipReason = null;
+	let shouldLockskip = false;
 	if (song.skipReason === "forbidden") {
 		skipReason = "Song has been recently flagged as forbidden. You can view the op/forbidden list here: http://just-a-chill-room.net/op-forbidden-list/";
 	} else if (song.skipReason === "nsfw") {
@@ -240,6 +239,10 @@ function onUpdateLog(data, results) {
 		skip('This song appears to be overplayed. Please pick another song.', true);
 		checkAvailability(false); // skip = false
 		return;
+	}
+
+	if (data.media.name !== song.name) {
+		bot.sendChat(`This song is retagged as "${song.name}"`);
 	}
 
 	r.table('songs').get(song.id).update({
