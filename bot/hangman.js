@@ -22,7 +22,7 @@ function onGuess(_, data) {
 	if (data.params[0].length === 1) {
 		const letter = data.params[0].toLowerCase();
 		if (Hangman.state.letters.indexOf(letter) !== -1) {
-			bot.sendChat(`Hangman - ${data.user.username}, that letter has already been suggested. ${Hangman.state.tempWord}`);
+			bot.sendChat(`${data.user.username}, that letter has already been suggested. ${Hangman.state.tempWord}`);
 			bot.moderateDeleteChat(data.id);
 			return;
 		}
