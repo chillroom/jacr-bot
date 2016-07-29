@@ -5,14 +5,14 @@ module.exports = {
 	bot: {
 		name: process.env.BOT_NAME,
 		pass: process.env.BOT_PASS,
-		URL: process.env.BOT_URL
+		URL: process.env.BOT_URL,
 	},
 	mongoURL: process.env.MONGO_URL,
 	slack: {
 		URL: process.env.SLACK_URL,
 		channels: process.env.SLACK_CHANNELS,
 		message: process.env.SLACK_MESSAGE,
-		token: process.env.SLACK_TOKEN
+		token: process.env.SLACK_TOKEN,
 	},
 	socialLink: process.env.SOCIAL_LINK,
 
@@ -20,7 +20,7 @@ module.exports = {
 		LFM_APIKEY: process.env.LFM_APIKEY,
 		LFM_APISECRET: process.env.LFM_APISECRET,
 		LFM_USERNAME: process.env.LFM_USERNAME,
-		LFM_PASSWORD: process.env.LFM_PASSWORD
+		LFM_PASSWORD: process.env.LFM_PASSWORD,
 	},
 
 	rethinkdb: {
@@ -28,6 +28,11 @@ module.exports = {
 		user: process.env.RETHINKDB_USERNAME,
 		password: process.env.RETHINKDB_PASSWORD,
 		host: "localhost",
-		port: 28015
-	}
+		port: 28015,
+	},
+
+	artsy: {
+		clientID: process.env.ARTSY_CLIENT_ID,
+		clientSecret: process.env.ARTSY_CLIENT_SECRET,
+	},
 };

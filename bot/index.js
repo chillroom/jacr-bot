@@ -126,5 +126,6 @@ function onReady(bot) {
 	require("./raffle.js").init(bot);
 	require("./event.js").init(bot);
 	require("./tell.js").init(bot);
+	require("./art.js").init(bot);
 	return true;
 }
