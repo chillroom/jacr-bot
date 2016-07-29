@@ -70,7 +70,7 @@ function onGuess(_, data) {
 
 		const pos = bot.getQueuePosition(data.user.id);
 		if (Hangman.state.word !== word) {
-			const shouldPush = (pos === -1) || (pos > bot.getQueue().length);
+			const shouldPush = (pos !== -1) && !(pos > bot.getQueue().length);
 			bot.sendChat(`${data.user.username} guessed "${word}" incorrectly!${shouldPush ? " You get pushed back in the queue." : ""}`);
 			bot.moderateDeleteChat(data.id);
 
