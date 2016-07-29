@@ -56,11 +56,14 @@ function onGuess(_, data) {
 	
 	if (!forceSuccess) {
 		const word = data.params[0].toLowerCase();
-		let valid = true;
-		for (let i = word.length - 1; i >= 0; i--) {
-			const c = word.charAt(i);
-			if (c < 'a' || c > 'z') {
-				valid = false;
+		let valid = word.length === Hangman.state.world.length;
+
+		if (valid) {
+			for (let i = word.length - 1; i >= 0; i--) {
+				const c = word.charAt(i);
+				if (c < 'a' || c > 'z') {
+					valid = false;
+				}
 			}
 		}
 
