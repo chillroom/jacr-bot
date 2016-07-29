@@ -127,5 +127,6 @@ function onReady(bot) {
 	require("./event.js").init(bot);
 	require("./tell.js").init(bot);
 	require("./art.js").init(bot);
+	require("./hangman.js").init(bot);
 	return true;
 }
