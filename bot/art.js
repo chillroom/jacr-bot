@@ -27,8 +27,8 @@ function updateToken(bot, cb) {
 		json: true,
 	}, (error, response, body) => {
 		if (error != null || response.statusCode !== 201) {
-			bot.log("error", "ART_TOKEN_RETRIEVE", [error, body]);
-			bot.sendChat("Art command could not load.");
+			bot.log("error", "ART_TOKEN_RETRIEVE", [response.statusCode, error, body]);
+			// bot.sendChat("Art command could not load.");
 			return;
 		}
 
