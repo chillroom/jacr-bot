@@ -56,7 +56,7 @@ function onGuess(_, data) {
 	
 	if (!forceSuccess) {
 		const word = data.params[0].toLowerCase();
-		let valid = word.length === Hangman.state.world.length;
+		let valid = word.length === Hangman.state.word.length;
 
 		if (valid) {
 			for (let i = word.length - 1; i >= 0; i--) {
