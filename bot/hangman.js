@@ -118,7 +118,7 @@ function onCommand(_, data) {
 				letters: [],
 			};
 
-			bot.sendChat(`We're playing Hangman: ${Hangman.state.tempWord} (${Hangman.state.tempWord.length})! Use "!guess word" or "!guess letter" to play along!`);
+			bot.sendChat(`We're playing Hangman: ${Hangman.state.tempWord} (${Hangman.state.word.length})! Use "!guess word" or "!guess letter" to play along!`);
 		});
 		return;
 	}
