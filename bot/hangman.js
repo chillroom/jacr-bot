@@ -114,7 +114,7 @@ function onCommand(_, data) {
 			
 			Hangman.state = {
 				tempWord: Array(body.length + 1).join("_ "),
-				word: body,
+				word: body.toLowerCase(),
 				letters: [],
 			};
 
