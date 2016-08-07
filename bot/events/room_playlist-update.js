@@ -1,100 +1,53 @@
-"use strict";
-
-var moment = require("moment");
-var sprintf = require("sprintf-js").sprintf;
-var MOTD = require("../motd.js");
+const moment = require("moment");
+const sprintf = require("sprintf-js").sprintf;
+const MOTD = require("../motd.js");
 const EventManager = require("../event.js");
-var r;
-var bot;
+let r;
+let bot;
 
-module.exports = receivedBot => {
-	bot = receivedBot;
-	r = bot.rethink;
-	bot.on("room_playlist-update", onUpdate);
-};
-
-function onUpdate(data) {
-	MOTD.onAdvance();
-
-	if (!bot.started) {
-		bot.started = true;
-		return;
-	}
-	onUpdateLastfm(bot, data);
-
-	if (data.lastPlay != null) {
-		r
-			.table("history")
-			.filter({platform: "dubtrack", platformID: data.lastPlay.id})
-			.orderBy(r.desc("time"))
-			.limit(1)
-			.update({
-				score: {
-					up: data.lastPlay.score.updubs,
-					grab: data.lastPlay.score.grabs,
-					down: data.lastPlay.score.downdubs
-				}
-			})
-			.run().error(bot.errLog);
-	}
-
-	if (data.media == null) {
-		return;
-	}
-
-	botLogUser(bot, "info", "ROOM", "%s is now playing", data.user);
-
-	// First we get "all" the songs that match the fkid
-	r
-		.table('songs')
-		.getAll(data.media.fkid, {index: "fkid"})
-		.filter({type: data.media.type}) // and the same type
-		.run().then(results => onUpdateLog(data, results)).error(bot.errLog);
-}
-
-function botLogUser(bot, mode, scope, message, user) {
-	if (user == null) {
-		user = {
-			username: "?",
-			id: "?"
-		};
-	}
-
-	var username = sprintf("%s (%s)", user.id, user.username);
-	bot.log(mode, scope, sprintf(message, username));
-}
-
-function onUpdateLastfm(bot, data) {
+function onUpdateLastfm(data) {
 	const config = require(process.cwd() + "/config");
 	if (config.lastfm.LFM_APIKEY == null) {
 		return;
 	}
 	
-	var result = {};
+	const result = {};
 
 	if (data.lastPlay != null && data.lastPlay.media != null) {
 		result.scrobble = {
 			title: data.lastPlay.media.name,
-			duration: data.lastPlay.media.songLength / 1000
+			duration: data.lastPlay.media.songLength / 1000,
 		};
 	}
 	
 	if (data.media != null) {
 		result.nowPlaying = {
 			title: data.media.name,
-			duration: data.media.songLength / 1000
+			duration: data.media.songLength / 1000,
 		};
 	}
 
 	if (result.scrobble || result.nowPlaying) {
-		var json = JSON.stringify(result);
+		const json = JSON.stringify(result);
 		const execFile = require('child_process').execFile;
-		execFile("/home/qaisjp/jacr/illumibot/bot/events/lastfm", [json], {env: config.lastfm}, (err, stdout) => {
+		execFile("/home/qaisjp/jacr/illumibot/bot/events/lastfm", [json], { env: config.lastfm }, (err) => {
 			if (err != null) {
 				bot.log("debug", "lastfm_err", err);
 			}
 		});
 	}
+}
+
+function botLogUser(mode, scope, message, inputUser) {
+	let user = inputUser;
+	if (user == null) {
+		user = {
+			username: "?",
+			id: "?",
+		};
+	}
+
+	bot.log(mode, scope, sprintf(message, `${user.id} (${user.username})`));
 }
 
 function addSongToHistory(data, songID) {
@@ -104,15 +57,15 @@ function addSongToHistory(data, songID) {
 	}
 
 	// Get their rethink user ID
-	r.table("users").filter({uid: data.user.id, platform: "dubtrack"})("id").run()
-		.then(function(results) {
+	r.table("users").filter({ uid: data.user.id, platform: "dubtrack" })("id").run()
+		.then(results => {
 			// If it exists (it should), add it to the history
 			if (results[0] == null) {
-				bot.errLog("No user with that UID: " + data.user.id);
-				return;
+				bot.errLog(`No user with that UID: ${data.user.id}`);
+				return null;
 			}
 			
-			let item = {
+			const item = {
 				song: songID,
 				time: r.now(),
 				user: results[0],
@@ -120,7 +73,7 @@ function addSongToHistory(data, songID) {
 				platform: "dubtrack",
 				platformID: data.id,
 
-				score: null
+				score: null,
 			};
 
 			return r.table("history").insert(item).run().error(bot.errLog);
@@ -129,15 +82,14 @@ function addSongToHistory(data, songID) {
 }
 
 function onUpdateLog(data, results) {
-	var song = results[0];
 	if (results.length > 1) {
-		bot.errLog(song.fkid + " song multple existence");
+		bot.errLog(`${results[0].fkid} song multiple existence`);
 		return;
 	}
 
 	// If there is no song, create a new song
-	if (song == null) {
-		let song = {
+	if (results.length === 0) {
+		const song = {
 			fkid: data.media.fkid,
 			name: data.media.name,
 			type: data.media.type,
@@ -147,20 +99,23 @@ function onUpdateLog(data, results) {
 			recentPlays: 1,
 		};
 
-		r.table("songs").insert(song).run().then(function(result) {
+		r.table("songs").insert(song).run().then(result => {
 			// Get the song ID and add it to the history
 			addSongToHistory(data, result.generated_keys[0]);
-		}).error(bot.errLog);
+		}).
+		error(bot.errLog);
 
 		return;
 	}
+
+	const song = results[0];
 
 	// adds the song to the history
 	addSongToHistory(data, song.id);
 
 	const skip = (msg, move) => {
+		// don't skip if an event is active
 		if (EventManager.isActive()) {
-			console.log("Will not skip song. Event is currently active.");
 			return;
 		}
 
@@ -169,13 +124,13 @@ function onUpdateLog(data, results) {
 				bot.sendChat(msg);
 			}
 
-			botLogUser(bot, "info", "ROOM", "%s has been skipped", data.user);
+			botLogUser("info", "ROOM", "%s has been skipped", data.user);
 			if (move) {
 				bot.once("room_playlist-queue-update-dub", () => {
 					if (data.user != null) {
 						bot.moderateMoveDJ(data.user.id, 1);
 					}
-					botLogUser(bot, "info", "ROOM", "%s has been moved to the front", data.user);
+					botLogUser("info", "ROOM", "%s has been moved to the front", data.user);
 				});
 			}
 		});
@@ -188,15 +143,14 @@ function onUpdateLog(data, results) {
 		}
 
 		const request = require("request");
-		request("https://www.googleapis.com/youtube/v3/videos?part=status&key=***REMOVED***&id=" + data.media.fkid, function(error, response, body) {
+		request(`https://www.googleapis.com/youtube/v3/videos?part=status&key=***REMOVED***&id=${data.media.fkid}`, (error, response, unparsedBody) => {
 			if ((error != null) || (response.statusCode !== 200)) {
 				return;
 			}
 
 			let availability = true;
+			const body = JSON.parse(unparsedBody);
 
-			body = JSON.parse(body);
-			console.log(body)
 			if (body.pageInfo.totalResults === 0) {
 				// handle non exist / private situation
 				availability = false;
@@ -235,7 +189,7 @@ function onUpdateLog(data, results) {
 	const isOldSong = moment(song.lastPlay).add(2, 'months').isBefore();
 
 	if (song.recentPlays > 10 && !isOldSong) {
-		botLogUser(bot, 'info', 'ROOM', '%s is playing an OP song', data.user);
+		botLogUser('info', 'ROOM', '%s is playing an OP song', data.user);
 		skip('This song appears to be overplayed. Please pick another song.', true);
 		checkAvailability(false); // skip = false
 		return;
@@ -254,3 +208,51 @@ function onUpdateLog(data, results) {
 
 	checkAvailability(true);
 }
+
+function onUpdate(data) {
+	MOTD.onAdvance();
+
+	if (!bot.started) {
+		bot.started = true;
+		return;
+	}
+	onUpdateLastfm(data);
+
+	if (data.lastPlay != null) {
+		r
+			.table("history")
+			.filter({ platform: "dubtrack", platformID: data.lastPlay.id })
+			.orderBy(r.desc("time"))
+			.limit(1)
+			.update({
+				score: {
+					up: data.lastPlay.score.updubs,
+					grab: data.lastPlay.score.grabs,
+					down: data.lastPlay.score.downdubs,
+				},
+			})
+			.run().
+			error(bot.errLog);
+	}
+
+	if (data.media == null) {
+		return;
+	}
+
+	botLogUser("info", "ROOM", "%s is now playing", data.user);
+
+	// First we get "all" the songs that match the fkid
+	r
+		.table('songs')
+		.getAll(data.media.fkid, { index: "fkid" })
+		.filter({ type: data.media.type }) // and the same type
+		.run().
+		then(results => onUpdateLog(data, results)).
+		error(bot.errLog);
+}
+
+module.exports = receivedBot => {
+	bot = receivedBot;
+	r = bot.rethink;
+	bot.on("room_playlist-update", onUpdate);
+};
