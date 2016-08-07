@@ -1,5 +1,6 @@
 module.exports = (bot, data) => {
 	if (bot.vips.indexOf(data.user.role) === -1) {
+		bot.sendChat("Access denied.");
 		return;
 	}
 
@@ -18,7 +19,11 @@ module.exports = (bot, data) => {
 		table("songs").
 		getAll(media.fkid, { index: "fkid" }).
 		filter({ type: media.type }).
-		update({ name: data.params.join(" ") }).
+		update({
+			name: data.params.join(" "),
+			retagged: true,
+			autoretagged: false,
+		}).
 		run().
 		then(() => {
 			bot.moderateDeleteChat(data.id);
