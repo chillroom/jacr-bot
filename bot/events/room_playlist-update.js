@@ -135,7 +135,7 @@ function checkSoundCloud(song, shouldSkip, skip) {
 		}
 
 		const body = JSON.parse(unparsedBody);
-		const newTitle = `${body.user.username} - ${song.name}`;
+		const newTitle = `${body.user.username} - ${body.title}`;
 
 		bot.sendChat(`This song has been auto-retagged as "${newTitle}"`);
 
