@@ -22,7 +22,7 @@ function onGuess(_, data) {
 	if (data.params[0].length === 1) {
 		const letter = data.params[0].toLowerCase();
 		if (Hangman.state.letters.indexOf(letter) !== -1) {
-			bot.sendChat(`${data.user.username}, that letter has already been suggested. ${Hangman.state.tempWord}`);
+			bot.sendChat(`${data.user.username}, nope. ${Hangman.state.tempWord}`);
 			bot.moderateDeleteChat(data.id);
 			return;
 		}
@@ -45,7 +45,7 @@ function onGuess(_, data) {
 		Hangman.state.word = word;
 		Hangman.state.tempWord = tempWord;
 
-		if (Hangman.state.tempWord.indexOf("□") !== -1) {
+		if (Hangman.state.tempWord.indexOf("◌") !== -1) {
 			bot.sendChat(`${data.user.username} asked \"${letter}\": ${tempWord}`);
 			bot.moderateDeleteChat(data.id);
 			return;
@@ -86,8 +86,8 @@ function onGuess(_, data) {
 	}
 
 	const pos = bot.getQueuePosition(data.user.id);
-	const link = `http://dictionary.reference.com/browse/${Hangman.state.word}`;
-	bot.sendChat(`Congratulations ${data.user.username}, you guessed the word \"${Hangman.state.word}\" correctly! ${(pos === -1) ? "" : "You get boosted a spot! "}Definition: ${link}`);
+	const link = `https://dictionary.cambridge.org/dictionary/english/${Hangman.state.word}`;
+	bot.sendChat(`Congratulations ${data.user.username}, you guessed \"${Hangman.state.word}\" correctly! ${(pos === -1) ? "" : "You get boosted a spot! "}Definition: ${link}`);
 	bot.moderateDeleteChat(data.id);
 
 	if (pos > 0) {
@@ -113,7 +113,7 @@ function onCommand(_, data) {
 			}
 			
 			Hangman.state = {
-				tempWord: Array(body.length + 1).join("□ "),
+				tempWord: Array(body.length + 1).join("◌ "),
 				word: body.toLowerCase(),
 				letters: [],
 			};
