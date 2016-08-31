@@ -45,7 +45,7 @@ function onGuess(_, data) {
 		Hangman.state.word = word;
 		Hangman.state.tempWord = tempWord;
 
-		if (Hangman.state.tempWord.indexOf("_") !== -1) {
+		if (Hangman.state.tempWord.indexOf("□") !== -1) {
 			bot.sendChat(`${data.user.username} asked \"${letter}\": ${tempWord}`);
 			bot.moderateDeleteChat(data.id);
 			return;
@@ -113,7 +113,7 @@ function onCommand(_, data) {
 			}
 			
 			Hangman.state = {
-				tempWord: Array(body.length + 1).join("_ "),
+				tempWord: Array(body.length + 1).join("□ "),
 				word: body.toLowerCase(),
 				letters: [],
 			};
