@@ -31,7 +31,7 @@ function onUpdateLastfm(data) {
 	if (result.scrobble || result.nowPlaying) {
 		const json = JSON.stringify(result);
 		const execFile = require('child_process').execFile;
-		execFile("/home/qaisjp/jacr/illumibot/bot/events/lastfm", [json], { env: config.lastfm }, (err) => {
+		execFile("/home/qaisjp/jacr/jacr-bot/bot/events/lastfm", [json], { env: config.lastfm }, (err) => {
 			if (err != null) {
 				bot.log("debug", "lastfm_err", err);
 			}
