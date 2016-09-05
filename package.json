@@ -8,26 +8,26 @@
   },
   "private": true,
   "dependencies": {
-    "boom": "^3.1.2",
-    "dubapi": "1.*",
+    "boom": "^4.0.0",
+    "dubapi": "^1.6.2",
     "handlebars": "^4.0.5",
-    "hapi": "^13.0.0",
-    "hoek": "^3.0.4",
+    "hapi": "^15.0.3",
+    "hoek": "^4.0.2",
     "htmlparser": "^1.7.7",
-    "items": "^2.0.0",
+    "items": "^2.1.1",
     "jethro": "^2.7.1",
-    "joi": "^8.0.1",
-    "kerberos": "0.0.17",
-    "moment": "^2.11.2",
-    "request": "^2.67.0",
+    "joi": "^9.0.4",
+    "kerberos": "0.0.21",
+    "moment": "^2.14.1",
+    "request": "^2.74.0",
     "rethinkdbdash": "2.*",
     "soupselect": "^0.2.0",
     "sprintf-js": "^1.0.3"
   },
   "devDependencies": {
-    "eslint": "^1.10.3",
-    "eslint-config-airbnb-base": "^4.0.0",
-    "eslint-plugin-import": "^1.10.2"
+    "eslint": "^3.4.0",
+    "eslint-config-airbnb-base": "^5.0.3",
+    "eslint-plugin-import": "^1.14.0"
   },
   "scripts": {
     "lint": "eslint"
