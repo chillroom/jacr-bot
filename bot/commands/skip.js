@@ -55,6 +55,10 @@ module.exports = (bot, data) => {
 		bot.sendChat("Song skipped for being op, check http://just-a-chill-room.net/op-forbidden-list/ next time please");
 		lockskip = true;
 		break;
+	case "length":
+	case "len":
+		bot.sendChat("Song has been skipped because it is too long.");
+		break;
 	case "history":
 	case "hist":
 		bot.sendChat("Song was recently played, history can be viewed by clicking queue then room history.");
