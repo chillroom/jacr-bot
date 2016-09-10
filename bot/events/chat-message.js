@@ -45,11 +45,13 @@ function onChatMessage(data) {
 	const cmd = args[0].substr(1).toLowerCase();
 
 	// Any response?
-	if (ChatMessageEvent.responses[cmd] != null) {
-		const resp = ChatMessageEvent.responses[cmd];
-		const image = resp[Math.floor(Math.random() * resp.length)];
-		bot.sendChat(image);
-		// return; // Don't return. Let us continue!
+	if (args.length === 1) {
+		if (ChatMessageEvent.responses[cmd] != null) {
+			const resp = ChatMessageEvent.responses[cmd];
+			const image = resp[Math.floor(Math.random() * resp.length)];
+			bot.sendChat(image);
+			// return; // Don't return. Let us continue!
+		}
 	}
 
 	// Does the command exist?
