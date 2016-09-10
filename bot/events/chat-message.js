@@ -49,7 +49,7 @@ function onChatMessage(data) {
 		const resp = ChatMessageEvent.responses[cmd];
 		const image = resp[Math.floor(Math.random() * resp.length)];
 		bot.sendChat(image);
-		return;
+		// return; // Don't return. Let us continue!
 	}
 
 	// Does the command exist?
