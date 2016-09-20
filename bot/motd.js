@@ -42,6 +42,8 @@ function onCommand(bot, data) {
 	if (bot.ranks.indexOf(data.user.role) === -1) {
 		return;
 	}
+	
+	bot.moderateDeleteChat(data.id);
 
 	switch (data.params[0]) {
 	default:
@@ -62,7 +64,6 @@ function onCommand(bot, data) {
 		updateSettings();
 		break;
 	case "add":
-		bot.moderateDeleteChat(data.id);
 		MOTD.settings.messages.push(data.params.slice(1).join(" "));
 		updateSettings();
 		break;
@@ -72,7 +73,6 @@ function onCommand(bot, data) {
 			bot.sendChat("Could not update MOTD interval");
 			return;
 		}
-		bot.moderateDeleteChat(data.id);
 		MOTD.settings.interval = interval;
 		updateSettings();
 		break;
@@ -89,7 +89,6 @@ function onCommand(bot, data) {
 		bot.sendChat("Please see https://api.just-a-chill-room.net/motd/list?mode=pretty");
 		break;
 	case "reload":
-		bot.moderateDeleteChat(data.id);
 		MOTD.reload();
 		break;
 	case "del":
@@ -98,7 +97,6 @@ function onCommand(bot, data) {
 			bot.sendChat("Could not find MOTD");
 			return;
 		}
-		bot.moderateDeleteChat(data.id);
 		MOTD.settings.messages.splice(delItem, 1);
 		updateSettings();
 		break;

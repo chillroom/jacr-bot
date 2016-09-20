@@ -22,6 +22,10 @@ function onChatMessage(data) {
 		handlers[keys[i]](data);
 	}
 
+	if (keys.length >= 1) {
+		bot.moderateDeleteChat(data.id);
+	}
+
 	// Update name if different
 	r
 		.table('users')
