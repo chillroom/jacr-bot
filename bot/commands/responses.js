@@ -39,6 +39,7 @@ function removeResponse(bot, data, cmdName) {
 }
 
 module.exports = (bot, data) => {
+	bot.moderateDeleteChat(data.id);
 	if (bot.vips.indexOf(data.user.role) === -1) {
 		return;
 	}
@@ -55,7 +56,6 @@ module.exports = (bot, data) => {
 
 	const cmdName = data.params[1];
 	if (data.params[0] === "del") {
-		bot.moderateDeleteChat(data.id);
 		removeResponse(bot, data, cmdName);
 		return;
 	}
@@ -66,6 +66,5 @@ module.exports = (bot, data) => {
 		return;
 	}
 
-	bot.moderateDeleteChat(data.id);
 	addResponse(bot, data, cmdName, message);
 };

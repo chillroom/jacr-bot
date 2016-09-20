@@ -22,10 +22,6 @@ function onChatMessage(data) {
 		handlers[keys[i]](data);
 	}
 
-	// if (keys.length >= 1) {
-	// 	bot.moderateDeleteChat(data.id);
-	// }
-
 	// Update name if different
 	r
 		.table('users')
@@ -54,6 +50,8 @@ function onChatMessage(data) {
 			const resp = ChatMessageEvent.responses[cmd];
 			const image = resp[Math.floor(Math.random() * resp.length)];
 			bot.sendChat(image);
+
+			bot.moderateDeleteChat(data.id);
 			// return; // Don't return. Let us continue!
 		}
 	}
