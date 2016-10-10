@@ -22,13 +22,19 @@ function onChatMessage(data) {
 		handlers[keys[i]](data);
 	}
 
-	// Update name if different
+	// Update name & last status
 	r
 		.table('users')
-		.getAll("dubtrack", { index: "platform" })
-		.filter({ uid: data.user.id })
-		.filter(r.row.getField("username").eq(data.user.username).not())
-		.update({ username: data.user.username })
+		.getAll(data.user.id, { index: "uid" })
+		.filter({ platform: "dubtrack" })
+		.update({
+			username: data.user.username,
+			seen: {
+				message: data.message,
+				type   : "message",
+				time   : r.now(),
+			},
+		})
 		.run()
 		.error(bot.errLog);
 
