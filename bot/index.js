@@ -125,6 +125,7 @@ function onReady(bot) {
 	require("./motd.js").init(bot);
 	require("./raffle.js").init(bot);
 	require("./event.js").init(bot);
+	require("./karma.js").init(bot);
 	require("./tell.js").init(bot);
 	require("./art.js").init(bot);
 	require("./hangman.js").init(bot);
