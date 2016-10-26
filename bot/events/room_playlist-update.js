@@ -206,6 +206,23 @@ function onUpdateLog(data, results) {
 		}).
 		error(bot.errLog);
 
+		// User has played a new song, gift them karma!
+		r
+			.table("users")
+			.getAll(data.user.username, {index: "username"})
+			.filter({ platform:"dubtrack" })
+			.update(
+				{ karma: r.row.getField("karma").add(20) },
+				{ returnChanges:true }
+			).run().then(result => {
+				if (result.replaced !== 1) {
+					return;
+				}
+
+				const newDoc = result.changes[0].new_val;
+				bot.sendChat(`@${data.user.username} has been rewarded 20 karma for playing a new song, and is now at ${newDoc.karma} karma!`);
+			});
+
 		return;
 	}
 
