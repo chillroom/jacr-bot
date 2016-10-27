@@ -47,7 +47,7 @@ function onChat(data) {
 				suffix = "No karma whoring for you!";
 			}
 
-			bot.sendChat(`@${username} is now at ${newDoc.karma} karma! ${suffix}`);
+			bot.sendChat(`${username} is now at ${newDoc.karma} karma! ${suffix}`);
 		});
 }
 
