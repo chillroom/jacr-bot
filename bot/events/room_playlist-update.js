@@ -220,7 +220,7 @@ function onUpdateLog(data, results) {
 				}
 
 				const newDoc = result.changes[0].new_val;
-				bot.sendChat(`@${data.user.username} has been rewarded 20 karma for playing a new song, and is now at ${newDoc.karma} karma!`);
+				bot.sendChat(`${data.user.username} has been rewarded 20 karma for playing a new song, and is now at ${newDoc.karma} karma!`);
 			});
 
 		return;
