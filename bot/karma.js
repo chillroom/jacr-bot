@@ -19,10 +19,10 @@ function onChat(data) {
 		username = username.substr(1);
 	}
 
-	let offsetKarma = (data.user.username == username) ? -1 : 1
+	let offsetKarma = (data.user.username.toLowerCase() == username.toLowerCase()) ? -1 : 1
 	r
 		.table("users")
-		.getAll(username, {index: "username_l"})
+		.getAll(username.toLowerCase(), {index: "username_l"})
 		.filter({ platform:"dubtrack" })
 		.update(
 			{ karma: r.row.getField("karma").add(offsetKarma) },
