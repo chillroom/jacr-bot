@@ -6,7 +6,7 @@ const event = require('./events/chat-message.js');
 
 function onChat(data) {
 	const lastChars = data.message.slice(-2);
-	if ((lastChars !== "++") && (lastChars !== "--")) {
+	if ((lastChars !== "++")) {
 		return;
 	}
 
@@ -19,11 +19,7 @@ function onChat(data) {
 		username = username.substr(1);
 	}
 
-	let offsetKarma = (lastChars == "++") ? 1 : -1;
-	if (data.user.username == username) {
-		offsetKarma = -1;
-	}
-
+	let offsetKarma = (data.user.username == username) ? -1 : 1
 	r
 		.table("users")
 		.getAll(username, {index: "username"})
