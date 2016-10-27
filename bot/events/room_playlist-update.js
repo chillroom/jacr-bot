@@ -58,7 +58,7 @@ function addSongToHistory(data, songID) {
 	}
 
 	// Get their rethink user ID
-	r.table("users").filter({ uid: data.user.id, platform: "dubtrack" })("id").run()
+	r.table("users").getAll(data.user.id, {index: "uid"}).filter({platform: "dubtrack" })("id").run()
 		.then(results => {
 			// If it exists (it should), add it to the history
 			if (results[0] == null) {
@@ -209,7 +209,7 @@ function onUpdateLog(data, results) {
 		// User has played a new song, gift them karma!
 		r
 			.table("users")
-			.getAll(data.user.username, {index: "username"})
+			.getAll(data.user.id, {index: "uid"})
 			.filter({ platform:"dubtrack" })
 			.update(
 				{ karma: r.row.getField("karma").add(20) },

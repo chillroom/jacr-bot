@@ -11,7 +11,7 @@ module.exports = (bot, data) => {
 
     bot.rethink
         .table("users")
-        .getAll(username, { index: "username" })
+        .getAll(username, { index: "username_l" })
         .filter({platform: "dubtrack"})
         .run().then(docs => {
             if (docs.length === 0) {

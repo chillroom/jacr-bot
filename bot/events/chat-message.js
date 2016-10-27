@@ -29,6 +29,7 @@ function onChatMessage(data) {
 		.filter({ platform: "dubtrack" })
 		.update({
 			username: data.user.username,
+			username_l: data.user.username.toLowerCase(),
 			seen: {
 				message: data.message,
 				type   : "message",

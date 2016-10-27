@@ -22,7 +22,7 @@ function onChat(data) {
 	let offsetKarma = (data.user.username == username) ? -1 : 1
 	r
 		.table("users")
-		.getAll(username, {index: "username"})
+		.getAll(username, {index: "username_l"})
 		.filter({ platform:"dubtrack" })
 		.update(
 			{ karma: r.row.getField("karma").add(offsetKarma) },
@@ -59,7 +59,7 @@ function onCommand(_, data) {
 
 	r
 		.table("users")
-		.getAll(username, { index: "username" })
+		.getAll(username, { index: "username_l" })
 		.filter({platform: "dubtrack"})
 		.getField("karma")
 		.run().then(docs => {
