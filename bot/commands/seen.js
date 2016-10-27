@@ -21,10 +21,8 @@ module.exports = (bot, data) => {
 	r
   		.db("jacr")
 		.table('users')
-  		.filter({ platform: "dubtrack" })
-		.filter(
-			r.row.getField("username").downcase().eq(targetName.toLowerCase())
-		)("seen")
+		.getAll(targetName.toLowerCase(), { index: "username_l" })
+  		.filter({ platform: "dubtrack" })("seen")
 		.run()
 		.then(docs => {
 			if (docs.length === 0) {
