@@ -83,5 +83,5 @@ module.exports.init = function init(receivedBot) {
 	r = bot.rethink;
 
 	event.AddCommand('karma', onCommand);
-	event.AddHandler("karma", onChat);
+	//event.AddHandler("karma", onChat);
 };
