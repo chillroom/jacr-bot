@@ -137,7 +137,7 @@ function checkSoundCloud(song, shouldSkip, skip) {
 		const body = JSON.parse(unparsedBody);
 		const newTitle = `${body.user.username} - ${body.title}`;
 
-		bot.sendChat(`This song has been auto-retagged as "${newTitle}"`);
+		// bot.sendChat(`This song has just been auto-retagged as "${newTitle}"`);
 
 		r.table('songs').get(song.id).update({
 			autoretagged: true,
@@ -266,11 +266,11 @@ function onUpdateLog(data, results) {
 		retagged: (data.media.name === song.name) ? false : !song.autoretagged,
 	};
 
-	if (update.retagged) {
-		bot.sendChat(`This song is retagged as "${song.name}"`);
-	} else if (song.autoretagged) {
-		bot.sendChat(`This song is auto-retagged as "${song.name}"`);
-	}
+	// if (update.retagged) {
+	// 	bot.sendChat(`This song was previously retagged as "${song.name}"`);
+	// } else if (song.autoretagged) {
+	// 	bot.sendChat(`This song was previously auto-retagged as "${song.name}"`);
+	// }
 
 	r.table('songs').get(song.id).update(update).run().
 		error(bot.errLog);
