@@ -19,7 +19,7 @@ function onChat(data) {
 		username = username.substr(1);
 	}
 
-	let offsetKarma = (data.user.username.toLowerCase() == username.toLowerCase()) ? -1 : 1
+	const offsetKarma = (data.user.username.toLowerCase() == username.toLowerCase()) ? -1 : 1
 	r
 		.table("users")
 		.getAll(username.toLowerCase(), {index: "username_l"})
@@ -81,7 +81,6 @@ function onCommand(_, data) {
 module.exports.init = function init(receivedBot) {
 	bot = receivedBot;
 	r = bot.rethink;
-
 	event.AddCommand('karma', onCommand);
-	//event.AddHandler("karma", onChat);
+//	event.AddHandler("karma", onChat);
 };
