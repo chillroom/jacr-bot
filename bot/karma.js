@@ -64,10 +64,10 @@ function onCommand(_, data) {
 	case "gift":
 		// todo;
 		return;
-	case "buy"
+	case "buy":
 		// todo;
 		return;
-	case "set"
+	case "set":
 		// todo;
 		return;
 	default:
