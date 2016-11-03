@@ -48,7 +48,7 @@ function onChat(data) {
 }
 
 function onCommand(_, data) {
-	let username = data.user.username;
+	let username = data.user.username.toLowerCase();
 
 	if (data.params[0] != null) {
 		username = data.params[0].toLowerCase();
@@ -76,7 +76,7 @@ function onCommand(_, data) {
 
 	r
 		.table("users")
-		.getAll(username, { index: "username_l" })
+		.getAll(username.toLowerCase(), { index: "username_l" })
 		.filter({platform: "dubtrack"})
 		.getField("karma")
 		.run().then(docs => {
@@ -89,7 +89,7 @@ function onCommand(_, data) {
 			}
 
 			const karma = docs[0];
-			const outName = (username == data.user.username) ? "you are" : `@${username} is`;
+			const outName = (username == data.user.username.toLowerCase()) ? "you are" : `@${username} is`;
 			bot.sendChat(`@${data.user.username}, ${outName} at ${karma} karma!`);
 			return;
 		});
