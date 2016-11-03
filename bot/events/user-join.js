@@ -15,6 +15,7 @@ function processJoin(data, results) {
 	if (results.length === 0) {
 		user.uid = data.user.id;
 		user.platform = "dubtrack";
+		user.karma = 0;
 
 		r.table("users").insert(user).run().error(bot.errLog);
 		return;
