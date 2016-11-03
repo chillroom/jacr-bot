@@ -57,6 +57,23 @@ function onCommand(_, data) {
 		}
 	}
 
+	switch (data.params[0]) {
+	case "help":
+		bot.sendChat("Karma is rewarded for new plays and well-received plays. Use `!karma @user` to find the karma of a friend, or omit the username to find your own karma. Soon: Karma can be gifted using `!karma gift @user amount`, and spent using `!karma buy front` or `!karma buy boost`.");
+		return;
+	case "gift":
+		// todo;
+		return;
+	case "buy"
+		// todo;
+		return;
+	case "set"
+		// todo;
+		return;
+	default:
+		break;
+	}
+
 	r
 		.table("users")
 		.getAll(username, { index: "username_l" })
