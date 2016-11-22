@@ -96,6 +96,26 @@ new DubAPI({
 		return outUsers;
 	};
 
+	bot.sendChatTemp = (msg, cb, time) => {
+		bot.sendChat(msg, (code, resp) => {
+			let del = true;
+			if (cb != null) {
+				del = cb(code, resp);
+			}
+			
+			// IF THERE IS A CALLBACK
+			// IT MUST RETURN TRUE, TO DELETE THE CHAT
+			if (!del) {
+				return;
+			}
+
+			const id = resp.data.chatid;
+			setTimeout(chatid => {
+				bot.moderateDeleteChat(chatid);
+			}, time, id);
+		});
+	};
+
 	module.exports = bot;
 });
 
@@ -127,6 +147,7 @@ function onReady(bot) {
 	require("./event.js").init(bot);
 	require("./karma.js").init(bot);
 	require("./tell.js").init(bot);
+	require("./test.js").init(bot);
 	require("./art.js").init(bot);
 	require("./hangman.js").init(bot);
 	return true;
