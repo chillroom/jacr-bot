@@ -3,7 +3,7 @@ module.exports = (bot, data) => {
 
     let username = data.user.username;
     if (data.params[0] != null) {
-        username = data.params[0].toLowerCase();
+        username = data.params[0];
         if (username.substr(0, 1) === "@") {
             username = username.substr(1);
         }
@@ -11,7 +11,7 @@ module.exports = (bot, data) => {
 
     bot.rethink
         .table("users")
-        .getAll(username, { index: "username_l" })
+        .getAll(username.toLowerCase(), { index: "username_l" })
         .filter({platform: "dubtrack"})
         .run().then(docs => {
             if (docs.length === 0) {
@@ -23,7 +23,10 @@ module.exports = (bot, data) => {
             }
 
             const doc = docs[0];
-            bot.sendChat(`${username} - karma(${doc.karma})`);
+            var user = bot.getUserByName(username);
+            user = (user == null) ? {} : user
+
+            bot.sendChat(`${username} | JACR: karma(${doc.karma}), | Dubtrack: songsInQueue(${user.songsInQueue}), dubs(${user.dubs})`);
             return;
         });
 };
