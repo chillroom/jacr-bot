@@ -89,6 +89,73 @@ function commandSet(data) {
 		.run();
 }
 
+const shop = {
+	front: {
+		cost: 1500,
+		action: person => {
+			const pos = 2;
+			bot.moderateMoveDJ(person.id, pos - 1);
+		},
+	},
+
+	boost: {
+		cost: 500,
+		action: person => {
+			const pos = bot.getQueuePosition(person.id) - 1;
+			bot.moderateMoveDJ(person.id, pos - 1);
+		},
+	},
+};
+
+function commandBuy(data) {
+	if (bot.ranks.indexOf(data.user.role) === -1) {
+		return;
+	}
+	
+	bot.moderateDeleteChat(data.id);
+
+	const item = shop[data.params[0]];
+
+	if (item == null) {
+		bot.sendChat("Syntax: `!karma buy boost` (500 karma) to jump a spot, `!karma buy front` (1500 karma) to jump to spot 2.");
+		return;
+	}
+
+	
+	const username = data.user.username;
+	const person = bot.getUserByName(username);
+	if (person == null) {
+		bot.sendChat(`Dubtrack does not know who you are, sorry, @${username}.`);
+		return;
+	}
+
+	const user = r
+		.table("users")
+		.getAll(username.toLowerCase(), { index: "username_l" })
+		.filter({ platform: "dubtrack" }).nth(0);
+
+	r.branch(
+		user.getField("karma").eq(item.cost).or(user.getField("karma").gt(item.cost)),
+
+		r.branch(
+			user.update({ karma: r.row("karma").add(-item.cost) }),
+			{ karma_transaction_success: true },
+			{ karma_transaction_success: false }
+		),
+		
+		{ karma_transaction_success: false }
+	)
+	.run()
+	.then(doc => {
+		if (!doc.karma_transaction_success) {
+			bot.sendChat("You do not have enough karma!");
+			return;
+		}
+
+		item.action(person);
+	});
+}
+
 function onCommand(_, data) {
 	switch (data.params[0]) {
 	case "help":
@@ -98,7 +165,8 @@ function onCommand(_, data) {
 		// todo;
 		return;
 	case "buy":
-		// todo;
+		data.params.shift();
+		commandBuy(data);
 		return;
 	case "set":
 		data.params.shift();
