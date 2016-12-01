@@ -102,7 +102,7 @@ const shop = {
 		cost: 500,
 		action: person => {
 			const pos = bot.getQueuePosition(person.id) - 1;
-			bot.moderateMoveDJ(person.id, pos - 1);
+			bot.moderateMoveDJ(person.id, pos);
 		},
 	},
 };
