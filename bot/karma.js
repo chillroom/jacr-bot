@@ -107,11 +107,7 @@ const shop = {
 	},
 };
 
-function commandBuy(data) {
-	if (bot.ranks.indexOf(data.user.role) === -1) {
-		return;
-	}
-	
+function commandBuy(data) {	
 	bot.moderateDeleteChat(data.id);
 
 	const item = shop[data.params[0]];
