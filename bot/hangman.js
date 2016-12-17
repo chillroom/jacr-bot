@@ -100,8 +100,8 @@ function onGuess(_, data) {
 
 // TODO: Don't update the entire state or all the settings!!
 function onCommand(_, data) {
-	// ensure we're a VIP+
-	if (bot.vips.indexOf(data.user.role) === -1) {
+	// ensure we're a mod+
+	if (bot.ranks.indexOf(data.user.role) === -1) {
 		return;
 	}
 
