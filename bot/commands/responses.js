@@ -1,7 +1,13 @@
 const commandUsage = "Usage: /responses (add|del) commandName text...";
 const chatEvent = require("../events/chat-message.js");
+const readOnlyMode = true;
 
 function addResponse(bot, data, cmdName, message) {
+	if (readOnlyMode) {
+		bot.sendChat("Cannot update responses. Read only mode is enabled. Contact @qaisjp.");
+		return;
+	}
+
 	if (chatEvent.responses[cmdName] != null) {
 		bot.sendChat(`@${data.user.username}, response "${cmdName}" already exists.`);
 		return;
@@ -23,6 +29,11 @@ function addResponse(bot, data, cmdName, message) {
 }
 
 function removeResponse(bot, data, cmdName) {
+	if (readOnlyMode) {
+		bot.sendChat("Cannot update responses. Read only mode is enabled. Contact @qaisjp.");
+		return;
+	}
+	
 	if (chatEvent.responses[cmdName] == null) {
 		bot.sendChat(`@${data.user.username}, response "${cmdName}" does not exist.`);
 		return;
