@@ -9,7 +9,7 @@
   "private": true,
   "dependencies": {
     "boom": "^4.0.0",
-    "dubapi": "^1.6.2",
+    "dubapi": "*",
     "handlebars": "^4.0.5",
     "hapi": "^15.0.3",
     "hoek": "^4.0.2",
