@@ -1,6 +1,7 @@
 const request = require("request");
 const moment = require("moment");
 const event = require('./events/chat-message.js');
+
 let xappToken;
 let tokenExpiry;
 

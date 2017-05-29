@@ -31,6 +31,13 @@ module.exports = {
 		port: 28015,
 	},
 
+	postgres: {
+		host: process.env.POSTGRES_ADDRESS,
+		db: process.env.POSTGRES_DB,
+		user: process.env.POSTGRES_USER,
+		password: process.env.POSTGRES_PASSWORD,
+	},
+
 	artsy: {
 		clientID: process.env.ARTSY_CLIENT_ID,
 		clientSecret: process.env.ARTSY_CLIENT_SECRET,

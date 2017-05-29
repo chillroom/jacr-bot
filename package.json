@@ -19,6 +19,7 @@
     "joi": "^9.0.4",
     "kerberos": "0.0.21",
     "moment": "^2.14.1",
+    "pg": "^6.2.3",
     "request": "^2.74.0",
     "rethinkdbdash": "2.*",
     "soupselect": "^0.2.0",

@@ -7,7 +7,7 @@ log.setUTC(true);
 
 new DubAPI({
 	username: config.bot.name,
-	password: config.bot.pass
+	password: config.bot.pass,
 }, function(err, bot) {
 	/* eslint no-param-reassign: ["error", { "props": false }]*/
 
@@ -15,6 +15,7 @@ new DubAPI({
 		return log("error", "BOT", err);
 	}
 
+	bot.pool = require("./lib/db");
 	bot.rethink = require("rethinkdbdash")(config.rethinkdb);
 
 	/* Logs a simple RethinkDB error */
@@ -25,6 +26,15 @@ new DubAPI({
 		}
 		return false;
 	};
+
+	bot.checkError = (err, realm, reason) => {
+		if (err) {
+			bot.log("error", realm, reason, err);
+			return false;
+		}
+
+		return true;
+	}
 
 	// setup logger
 	bot.log = require("jethro");
@@ -129,6 +139,7 @@ function onReady(bot) {
 	}
 
 	bot.log("info", "loader", "We are ready!");
+
 	started = true;
 
 	const folders = ["events"];

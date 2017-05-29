@@ -116,24 +116,26 @@ ChatMessageEvent.AddHandler = (key, fn) => {
 
 ChatMessageEvent.LoadResponses = () => {
 	const responses = {};
-	r.
-		table('responses').
-		filter(
-			r.row.getField("platform").eq("dubtrack"),
-			{ default: true }
-		).
-		run().
-		then(result => {
-			for (let i = result.length - 1; i >= 0; i--) {
-				const doc = result[i];
-				responses[doc.name] = doc.responses;
 
-				for (let k = doc.aliases.length - 1; k >= 0; k--) {
-					responses[doc.aliases[k]] = doc.responses;
+	bot.pool.query(`
+		SELECT array_agg(cmds.name) as cmds, groups.messages FROM
+			response_commands as cmds,
+			response_groups as groups
+		WHERE
+			cmds.group = groups.id
+		GROUP BY groups.messages
+	`, [], function(err, res) {
+		if (bot.checkError(err, 'pgsql', 'could not receive responses')) {
+			for (let i = res.rowCount - 1; i >= 0; i--) {
+				const row = res.rows[i];
+
+				for (let k = row.cmds.length - 1; k >= 0; k--) {
+					responses[row.cmds[k]] = row.messages;
 				}
 			}
 
 			ChatMessageEvent.responses = responses;
-		}).
-		error(bot.errLog);
+			bot.log("info", "responses", "Loaded responses!");
+		}
+	});
 };
