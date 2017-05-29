@@ -11,11 +11,11 @@ function onChatMessage(data) {
 		return;
 	}
 
-	if (data.message.match(/(\[AFK\].*https?:\/\/.*\.(?:png|jpg|gif))/i)) {
-		bot.moderateDeleteChat(data.raw.chatid);
-		bot.sendChat(`@${data.user.username} - image/gif AFK responses are not allowed.`);
-		return;
-	}
+	// if (data.message.match(/(\[AFK\].*https?:\/\/.*\.(?:png|jpg|gif))/i)) {
+	// 	bot.moderateDeleteChat(data.raw.chatid);
+	// 	bot.sendChat(`@${data.user.username} - image/gif AFK responses are not allowed.`);
+	// 	return;
+	// }
 
 	const keys = Object.keys(handlers);
 	for (let i = keys.length - 1; i >= 0; i--) {
