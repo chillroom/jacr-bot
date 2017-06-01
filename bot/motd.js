@@ -101,17 +101,12 @@ class MOTD {
 		this.settings.NextMessage += 1; // Increment the nextMessage counter
 
 		// Commit the state to database
-		const js = JSON.stringify(this.settings);
-		db.query("INSERT INTO settings(name, value) VALUES ('motd', $1) ON CONFLICT(name) DO UPDATE SET value = $1;", [js], (err, _) => {
-			if (bot.checkError(err, "pgsql", 'could not update settings')) {
-				return;
-			}
-		});
+		this.validateDB(true);
 	}
 
-	validate() {
-		let changed = false;
-
+	validateDB(forceChange) {		
+		let changed = forceChange === true;
+		
 		if (this.settings == null) {
 			this.settings = {};
 			changed = true;
@@ -174,7 +169,7 @@ class MOTD {
 				}
 			}
 
-			this.validate();
+			this.validateDB(false);
 
 			// If 15 minutes has passed since the last announce time
 			if (moment(this.settings.LastAnnounceTime).add(15, "minutes").isBefore()) {
