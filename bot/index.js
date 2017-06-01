@@ -119,13 +119,10 @@ new DubAPI({
 	// setup > vip ranks
 	bot.vips = ["5615fa9ae596154a5c000000", "5615fd84e596150061000003", "52d1ce33c38a06510c000001", "5615fe1ee596154fc2000001"];
 
-	// setup devs
-	bot.devs = [];
-
 	// setup protection for double skips
 	bot.protection = false;
 
-	// stop bot from inputting song/history twice
+	// stop bot from inputing song/history twice on first join (current song would be sent, and triggered twice)
 	bot.started = false;
 
 	bot.readUsers = function readUsers(users, convertToIDs) {
