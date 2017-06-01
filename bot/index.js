@@ -30,10 +30,10 @@ new DubAPI({
 	bot.checkError = (err, realm, reason) => {
 		if (err) {
 			bot.log("error", realm, reason, err);
-			return false;
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	// setup logger

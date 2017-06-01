@@ -126,16 +126,19 @@ ChatMessageEvent.LoadResponses = () => {
 		GROUP BY groups.messages
 	`, [], function(err, res) {
 		if (bot.checkError(err, 'pgsql', 'could not receive responses')) {
-			for (let i = res.rowCount - 1; i >= 0; i--) {
-				const row = res.rows[i];
-
-				for (let k = row.cmds.length - 1; k >= 0; k--) {
-					responses[row.cmds[k]] = row.messages;
-				}
-			}
-
-			ChatMessageEvent.responses = responses;
-			bot.log("info", "responses", "Loaded responses!");
+			return;
 		}
+		
+		for (let i = res.rowCount - 1; i >= 0; i--) {
+			const row = res.rows[i];
+
+			for (let k = row.cmds.length - 1; k >= 0; k--) {
+				responses[row.cmds[k]] = row.messages;
+			}
+		}
+
+		ChatMessageEvent.responses = responses;
+		bot.log("info", "responses", "Loaded responses!");
+	
 	});
 };
