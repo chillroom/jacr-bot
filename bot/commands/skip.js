@@ -1,3 +1,5 @@
+const db = require("../lib/db");
+
 module.exports = (bot, data) => {
 	const r = bot.rethink
 	const DJ = bot.getDJ();
@@ -45,6 +47,12 @@ module.exports = (bot, data) => {
 
 	var skipReason = null;
 	var media = bot.getMedia();
+
+	if (media == null) {
+		bot.sendChat("No song is currently playing.");
+		return;
+	}
+
 	switch (data.params[0]) {
 	case "unpop":
 	case "shit":
@@ -97,6 +105,11 @@ module.exports = (bot, data) => {
 	skip();
 
 	if (skipReason != null) {
-		r.table("songs").filter({type: media.type, fkid: media.fkid}).update({skipReason: skipReason}).run().error(bot.errLog);
+		db.query("UPDATE songs SET skip_reason = $1 WHERE (type = $2) and (fkid = $3)", [skipReason, media.type, media.fkid], (err, res) => {
+			if (bot.checkError(err, "pgsql", 'could not set skip reason') || res.rowCount === 0) {
+				bot.sendChat("Could not update skip reason!");
+				return;
+			}
+		});
 	}
 };
