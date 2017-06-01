@@ -1,7 +1,7 @@
 const moment = require("moment");
 const sprintf = require("sprintf-js").sprintf;
 const request = require("request");
-const MOTD = require("../motd.js");
+
 const EventManager = require("../event.js");
 let r;
 let bot;
@@ -279,7 +279,7 @@ function onUpdateLog(data, results) {
 }
 
 function onUpdate(data) {
-	MOTD.onAdvance();
+	bot.motd.onAdvance();
 
 	if (!bot.started) {
 		bot.started = true;

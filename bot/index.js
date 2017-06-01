@@ -1,7 +1,9 @@
+const config = require(process.cwd() + "/config");
 const DubAPI = require("dubapi");
 const log = require("jethro");
-const config = require(process.cwd() + "/config");
 const Fs = require("fs");
+
+const MOTD = require("./motd.js");
 
 log.setUTC(true);
 
@@ -153,7 +155,7 @@ function onReady(bot) {
 		});
 	}
 
-	require("./motd.js").init(bot);
+	bot.motd = new MOTD(bot);
 	require("./raffle.js").init(bot);
 	require("./event.js").init(bot);
 	require("./karma.js").init(bot);
