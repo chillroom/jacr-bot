@@ -2,6 +2,7 @@
 let bot;
 const request = require("request");
 const event = require('./events/chat-message.js');
+
 const Hangman = {
 	state: null,
 };
@@ -46,7 +47,7 @@ function onGuess(_, data) {
 		Hangman.state.tempWord = tempWord;
 
 		if (Hangman.state.tempWord.indexOf("◌") !== -1) {
-			bot.sendChat(`${data.user.username} asked \"${letter}\": ${tempWord}`);
+			bot.sendChat(`${data.user.username} asked "${letter}": ${tempWord}`);
 			bot.moderateDeleteChat(data.id);
 			return;
 		}
@@ -87,7 +88,7 @@ function onGuess(_, data) {
 
 	const pos = bot.getQueuePosition(data.user.id);
 	const link = `https://dictionary.cambridge.org/dictionary/english/${Hangman.state.word}`;
-	bot.sendChat(`Congratulations ${data.user.username}, you guessed \"${Hangman.state.word}\" correctly! ${(pos === -1) ? "" : "You get boosted a spot! "}Definition: ${link}`);
+	bot.sendChat(`Congratulations ${data.user.username}, you guessed "${Hangman.state.word}" correctly! ${(pos === -1) ? "" : "You get boosted a spot! "}Definition: ${link}`);
 	bot.moderateDeleteChat(data.id);
 
 	if (pos > 0) {

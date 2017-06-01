@@ -25,11 +25,7 @@ function onChatMessage(data) {
 	}
 
 	// Update name & last status
-	db.query(
-		"UPDATE dubtrack_users SET username = $1, seen_time = now(), seen_type = 'message', seen_message = $2 WHERE dub_id = $3",
-		[data.user.username, data.message, data.user.id],
-		bot.dbLog(`Internal error: could not update status for @${data.user.username}`)
-	);
+	bot.util.updateUser(data.user.id, data.user.username, 'message', data.message);
 
 	// Handle commands
 
@@ -109,7 +105,7 @@ ChatMessageEvent.AddHandler = (key, fn) => {
 ChatMessageEvent.LoadResponses = () => {
 	const responses = {};
 
-	bot.pool.query(`
+	db.query(`
 		SELECT array_agg(cmds.name) as cmds, groups.messages FROM
 			response_commands as cmds,
 			response_groups as groups

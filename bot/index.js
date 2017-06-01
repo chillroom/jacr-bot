@@ -3,7 +3,7 @@ const DubAPI = require("dubapi");
 const log = require("jethro");
 const Fs = require("fs");
 const request = require('request');
-
+const db = require("./lib/db");
 const MOTD = require("./motd.js");
 
 log.setUTC(true);
@@ -18,7 +18,6 @@ new DubAPI({
 		return log("error", "BOT", err);
 	}
 
-	bot.pool = require("./lib/db");
 	bot.rethink = require("rethinkdbdash")(config.rethinkdb);
 
 	/* Logs a simple RethinkDB error */
@@ -69,7 +68,26 @@ new DubAPI({
 
 			callback(null, body.data.userInfo.userid);
 		});
-	}
+	};
+
+	bot.util.updateUser = (dubid, username, type, message, cb) => {
+		let callback = cb;
+		if (callback == null) {
+			callback = bot.dbLog(`Internal error: could not update status for @${username}.`);
+		}
+
+		db.query(
+			`
+			INSERT INTO
+			dubtrack_users(dub_id, username, seen_time, seen_type, seen_message)
+			VALUES ($1, $2, now(), $3, $4)
+			ON CONFLICT(dub_id) DO UPDATE SET username = $2, seen_time = now(), seen_type = $3, seen_message = $4
+			RETURNING id
+			`,
+			[dubid, username, type, message],
+			cb
+		);
+	};
 
 	// setup logger
 	bot.log = require("jethro");
@@ -191,7 +209,7 @@ function onReady(bot) {
 	bot.motd = new MOTD(bot);
 	require("./raffle.js").init(bot);
 	require("./event.js").init(bot);
-	require("./karma.js").init(bot);
+	// require("./karma.js").init(bot);
 	require("./tell.js").init(bot);
 	require("./test.js").init(bot);
 	require("./art.js").init(bot);
