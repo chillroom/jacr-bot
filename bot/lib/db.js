@@ -1,5 +1,5 @@
-const pg = require('pg');
 const config = require(process.cwd() + "/config");
+const pg = require('pg');
 
 
 // this initializes a connection pool
