@@ -110,15 +110,45 @@ class MOTD {
 	}
 
 	validate() {
+		let changed = false;
+
 		if (this.settings == null) {
 			this.settings = {};
+			changed = true;
 		}
 
 		if (this.settings.Enabled !== true && this.settings.Enabled !== false) {
 			this.settings.Enabled = false;
+			changed = true;
 		}
 
-		// TODO continue
+		let rounded = Math.round(this.settings.Interval);
+		if (isNaN(rounded)) {
+			this.settings.Interval = 30;
+			changed = true;
+		} else if (rounded != this.settings.Interval) {
+			this.settings.Interval = rounded;
+			changed = true;
+		}
+
+		rounded = Math.round(this.settings.NextMessage);
+		if (isNaN(rounded)) {
+			this.settings.NextMessage = 1;
+			changed = true;
+		} else if (rounded !== this.settings.NextMessage) {
+			this.settings.NextMessage = rounded;
+			changed = true;
+		}
+
+		// TODO: verify time somehow
+
+		if (changed) {
+			db.query(
+				"INSERT INTO settings(name, value) VALUES('motd', $1) ON CONFLICT(name) DO UPDATE SET value = $1",
+				[JSON.stringifythis.settings],
+				bot.dbLog("Internal error. Could not insert verified settings.")
+			);
+		}
 	}
 
 	// updateInformation triggers information reloading
