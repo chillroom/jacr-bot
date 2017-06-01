@@ -27,7 +27,7 @@ class MOTD {
 
 		this.messageCount += 1;
 
-		if (this.messageCount > this.settings.Interval) {
+		if (this.messageCount >= this.settings.Interval) {
 			this.sendMOTD();
 		}
 	}
