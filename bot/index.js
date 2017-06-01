@@ -2,6 +2,7 @@ const config = require(process.cwd() + "/config");
 const DubAPI = require("dubapi");
 const log = require("jethro");
 const Fs = require("fs");
+const request = require('request');
 
 const MOTD = require("./motd.js");
 
@@ -29,13 +30,45 @@ new DubAPI({
 		return false;
 	};
 
+	bot.dbLog = reason => {
+		return (error) => { return bot.checkError(error, "pgsql", reason); };
+	};
+
 	bot.checkError = (err, realm, reason) => {
 		if (err) {
-			bot.log("error", realm, reason, err);
+			bot.log("error", realm, reason);
+			bot.log("error", realm, err);
 			return true;
 		}
 
 		return false;
+	}
+
+	bot.util = {};
+	bot.util.getUserIDFromName = function(name, callback) {
+		const u = bot.getUserByName(name, true);
+		if (u != null) {
+			callback(null, u.id);
+			return;
+		}
+
+		request({
+			url: "https://api.dubtrack.fm/user/" + name,
+			json: true,
+		}, (error, response, body) => {
+			if (error != null || response.statusCode !== 200) {
+				if (response.statusCode !== 404) {
+					bot.log("error", "getUserIDFromName", err);
+					callback(error);
+					return;
+				}
+
+				callback("error 404");
+				return;
+			}
+
+			callback(null, body.data.userInfo.userid);
+		});
 	}
 
 	// setup logger

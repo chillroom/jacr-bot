@@ -1,43 +1,44 @@
 const moment = require("moment");
+const db = require("../lib/db.js");
 
-function buildDescription(doc) {
-	if (doc.type === "message") {
-		return `saying "${doc.message}"`;
-	} else {
-		return "doing something..";
+function buildDescription(u) {
+	if (u.seen_type === "message") {
+		return `saying "${u.seen_message}"`;
 	}
+
+	return "doing something..";
 }
 
 module.exports = (bot, data) => {
-	const r = bot.rethink;
-
 	if (data.params == null) {
 		bot.sendChat(`@${data.user.username} - See when someone last did something - Usage: !seen @user`);
 		return;
 	}
 	
-	const targetName = (data.params[0].charAt(0) == "@") ? data.params[0].slice(1) : data.params[0];
+	const targetName = (data.params[0].charAt(0) === "@") ? data.params[0].slice(1) : data.params[0];
+	
+	bot.util.getUserIDFromName(targetName, (err, id) => {
+		if (err != null) {
+			bot.sendChat("User does not exist on Dubtrack!");
+			return;
+		}
+		
+		db.query("SELECT * FROM dubtrack_users WHERE dub_id = $1", [id], (err, res) => {
+			if (bot.checkError(err, "pgsql", "seen")) {
+				bot.sendChat("Internal error.");
+				return;
+			}
 
-	r
-  		.db("jacr")
-		.table('users')
-		.getAll(targetName.toLowerCase(), { index: "username_l" })
-  		.filter({ platform: "dubtrack" })("seen")
-		.run()
-		.then(docs => {
-			if (docs.length === 0) {
+			if (res.rows.length === 0) {
 				bot.sendChat(`@${data.user.username}, I don't know who '${targetName}' is!`);
 				return;
 			}
 
-			if (docs.length > 1) {
-				bot.sendChat(`@${data.user.username}, somehow there are multiple people with that name... tell @qaisjp to fix this!`);
-				return;
-			}
+			const u = res.rows[0];
+			bot.sendChat(`@${data.user.username} - ${moment(u.seen_time).fromNow()}, '${targetName}' was last seen ${buildDescription(u)}.`);
 
-			const doc = docs[0];
-			bot.sendChat(`@${data.user.username} - ${moment(doc.time).fromNow()}, '${targetName}' was last seen ${buildDescription(doc)}.`);
-
-			return;
+			return;		
 		});
+	});
+
 };
