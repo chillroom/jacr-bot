@@ -140,12 +140,15 @@ class MOTD {
 			changed = true;
 		}
 
-		// TODO: verify time somehow
+		if (this.settings.LastAnnounceTime == null || !moment(this.settings.LastAnnounceTime).isValid()) {
+			this.settings.LastAnnounceTime = moment();
+			changed = true;
+		}
 
 		if (changed) {
 			db.query(
 				"INSERT INTO settings(name, value) VALUES('motd', $1) ON CONFLICT(name) DO UPDATE SET value = $1",
-				[JSON.stringifythis.settings],
+				[JSON.stringify(this.settings)],
 				bot.dbLog("Internal error. Could not insert verified settings.")
 			);
 		}
@@ -165,7 +168,7 @@ class MOTD {
 			for (const row of res.rows) {
 				// If settings
 				if (row.name === 'motd') {
-					this.settings = JSON.parse(row.value);
+					this.settings = row.value;
 				} else {
 					this.messages.push(row);
 				}
