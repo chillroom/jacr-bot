@@ -117,7 +117,7 @@ ChatMessageEvent.LoadResponses = () => {
 			return;
 		}
 		
-		for (let i = res.rowCount - 1; i >= 0; i--) {
+		for (let i = res.rows.length - 1; i >= 0; i--) {
 			const row = res.rows[i];
 
 			for (let k = row.cmds.length - 1; k >= 0; k--) {

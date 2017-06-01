@@ -75,14 +75,14 @@ class MOTD {
 		}
 
 		this.messageCount = 0; // Reset messages counter
-		var currentMessage = this.messages[this.settings.NextMessage];
+		let currentMessage = this.messages[this.settings.NextMessage];
 
 		// Check if a currentMessage exists
 		if (currentMessage == null) {
 			// Let's try to send the first message. Let's check
 			// if there are any messages at all before we do anything.
 			if (this.messages.length === 0) {
-				console.log("Tried broadcasting message without any messages");
+				bot.log("Tried broadcasting message without any messages.");
 				this.setEnabled(false);
 				return;
 			}
@@ -118,7 +118,6 @@ class MOTD {
 			this.settings.Enabled = false;
 		}
 
-		console.log(this.settings)
 		// TODO continue
 	}
 

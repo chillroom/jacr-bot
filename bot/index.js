@@ -41,7 +41,7 @@ new DubAPI({
 		}
 
 		return false;
-	}
+	};
 
 	bot.util = {};
 	bot.util.getUserIDFromName = function(name, callback) {
@@ -209,8 +209,8 @@ function onReady(bot) {
 	bot.motd = new MOTD(bot);
 	require("./raffle.js").init(bot);
 	require("./event.js").init(bot);
-	// require("./karma.js").init(bot);
-	require("./tell.js").init(bot);
+	require("./karma.js").init(bot);
+	// require("./tell.js").init(bot);
 	require("./test.js").init(bot);
 	require("./art.js").init(bot);
 	require("./hangman.js").init(bot);

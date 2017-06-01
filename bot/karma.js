@@ -3,51 +3,52 @@
 let r;
 let bot;
 const event = require('./events/chat-message.js');
+const db = require('./lib/db');
 
-function onChat(data) {
-	const lastChars = data.message.slice(-2);
-	if ((lastChars !== "++")) {
-		return;
-	}
+// function onChat(data) {
+// 	const lastChars = data.message.slice(-2);
+// 	if ((lastChars !== "++")) {
+// 		return;
+// 	}
 
-	if (data.message.split(" ").length > 1) {
-		return;
-	}
+// 	if (data.message.split(" ").length > 1) {
+// 		return;
+// 	}
 	
-	let username = data.message.slice(0, -2);
-	if (username.substr(0, 1) === "@") {
-		username = username.substr(1);
-	}
+// 	let username = data.message.slice(0, -2);
+// 	if (username.substr(0, 1) === "@") {
+// 		username = username.substr(1);
+// 	}
 
-	const offsetKarma = (data.user.username.toLowerCase() === username.toLowerCase()) ? -1 : 1;
-	r
-		.table("users")
-		.getAll(username.toLowerCase(), { index: "username_l" })
-		.filter({ platform: "dubtrack" })
-		.update(
-			{ karma: r.row.getField("karma").add(offsetKarma) },
-			{ returnChanges: true }
-		)
-		.run()
-		.then(result => {
-			if (result.replaced === 0) {
-				bot.sendChat(`@${data.user.username}, I don't know who ${username} is!`);
-				return;
-			} else if (result.replaced !== 1) {
-				bot.sendChat(`@${data.user.username}, I found multiple people?? Tell @qaisjp about ${username}!`);
-				return;
-			}
+// 	const offsetKarma = (data.user.username.toLowerCase() === username.toLowerCase()) ? -1 : 1;
+// 	r
+// 		.table("users")
+// 		.getAll(username.toLowerCase(), { index: "username_l" })
+// 		.filter({ platform: "dubtrack" })
+// 		.update(
+// 			{ karma: r.row.getField("karma").add(offsetKarma) },
+// 			{ returnChanges: true }
+// 		)
+// 		.run()
+// 		.then(result => {
+// 			if (result.replaced === 0) {
+// 				bot.sendChat(`@${data.user.username}, I don't know who ${username} is!`);
+// 				return;
+// 			} else if (result.replaced !== 1) {
+// 				bot.sendChat(`@${data.user.username}, I found multiple people?? Tell @qaisjp about ${username}!`);
+// 				return;
+// 			}
 
-			const newDoc = result.changes[0].new_val;
-			let suffix = "";
+// 			const newDoc = result.changes[0].new_val;
+// 			let suffix = "";
 
-			if (data.user.username === username) {
-				suffix = "No karma whoring for you!";
-			}
+// 			if (data.user.username === username) {
+// 				suffix = "No karma whoring for you!";
+// 			}
 
-			bot.sendChat(`${username} is now at ${newDoc.karma} karma! ${suffix}`);
-		});
-}
+// 			bot.sendChat(`${username} is now at ${newDoc.karma} karma! ${suffix}`);
+// 		});
+// }
 
 
 function commandSet(data) {
@@ -73,20 +74,29 @@ function commandSet(data) {
 		return;
 	}
 
-	const query = { karma: newKarma };
+	let query = "$2";
 
 	// if is relative
 	if ((newKarma < 0) || (data.params[1].substr(0, 1) === "+")) {
-		query.karma = r.row("karma").add(newKarma);
-		// bot.sendChat("updating..", query.karma)
+		query = "karma + $2";
 	}
-		
-	r
-		.table("users")
-		.getAll(username.toLowerCase(), { index: "username_l" })
-		.filter({ platform: "dubtrack" })
-		.update(query)
-		.run();
+
+	bot.util.getUserIDFromName(username, (nameErr, dubid) => {
+		if (nameErr != null) {
+			bot.sendChat("Could not find user.");
+			return;
+		}
+
+		db.query(`UPDATE dubtrack_users SET karma = ${query} where dub_id = $1`, [dubid, newKarma], (err, res) => {
+			if (bot.checkError(err, "pgsql", 'could not update karma')) {
+				bot.sendChat("Could not update karma.");
+				return;
+			} else if (res.rowCount === 0) {
+				bot.sendChat("Could not find user in database.");
+				return;
+			}
+		});
+	});
 }
 
 const shop = {
@@ -117,39 +127,24 @@ function commandBuy(data) {
 		return;
 	}
 
-	
-	const username = data.user.username;
-	const person = bot.getUserByName(username);
-	if (person == null) {
-		bot.sendChat(`Dubtrack does not know who you are, sorry, @${username}.`);
-		return;
-	}
+	db.query(
+		`UPDATE dubtrack_users SET karma = karma - $2 where (dub_id = $1) and (karma > $2);`,
+		[data.user.id, item.cost],
+		(err, res) => {
+			if (bot.checkError(err, "pgsql", 'could not buy with karma')) {
+				bot.sendChat("Could not buy item, internal error.");
+				return;
+			}
 
-	const user = r
-		.table("users")
-		.getAll(username.toLowerCase(), { index: "username_l" })
-		.filter({ platform: "dubtrack" }).nth(0);
+			if (res.rowCount === 0) {
+				bot.sendChat(`You do not have enough karma, @${data.user.username}!`);
+				return;
+			}
 
-	r.branch(
-		user.getField("karma").eq(item.cost).or(user.getField("karma").gt(item.cost)),
-
-		r.branch(
-			user.update({ karma: r.row("karma").add(-item.cost) }),
-			{ karma_transaction_success: true },
-			{ karma_transaction_success: false }
-		),
-		
-		{ karma_transaction_success: false }
-	)
-	.run()
-	.then(doc => {
-		if (!doc.karma_transaction_success) {
-			bot.sendChat("You do not have enough karma!");
-			return;
+			item.action(data.user);
 		}
+	);
 
-		item.action(person);
-	});
 }
 
 function onCommand(_, data) {
@@ -181,31 +176,36 @@ function onCommand(_, data) {
 		}
 	}
 
-	r
-		.table("users")
-		.getAll(username.toLowerCase(), { index: "username_l" })
-		.filter({ platform: "dubtrack" })
-		.getField("karma")
-		.run()
-		.then(docs => {
-			if (docs.length === 0) {
-				bot.sendChat(`@${data.user.username}, I don't know who ${username} is!`);
-				return;
-			} else if (docs.length !== 1) {
-				bot.sendChat(`@${data.user.username}, I found multiple people?? Tell @qaisjp about ${username}!`);
-				return;
-			}
-
-			const karma = docs[0];
-			const outName = (username === data.user.username.toLowerCase()) ? "you are" : `@${username} is`;
-			bot.sendChat(`@${data.user.username}, ${outName} at ${karma} karma!`);
+	bot.util.getUserIDFromName(username, (nameErr, dubid) => {
+		if (nameErr != null) {
+			bot.sendChat(`@${data.user.username}, ${username} doesn't use Dubtrack!`);
 			return;
-		});
+		}
+
+		db.query(
+			`SELECT karma FROM dubtrack_users WHERE (dub_id = $1)`,
+			[dubid],
+			(err, res) => {
+				if (bot.checkError(err, "pgsql", 'could not get karma')) {
+					bot.sendChat("Could not find user, internal error");
+					return;
+				}
+				
+				if (res.rowCount === 0) {
+					bot.sendChat(`@${data.user.username}, I don't know who ${username} is!`);
+					return;
+				}
+
+				const outName = (username === data.user.username.toLowerCase()) ? "you are" : `@${username} is`;
+				bot.sendChat(`@${data.user.username}, ${outName} at ${res.rows[0].karma} karma!`);
+			}
+		);
+	});	
 }
 
 module.exports.init = function init(receivedBot) {
 	bot = receivedBot;
-	r = bot.rethink;
+	
 	event.AddCommand('karma', onCommand);
 //	event.AddHandler("karma", onChat);
 };
