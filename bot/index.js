@@ -122,9 +122,6 @@ new DubAPI({
 	// setup devs
 	bot.devs = [];
 
-	// setup bot.identifier
-	bot.identifier = "";
-
 	// setup protection for double skips
 	bot.protection = false;
 

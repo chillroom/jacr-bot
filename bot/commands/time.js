@@ -4,7 +4,7 @@ module.exports = (bot, data) => {
     const user = data.user.username;
     if (typeof(data.params) !== "undefined" && data.params.length > 0) {
     } else {
-        bot.sendChat(bot.identifier + "You can check the time of any town, city anywhere in the world by doing: !time [location]. Example: !time \"England, USA\".");
+        bot.sendChat("You can check the time of any town, city anywhere in the world by doing: !time [location]. Example: !time \"England, USA\".");
         return
     }
 
@@ -16,9 +16,9 @@ module.exports = (bot, data) => {
         if (typeof(body.data.error) === "undefined") {
             var location = body.data.request[0].query;
             var currentTime = body.data.time_zone[0].localtime.slice(11);
-            bot.sendChat(bot.identifier + "@" + user + " current time in " + location + " is " + currentTime);
+            bot.sendChat("@" + user + " current time in " + location + " is " + currentTime);
         } else {
-            bot.sendChat(bot.identifier + "@" + user + " sorry, no location found");
+            bot.sendChat("@" + user + " sorry, no location found");
         }
     });
     
