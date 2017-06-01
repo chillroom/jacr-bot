@@ -17,8 +17,8 @@ module.exports = (bot, data) => {
 	
 	const targetName = (data.params[0].charAt(0) === "@") ? data.params[0].slice(1) : data.params[0];
 	
-	bot.util.getUserIDFromName(targetName, (err, id) => {
-		if (err != null) {
+	bot.util.getUserIDFromName(targetName, (nameErr, id) => {
+		if (nameErr != null) {
 			bot.sendChat("User does not exist on Dubtrack!");
 			return;
 		}
@@ -37,8 +37,7 @@ module.exports = (bot, data) => {
 			const u = res.rows[0];
 			bot.sendChat(`@${data.user.username} - ${moment(u.seen_time).fromNow()}, '${targetName}' was last seen ${buildDescription(u)}.`);
 
-			return;		
+			return;
 		});
 	});
-
 };
