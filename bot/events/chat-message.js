@@ -1,5 +1,7 @@
 const Fs = require("fs");
 const Path = require("path");
+const db = require("../lib/db.js");
+
 let bot;
 let r;
 const commands = {};
@@ -23,21 +25,11 @@ function onChatMessage(data) {
 	}
 
 	// Update name & last status
-	r
-		.table('users')
-		.getAll(data.user.id, { index: "uid" })
-		.filter({ platform: "dubtrack" })
-		.update({
-			username: data.user.username,
-			username_l: data.user.username.toLowerCase(),
-			seen: {
-				message: data.message,
-				type   : "message",
-				time   : r.now(),
-			},
-		})
-		.run()
-		.error(bot.errLog);
+	db.query(
+		"UPDATE dubtrack_users SET username = $1, seen_time = now(), seen_type = 'message', seen_message = $2 WHERE dub_id = $3",
+		[data.user.username, data.message, data.user.id],
+		bot.dbLog(`Internal error: could not update status for @${data.user.username}`)
+	);
 
 	// Handle commands
 
