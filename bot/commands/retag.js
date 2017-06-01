@@ -1,3 +1,5 @@
+const db = require("../lib/db");
+
 module.exports = (bot, data) => {
 	if (bot.vips.indexOf(data.user.role) === -1) {
 		bot.sendChat("Access denied.");
@@ -11,26 +13,18 @@ module.exports = (bot, data) => {
 
 	const media = bot.getMedia();
 	if (media == null) {
-		bot.sendChat("Please try again. (cannot get song id)");
+		bot.sendChat("No song is currently playing. (cannot get song id)");
 		return;
 	}
 
-	bot.rethink.
-		table("songs").
-		getAll(media.fkid, { index: "fkid" }).
-		filter({ type: media.type }).
-		update({
-			name: data.params.join(" "),
-			retagged: true,
-			autoretagged: false,
-		}).
-		run().
-		then(() => {
-			bot.moderateDeleteChat(data.id);
+	const name = data.params.join(" ");
+
+	db.query("UPDATE songs SET retagged = true, autoretagged = false, name = $3 where (fkid = $1) and (type = $2)", [media.fkid, media.type, name], (err, res) => {
+		if (bot.checkError(err, "pgsql", 'could not retag') || res.rowCount === 0) {
+			bot.sendChat("Could not retag, internal error! Tell @qaisjp.");
 			return;
-		}).
-		error((err) => {
-			bot.errLog(err);
-			bot.sendChat("Internal error retagging song");
-		});
+		}
+
+		bot.moderateDeleteChat(data.id);
+	});
 };
