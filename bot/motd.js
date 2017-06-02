@@ -104,7 +104,7 @@ class MOTD {
 		this.validateDB(true);
 	}
 
-	validateDB(forceChange) {		
+	validateDB(forceChange) {
 		let changed = forceChange === true;
 		
 		if (this.settings == null) {
