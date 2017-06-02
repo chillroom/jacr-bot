@@ -1,4 +1,5 @@
 const request = require("request");
+const config = require('../../config');
 
 module.exports = (bot, data) => {
     const user = data.user.username;
@@ -10,7 +11,7 @@ module.exports = (bot, data) => {
 
     var text = data.params.join(" ");
     
-    var api_key = "***REMOVED***";
+    var api_key = config.weather_api_key;
     request("http://api.worldweatheronline.com/free/v2/weather.ashx?key=" + api_key + "&q=" + text.replace(" ", "+") + "&format=json&showlocaltime=yes", (error, response, body) => {
         body = JSON.parse(body);
         if (typeof(body.data.error) === "undefined") {

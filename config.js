@@ -37,4 +37,5 @@ module.exports = {
 
 	google_api_key: process.env.GOOGLE_API_KEY,
 	soundcloud_api_key: process.env.SOUNDCLOUD_API_KEY,
+	weather_api_key: process.env.WEATheR_API_KEY,
 };
