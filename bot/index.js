@@ -16,13 +16,11 @@ new DubAPI({
 
 	bot.rethink = require("rethinkdbdash")(config.rethinkdb);
 
-	bot.google_api_key = config.google_api_key;
-	if (bot.google_api_key == null) {
+	if (config.google_api_key == null) {
 		bot.sendChat("YouTube checking is not enabled.");
 	}
 
-	bot.soundcloud_api_key = config.soundcloud_api_key;
-	if (bot.soundcloud_api_key == null) {
+	if (config.soundcloud_api_key == null) {
 		bot.sendChat("Soundcloud checking is not enabled.");
 	}
 
@@ -214,7 +212,7 @@ function onReady(bot) {
 	require("./raffle.js").init(bot);
 	require("./event.js").init(bot);
 	require("./karma.js").init(bot);
-	// require("./tell.js").init(bot);
+	// require("./tell.js").init(bot); // Disabled for a rewrite surrounding IDs
 	require("./test.js").init(bot);
 	require("./art.js").init(bot);
 	require("./hangman.js").init(bot);

@@ -78,12 +78,12 @@ module.exports.init = function init(receivedBot) {
 	bot = receivedBot;
 	r = bot.rethink;
 
-	event.AddCommand('tell', onCommand);
-	event.AddHandler("tell", onChat);
+	// event.AddCommand('tell', onCommand);
+	// event.AddHandler("tell", onChat);
 
 	// get global state
-	r.table('settings').get('tells.dubtrack').run().then(doc => {
-		TellMessages = doc;
-	})
-	.error(bot.errLog);
+	// r.table('settings').get('tells.dubtrack').run().then(doc => {
+	// 	TellMessages = doc;
+	// })
+	// .error(bot.errLog);
 };

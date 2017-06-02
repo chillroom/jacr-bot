@@ -3,11 +3,11 @@ const sprintf = require("sprintf-js").sprintf;
 const request = require("request");
 const db = require("../lib/db");
 const EventManager = require("../event.js");
+const config = require("../../config");
 
 let bot;
 
 function onUpdateLastfm(data) {
-	const config = require(process.cwd() + "/config");
 	if (config.lastfm.LFM_APIKEY == null) {
 		return;
 	}
@@ -71,12 +71,16 @@ function addSongToHistory(data, songID) {
 }
 
 function checkYouTube(song, shouldSkip, skip) {
+	if (config.google_api_key == null) {
+		return;
+	}
+
 	request(
 		{
 			url: "https://www.googleapis.com/youtube/v3/videos",
 			qs: {
 				part: 'status',
-				key: bot.google_api_key,
+				key: config.google_api_key,
 				id: song.fkid,
 			},
 			method: "GET",
@@ -113,8 +117,12 @@ function checkYouTube(song, shouldSkip, skip) {
 }
 
 function checkSoundCloud(song, shouldSkip, skip) {
+	if (config.soundcloud_api_key == null) {
+		return;
+	}
+
 	// Please do not use the client_id from the repository history. That API key is tied to a personal account.
-	request(`https://api.soundcloud.com/tracks/${song.fkid}?client_id=${bot.soundcloud_api_key}`, (error, response, unparsedBody) => {
+	request(`https://api.soundcloud.com/tracks/${song.fkid}?client_id=${config.soundcloud_api_key}`, (error, response, unparsedBody) => {
 		if (error != null) {
 			bot.checkError(error, "error", "could not query soundcloud API for song data");
 			bot.log("error", "soundcloud", error);
