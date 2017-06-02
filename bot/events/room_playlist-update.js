@@ -58,11 +58,6 @@ function addSongToHistory(data, songID) {
 		return;
 	}
 
-	if (true) {
-		console.log("Reached stub. room playlist update. addSongtoHistory. Below code should either take songID or fkid");
-		process.exit(1);
-	}
-
 	db.query(
 		`
 		WITH
@@ -234,14 +229,14 @@ function onUpdateLog(err, data, results) {
 
 	let skipReason = null;
 	let shouldLockskip = false;
-	if (song.skipReason === "forbidden") {
+	if (song.skip_reason === "forbidden") {
 		skipReason = "Song has been recently flagged as forbidden. You can view the op/forbidden list here: http://just-a-chill-room.net/op-forbidden-list/";
-	} else if (song.skipReason === "nsfw") {
+	} else if (song.skip_reason === "nsfw") {
 		skipReason = "Song has been recently flagged as NSFW";
-	} else if (song.skipReason === "unavailable") {
+	} else if (song.skip_reason === "unavailable") {
 		skipReason = "Song has been recently flagged as unavailable for all users. Please pick another song";
 		shouldLockskip = true;
-	} else if (song.skipReason === "theme") {
+	} else if (song.skip_reason === "theme") {
 		skipReason = "Song has been recently flagged as not on theme. You can view the theme here: http://just-a-chill-room.net/rules/#theme";
 	}
 
@@ -251,9 +246,9 @@ function onUpdateLog(err, data, results) {
 	}
 
 	// OP checker
-	const isOldSong = moment(song.lastPlay).add(2, 'months').isBefore();
+	const isOldSong = moment(song.last_play).add(2, 'months').isBefore();
 
-	if (song.recentPlays > 10 && !isOldSong) {
+	if (song.recent_plays > 10 && !isOldSong) {
 		botLogUser('info', 'ROOM', '%s is playing an OP song', data.user);
 		skip('This song appears to be overplayed. Please pick another song.', true);
 		checkAvailability(false, song); // skip = false
