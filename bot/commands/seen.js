@@ -6,6 +6,10 @@ function buildDescription(u) {
 		return `saying "${u.seen_message}"`;
 	}
 
+	if (u.seen_type === "join") {
+		return `joining the room`;
+	}
+
 	return "doing something..";
 }
 
