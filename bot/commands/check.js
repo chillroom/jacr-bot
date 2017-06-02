@@ -1,5 +1,5 @@
 const moment = require("moment");
-const db = require("db");
+const db = require("../lib/db");
 
 // see https://github.com/sindresorhus/escape-string-regexp/blob/master/index.js
 const matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g;
