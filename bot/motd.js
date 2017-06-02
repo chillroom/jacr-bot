@@ -40,6 +40,33 @@ class MOTD {
 		}
 	}
 
+	addNotice(title, msg) {
+		db.query("INSERT INTO notices(title, message) VALUES ($1, $2)", [title, msg], (err, _) => {
+			if (bot.checkError(err, "pgsql", 'could not add notice')) {
+				bot.sendChat("Could not add notice. Maybe that title already exists? Perhaps an internal error.");
+				return;
+			}
+
+			bot.sendChatTemp("Done.", null, 5000);
+		});
+	}
+
+	delNotice(title) {
+		db.query("DELETE FROM notices WHERE title = $1", [title], (err, res) => {
+			if (bot.checkError(err, "pgsql", 'could not add notice')) {
+				bot.sendChat("Could not add notice, internal error.");
+				return;
+			}
+
+			if (res.rowCount === 0) {
+				bot.sendChat("Notice does not exist.");
+				return;
+			}
+
+			bot.sendChatTemp("Done.", null, 5000);
+		});
+	}
+
 	onCommand(data) {
 		// ensure we're a moderator
 		if (bot.ranks.indexOf(data.user.role) === -1) {
@@ -51,11 +78,17 @@ class MOTD {
 		// If you edit this data.params[0], also edit 'enabled'/'disable' code below.
 		switch (data.params[0]) {
 		default:
-			bot.sendChat(`@${data.user.username}: !motd (enable|disable|status|list|reload)`);
+			bot.sendChat(`@${data.user.username}: !motd (enable|disable|status|list|reload|add title message...|del title)`);
 			break;
 		case "enable":
 		case "disable":
 			this.setEnabled(data.params[0] === 'enable');
+			break;
+		case "add":
+			this.addNotice(data.params[1], data.params.slice(2).join(" "));
+			break;
+		case "del":
+			this.delNotice(data.params[1]);
 			break;
 		case "status":
 			bot.sendChat(`There are ${this.messages.length} messages. MOTD is ${this.settings.Enabled ? '' : 'not '}enabled. Interval: ${this.settings.Interval}. Next message: ${this.settings.NextMessage}. Last announce: ${this.settings.LastAnnounceTime}.`);
@@ -157,6 +190,7 @@ class MOTD {
 
 		db.query("SELECT * FROM notices; SELECT * FROM settings WHERE name = 'motd'", [], (err, res) => {
 			if (bot.checkError(err, "pgsql", 'could not receive notices')) {
+				bot.sendChat("Could not load notices.");
 				return;
 			}
 
