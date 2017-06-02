@@ -3,11 +3,6 @@ const chatEvent = require("../events/chat-message.js");
 const readOnlyMode = true;
 
 function addResponse(bot, data, cmdName, message) {
-	if (readOnlyMode) {
-		bot.sendChat("Cannot update responses. Read only mode is enabled. Contact @qaisjp.");
-		return;
-	}
-
 	if (chatEvent.responses[cmdName] != null) {
 		bot.sendChat(`@${data.user.username}, response "${cmdName}" already exists.`);
 		return;
@@ -29,11 +24,6 @@ function addResponse(bot, data, cmdName, message) {
 }
 
 function removeResponse(bot, data, cmdName) {
-	if (readOnlyMode) {
-		bot.sendChat("Cannot update responses. Read only mode is enabled. Contact @qaisjp.");
-		return;
-	}
-	
 	if (chatEvent.responses[cmdName] == null) {
 		bot.sendChat(`@${data.user.username}, response "${cmdName}" does not exist.`);
 		return;
@@ -50,6 +40,11 @@ function removeResponse(bot, data, cmdName) {
 }
 
 module.exports = (bot, data) => {
+	if (readOnlyMode) {
+		bot.sendChat("Cannot update responses. Read only mode is enabled. Contact @qaisjp.");
+		return;
+	}
+
 	bot.moderateDeleteChat(data.id);
 	if (bot.vips.indexOf(data.user.role) === -1) {
 		return;

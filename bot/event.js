@@ -1,18 +1,35 @@
 // Copyright (c) Qais Patankar 2016 - MIT License
 
-let r;
 let bot;
+const db = require('./lib/db');
 const Raffle = require("./raffle.js");
 const event = require('./events/chat-message.js');
+
 const EventManager = {
 	state: null,
 };
 
-// States should only be accessed by one bot at a time
-function updateState(key) {
-	const out = (key == null) ? EventManager.state : { [key]: EventManager.state[key] };
-	r.table('settings').get('event.dubtrack').update(out).run().
-		error(bot.errLog);
+// Commits the local settings to database
+function validateDB(forceChange) {
+	let changed = forceChange === true;
+
+	if (EventManager.state == null) {
+		EventManager.state = {};
+		changed = true;
+	}
+
+	if (EventManager.state.started !== true && EventManager.state.started !== false) {
+		EventManager.state.started = false;
+		changed = true;
+	}
+
+	if (changed) {
+		db.query(
+			"INSERT INTO settings(name, value) VALUES('event', $1) ON CONFLICT(name) DO UPDATE SET value = $1",
+			[JSON.stringify(EventManager.state)],
+			bot.dbLog("Internal error. Could not insert verified settings for event.")
+		);
+	}
 }
 
 function start(data) {
@@ -47,7 +64,7 @@ function start(data) {
 		}
 	}
 	bot.sendChat(`Our event is beginning and the queue is now locked. ${suffix}`);
-	updateState();
+	validateDB(true);
 }
 
 
@@ -87,7 +104,7 @@ function onCommand(_, data) {
 		bot.moderateLockQueue(false);
 		bot.sendChat("The event is now over, thanks for coming! Make sure you check out our Facebook page for upcoming events: https://fb.me/justachillroom");
 		Raffle.setEnabled(true);
-		updateState();
+		validateDB(true);
 		break;
 	case 'status':
 		bot.sendChat(`Event ${EventManager.state.started ? 'active' : 'inactive'}.`);
@@ -97,16 +114,21 @@ function onCommand(_, data) {
 
 module.exports.init = function init(receivedBot) {
 	bot = receivedBot;
-	r = bot.rethink;
 
 	// Add the command counter
 	event.AddCommand('event', onCommand);
 
 	// get global state
-	r.table('settings').get('event.dubtrack').run().then(doc => {
-		EventManager.state = doc;
-	})
-	.error(bot.errLog);
+	db.query(
+		"SELECT * FROM settings WHERE name = 'event'", [],
+		(err, res) => {
+			if (res.rowCount === 1) {
+				EventManager.state = res.rows[0].value;
+			}
+			
+			validateDB(false);
+		}
+	);
 };
 
 module.exports.isActive = function isActive() {
