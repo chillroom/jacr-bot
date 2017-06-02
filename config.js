@@ -7,7 +7,7 @@ module.exports = {
 		pass: process.env.BOT_PASS,
 		URL: process.env.BOT_URL,
 	},
-	mongoURL: process.env.MONGO_URL,
+	
 	slack: {
 		URL: process.env.SLACK_URL,
 		channels: process.env.SLACK_CHANNELS,
@@ -21,14 +21,6 @@ module.exports = {
 		LFM_APISECRET: process.env.LFM_APISECRET,
 		LFM_USERNAME: process.env.LFM_USERNAME,
 		LFM_PASSWORD: process.env.LFM_PASSWORD,
-	},
-
-	rethinkdb: {
-		db: process.env.RETHINKDB_DATABASE,
-		user: process.env.RETHINKDB_USERNAME,
-		password: process.env.RETHINKDB_PASSWORD,
-		host: "localhost",
-		port: 28015,
 	},
 
 	postgres: {

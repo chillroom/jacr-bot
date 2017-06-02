@@ -252,7 +252,7 @@ blob@0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/blob/-/blob-0.0.4.tgz#bcf13052ca54463f30f9fc7e95b9a47630a94921"
 
-"bluebird@>= 3.0.1", bluebird@^3.3.1:
+bluebird@^3.3.1:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.0.tgz#791420d7f551eea2897453a8a77653f96606d67c"
 
@@ -2212,12 +2212,6 @@ restore-cursor@^1.0.1:
   dependencies:
     exit-hook "^1.0.0"
     onetime "^1.0.0"
-
-rethinkdbdash@2.*:
-  version "2.3.28"
-  resolved "https://registry.yarnpkg.com/rethinkdbdash/-/rethinkdbdash-2.3.28.tgz#f15fed3a2f0c178155fcadb6fc212b3df80f73df"
-  dependencies:
-    bluebird ">= 3.0.1"
 
 right-align@^0.1.1:
   version "0.1.3"

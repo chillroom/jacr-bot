@@ -14,8 +14,6 @@ new DubAPI({
 }, function(err, bot) {
 	/* eslint no-param-reassign: ["error", { "props": false }]*/
 
-	bot.rethink = require("rethinkdbdash")(config.rethinkdb);
-
 	if (config.google_api_key == null) {
 		bot.sendChat("YouTube checking is not enabled.");
 	}
