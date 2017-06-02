@@ -238,12 +238,11 @@ Raffle.reload = () => {
 	db.query(
 		"SELECT * FROM settings WHERE name = 'raffle'", [],
 		(err, res) => {
-			Raffle.settings = res.rows[0];
-			validateDB(false);
-			if (Raffle.settings == null || Raffle.settings == null) {
-				// Not quite ready yet!
-				return;
+			if (res.rowCount === 1) {
+				Raffle.settings = res.rows[0].value;
 			}
+			
+			validateDB(false);
 
 			// Does a raffle already exist?
 			if (Raffle.settings.started === true) {
