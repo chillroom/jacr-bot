@@ -42,4 +42,6 @@ module.exports = {
 		clientID: process.env.ARTSY_CLIENT_ID,
 		clientSecret: process.env.ARTSY_CLIENT_SECRET,
 	},
+
+	google_api_key: process.env.GOOGLE_API_KEY,
 };

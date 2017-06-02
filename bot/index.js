@@ -14,11 +14,16 @@ new DubAPI({
 }, function(err, bot) {
 	/* eslint no-param-reassign: ["error", { "props": false }]*/
 
+	bot.rethink = require("rethinkdbdash")(config.rethinkdb);
+
+	bot.google_api_key = config.google_api_key;
+	if (bot.google_api_key == null) {
+		bot.sendChat("YouTube checking is not enabled.");
+	}
+
 	if (err) {
 		return log("error", "BOT", err);
 	}
-
-	bot.rethink = require("rethinkdbdash")(config.rethinkdb);
 
 	/* Logs a simple RethinkDB error */
 	bot.errLog = err => {
@@ -36,7 +41,7 @@ new DubAPI({
 	bot.checkError = (err, realm, reason) => {
 		if (err) {
 			bot.log("error", realm, reason);
-			bot.log("error", realm, err);
+			bot.log("error", realm, err.toString());
 			return true;
 		}
 

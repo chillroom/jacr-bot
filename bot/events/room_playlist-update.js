@@ -61,7 +61,7 @@ function addSongToHistory(data, songID) {
 	db.query(
 		`
 		WITH
-			u as (SELECT id FROM dubtrack_users WHERE dub_id = $1),
+			u as (SELECT id FROM dubtrack_users WHERE dub_id = $1)
 		INSERT INTO history (dub_id, song, "user")
 		VALUES ($2, $3, (SELECT id from u))
 		`,
@@ -71,30 +71,45 @@ function addSongToHistory(data, songID) {
 }
 
 function checkYouTube(song, shouldSkip, skip) {
-	request(`https://www.googleapis.com/youtube/v3/videos?part=status&key=***REMOVED***&id=${song.fkid}`, (error, response, unparsedBody) => {
-		if ((error != null) || (response.statusCode !== 200)) {
-			bot.checkError(error, "error", "could not query YouTube API for song data");
-			bot.sendChat("Could not query YouTube API for song data.");
-			return;
-		}
+	request(
+		{
+			url: "https://www.googleapis.com/youtube/v3/videos",
+			qs: {
+				part: 'status',
+				key: bot.google_api_key,
+				id: song.fkid,
+			},
+			method: "GET",
+			json: true,
+		},
+		(error, response, body) => {
+			if ((error != null) || (response.statusCode !== 200)) {
+				bot.checkError(error, "error", "could not query YouTube API for song data");
+				bot.log("error", "youtube", error);
+				if (response != null) {
+					bot.log('error', 'youtube', `Status code: ${response.statusCode}`);
+				}
+				bot.sendChat("Could not query YouTube API for song data.");
+				return;
+			}
 
-		let availability = true;
-		const body = JSON.parse(unparsedBody);
+			let availability = true;
 
-		if (body.pageInfo.totalResults === 0) {
-			// handle non exist / private situation
-			availability = false;
-		} else if (body.items[0].status.uploadStatus === "rejected") {
-			availability = false;
-		}
+			if ((body.pageInfo.totalResults === 0) || (body.items[0] == null)) {
+				// handle non exist / private situation
+				availability = false;
+			} else if (body.items[0].status.uploadStatus === "rejected") {
+				availability = false;
+			}
 
-		if (!availability) {
-			bot.sendChat("This song appears to be unavailable. Please pick another song.");
-			if (shouldSkip) {
-				skip(null, true);
+			if (!availability) {
+				bot.sendChat("This song appears to be unavailable. Please pick another song.");
+				if (shouldSkip) {
+					skip(null, true);
+				}
 			}
 		}
-	});
+	);
 }
 
 function checkSoundCloud(song, shouldSkip, skip) {
@@ -138,7 +153,7 @@ function checkSoundCloud(song, shouldSkip, skip) {
 }
 
 function onUpdateLog(err, data, results) {
-	if (bot.checkError(err, "error", "could not select song data")) {
+	if (bot.checkError(err, "pgpsql", "could not select song data")) {
 		bot.sendChat("Could not update song data. Internal error, @qaisjp!");
 		return;
 	}
@@ -175,7 +190,7 @@ function onUpdateLog(err, data, results) {
 	};
 
 	// If there is no song, create a new song
-	if (results.length === 0) {
+	if (results.rowCount === 0) {
 		db.query(
 			`
 			INSERT INTO
@@ -184,7 +199,7 @@ function onUpdateLog(err, data, results) {
 			($1, $2, $3, now(), null, 1, 1)
 			RETURNING id
 			`,
-			[data.media.fkid, data.media.name, data.media.type],
+			[data.media.fkid, data.media.type, data.media.name],
 			(err, res) => {
 				if (bot.checkError(err, "pgsql", "Could not insert new song.")) {
 					bot.sendChat("Could not insert new song, internal error, @qaisjp!");
@@ -205,7 +220,7 @@ function onUpdateLog(err, data, results) {
 			"UPDATE dubtrack_users SET karma = karma + 20  where (dub_id = $1) RETURNING karma",
 			[data.user.id],
 			(err, res) => {
-				if (bot.dbCheckError(err, "pgsql", "Could not gift karma for new song")) {
+				if (bot.checkError(err, "pgsql", "Could not gift karma for new song")) {
 					bot.sendChat("Internal error on gifting karma for a new song.");
 					return;
 				}
@@ -256,8 +271,8 @@ function onUpdateLog(err, data, results) {
 	}
 
 	const update = {
-		recentPlays: isOldSong ? 1 : 'recentPlays + 1',
-		totalPlays: 'totalPlays + 1',
+		recentPlays: isOldSong ? 1 : 'recent_plays + 1',
+		totalPlays: 'total_plays + 1',
 		retagged: (data.media.name === song.name) ? false : !song.autoretagged,
 	};
 
@@ -308,7 +323,7 @@ function onUpdate(data) {
 	db.query(
 		"SELECT * FROM songs WHERE fkid = $1 and type = $2",
 		[data.media.fkid, data.media.type],
-		(results, err) => onUpdateLog(err, data, results)
+		(err, results) => onUpdateLog(err, data, results)
 	);
 }
 
