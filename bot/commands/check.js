@@ -1,4 +1,5 @@
 const moment = require("moment");
+const db = require("db");
 
 // see https://github.com/sindresorhus/escape-string-regexp/blob/master/index.js
 const matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g;
@@ -6,32 +7,31 @@ const matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g;
 function createResponse(bot, data, idSearch) {
 	const prefix = idSearch ? "(By ID) " : "";
 
-	return [
-		results => {
-			if (results.length === 0) {
-				bot.sendChat("Could not find song");
-				return;
-			}
-
-			let message = `${prefix}The `;
-			if (results.length > 1) {
-				message = `Found ${results.length} songs matching that title. The first `;
-			}
-
-			const doc = results[0];
-			const isOldSong = moment(doc.lastPlay).add(2, 'months').isBefore();
-
-			message += `song ${doc.name} has been played ${doc.totalPlays} time${doc.totalPlays === 1 ? "" : "s"} (${isOldSong ? 0 : doc.recentPlays} recently). Last play: ${moment(doc.lastPlay).fromNow()}.`;
-			if (doc.skipReason != null) {
-				message += ` Skip reason: ${doc.skipReason}`;
-			}
-			bot.sendChat(message);
-		},
-		err => {
-			bot.errLog(err);
+	return (err, res) => {
+		if (bot.checkError(err, "pgpsql", "could not check song")) {
 			bot.sendChat(`${data.user.username}: Database search failed`);
-		},
-	];
+			return;
+		}
+
+		if (res.rowCount === 0) {
+			bot.sendChat("Could not find song");
+			return;
+		}
+
+		let message = `${prefix}The `;
+		if (res.rowCount > 1) {
+			message = `Found ${res.rowCount} songs matching that title. The first `;
+		}
+
+		const doc = res.rows[0];
+		const isOldSong = moment(doc.last_play).add(2, 'months').isBefore();
+
+		message += `song ${doc.name} has been played ${doc.total_plays} time${doc.total_plays === 1 ? "" : "s"} (${isOldSong ? 0 : doc.recent_plays} recently). Last play: ${moment(doc.last_play).fromNow()}.`;
+		if (doc.skip_reason != null) {
+			message += ` Skip reason: ${doc.skip_reason}`;
+		}
+		bot.sendChat(message);
+	};
 }
 
 module.exports = (bot, data) => {
@@ -49,13 +49,7 @@ module.exports = (bot, data) => {
 
 			if (type === "youtube" || type === "soundcloud") {
 				const response = createResponse(bot, data, true);
-				bot.rethink.
-					table("songs").
-					getAll(fkid, { index: "fkid" }).
-					filter({ type }).
-					run().
-					then(response[0]).
-					error(response[1]);
+				db.query("SELECT * FROM songs WHERE type = $1 and fkid = $2", [type, fkid], response);
 				return;
 			}
 		}
@@ -64,13 +58,10 @@ module.exports = (bot, data) => {
 	const text = data.params.join(" ").toLowerCase().replace(matchOperatorsRe, '\\$&');
 	const r = bot.rethink;
 	const response = createResponse(bot, data, false);
-	r.
-		table("songs").
-		filter(
-			r.row("name").downcase().
-			match(`(.*)${text}(.*)`)
-		).
-		run().
-		then(response[0]).
-		error(response[1]);
+
+	db.query(
+		"SELECT similarity(songs.name, $1) as sim, * FROM songs WHERE (songs.name % $1) ORDER BY sim DESC LIMIT 2",
+		[text],
+		response
+	);
 };
