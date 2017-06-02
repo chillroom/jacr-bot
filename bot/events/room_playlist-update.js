@@ -113,8 +113,15 @@ function checkYouTube(song, shouldSkip, skip) {
 }
 
 function checkSoundCloud(song, shouldSkip, skip) {
-	request(`https://api.soundcloud.com/tracks/${song.fkid}?client_id=***REMOVED***`, (error, response, unparsedBody) => {
+	// Please do not use the client_id from the repository history. That API key is tied to a personal account.
+	request(`https://api.soundcloud.com/tracks/${song.fkid}?client_id=${bot.soundcloud_api_key}`, (error, response, unparsedBody) => {
 		if (error != null) {
+			bot.checkError(error, "error", "could not query soundcloud API for song data");
+			bot.log("error", "soundcloud", error);
+			if (response != null) {
+				bot.log('error', 'soundcloud', `Status code: ${response.statusCode}`);
+			}
+			bot.sendChat("Could not query YouTube API for song data.");
 			return;
 		}
 
@@ -211,7 +218,7 @@ function onUpdateLog(err, data, results) {
 				// Get the song ID and add it to the history
 				addSongToHistory(data, songID);
 
-				checkAvailability(true, { id: songID, type: data.media.type, fkid: data.media.fkid });
+				checkAvailability(true, { id: songID, type: data.media.type, fkid: data.media.fkid, name: data.media.name });
 			}
 		);
 

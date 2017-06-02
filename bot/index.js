@@ -21,6 +21,11 @@ new DubAPI({
 		bot.sendChat("YouTube checking is not enabled.");
 	}
 
+	bot.soundcloud_api_key = config.soundcloud_api_key;
+	if (bot.soundcloud_api_key == null) {
+		bot.sendChat("Soundcloud checking is not enabled.");
+	}
+
 	if (err) {
 		return log("error", "BOT", err);
 	}
