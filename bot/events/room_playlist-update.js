@@ -1,9 +1,9 @@
 const moment = require("moment");
 const sprintf = require("sprintf-js").sprintf;
 const request = require("request");
-
+const db = require("../lib/db");
 const EventManager = require("../event.js");
-let r;
+
 let bot;
 
 function onUpdateLastfm(data) {
@@ -31,6 +31,7 @@ function onUpdateLastfm(data) {
 	if (result.scrobble || result.nowPlaying) {
 		const json = JSON.stringify(result);
 		const execFile = require('child_process').execFile;
+
 		execFile("/home/qaisjp/jacr/jacr-bot/bot/events/lastfm", [json], { env: config.lastfm }, (err) => {
 			if (err != null) {
 				bot.log("debug", "lastfm_err", err);
@@ -57,34 +58,28 @@ function addSongToHistory(data, songID) {
 		return;
 	}
 
-	// Get their rethink user ID
-	r.table("users").getAll(data.user.id, {index: "uid"}).filter({platform: "dubtrack" })("id").run()
-		.then(results => {
-			// If it exists (it should), add it to the history
-			if (results[0] == null) {
-				bot.errLog(`No user with that UID: ${data.user.id}`);
-				return null;
-			}
-			
-			const item = {
-				song: songID,
-				time: r.now(),
-				user: results[0],
-				
-				platform: "dubtrack",
-				platformID: data.id,
+	if (true) {
+		console.log("Reached stub. room playlist update. addSongtoHistory. Below code should either take songID or fkid");
+		process.exit(1);
+	}
 
-				score: null,
-			};
-
-			return r.table("history").insert(item).run().error(bot.errLog);
-		})
-		.error(bot.errLog);
+	db.query(
+		`
+		WITH
+			u as (SELECT id FROM dubtrack_users WHERE dub_id = $1),
+		INSERT INTO history (dub_id, song, "user")
+		VALUES ($2, $3, (SELECT id from u))
+		`,
+		[data.user.id, data.id, songID],
+		bot.dbLog("Could not insert new played song into history.")
+	);
 }
 
 function checkYouTube(song, shouldSkip, skip) {
 	request(`https://www.googleapis.com/youtube/v3/videos?part=status&key=***REMOVED***&id=${song.fkid}`, (error, response, unparsedBody) => {
 		if ((error != null) || (response.statusCode !== 200)) {
+			bot.checkError(error, "error", "could not query YouTube API for song data");
+			bot.sendChat("Could not query YouTube API for song data.");
 			return;
 		}
 
@@ -139,18 +134,17 @@ function checkSoundCloud(song, shouldSkip, skip) {
 
 		// bot.sendChat(`This song has just been auto-retagged as "${newTitle}"`);
 
-		r.table('songs').get(song.id).update({
-			autoretagged: true,
-			name: newTitle,
-		}).
-		run().
-		error(bot.errLog);
+		db.query(
+			"UPDATE songs SET autoretagged = true, name = $2 WHERE id = $1",
+			[song.id, newTitle],
+			bot.dbLog("Could not update autoretag via Soundcloud")
+		);
 	});
 }
 
-function onUpdateLog(data, results) {
-	if (results.length > 1) {
-		bot.errLog(`${results[0].fkid} song multiple existence`);
+function onUpdateLog(err, data, results) {
+	if (bot.checkError(err, "error", "could not select song data")) {
+		bot.sendChat("Could not update song data. Internal error, @qaisjp!");
 		return;
 	}
 
@@ -187,46 +181,53 @@ function onUpdateLog(data, results) {
 
 	// If there is no song, create a new song
 	if (results.length === 0) {
-		const song = {
-			fkid: data.media.fkid,
-			name: data.media.name,
-			type: data.media.type,
-			lastPlay: r.now(),
-			skipReason: null,
-			totalPlays: 1,
-			recentPlays: 1,
-		};
-
-		r.table("songs").insert(song).run().then(result => {
-			// Get the song ID and add it to the history
-			addSongToHistory(data, result.generated_keys[0]);
-
-			song.id = result.generated_keys[0];
-			checkAvailability(true, song);
-		}).
-		error(bot.errLog);
-
-		// User has played a new song, gift them karma!
-		r
-			.table("users")
-			.getAll(data.user.id, {index: "uid"})
-			.filter({ platform:"dubtrack" })
-			.update(
-				{ karma: r.row.getField("karma").add(20) },
-				{ returnChanges:true }
-			).run().then(result => {
-				if (result.replaced !== 1) {
+		db.query(
+			`
+			INSERT INTO
+			songs(fkid, type, name, last_play, skip_reason, total_plays, recent_plays)
+			VALUES
+			($1, $2, $3, now(), null, 1, 1)
+			RETURNING id
+			`,
+			[data.media.fkid, data.media.name, data.media.type],
+			(err, res) => {
+				if (bot.checkError(err, "pgsql", "Could not insert new song.")) {
+					bot.sendChat("Could not insert new song, internal error, @qaisjp!");
 					return;
 				}
 
-				const newDoc = result.changes[0].new_val;
-				bot.sendChatTemp(`${data.user.username} has been rewarded 20 karma for playing a new song, and is now at ${newDoc.karma} karma!`, null, 60000); // 60000ms = 1 minute
-			});
+				const songID = res.rows[0].id;
+
+				// Get the song ID and add it to the history
+				addSongToHistory(data, songID);
+
+				checkAvailability(true, { id: songID, type: data.media.type, fkid: data.media.fkid });
+			}
+		);
+
+		// User has played a new song, gift them karma!
+		db.query(
+			"UPDATE dubtrack_users SET karma = karma + 20  where (dub_id = $1) RETURNING karma",
+			[data.user.id],
+			(err, res) => {
+				if (bot.dbCheckError(err, "pgsql", "Could not gift karma for new song")) {
+					bot.sendChat("Internal error on gifting karma for a new song.");
+					return;
+				}
+
+				if (res.rowCount === 0) {
+					bot.sendChat("Karma was not awarded for some reason.");
+					return;
+				}
+
+				bot.sendChatTemp(`${data.user.username} has been rewarded 20 karma for playing a new song, and is now at ${res.rows[0].karma} karma!`, null, 60000); // 60000ms = 1 minute
+			}
+		);
 
 		return;
 	}
 
-	const song = results[0];
+	const song = results.rows[0];
 
 	// adds the song to the history
 	addSongToHistory(data, song.id);
@@ -260,9 +261,8 @@ function onUpdateLog(data, results) {
 	}
 
 	const update = {
-		recentPlays: isOldSong ? 1 : r.row('recentPlays').add(1),
-		totalPlays: r.row('totalPlays').add(1),
-		lastPlay: r.now(),
+		recentPlays: isOldSong ? 1 : 'recentPlays + 1',
+		totalPlays: 'totalPlays + 1',
 		retagged: (data.media.name === song.name) ? false : !song.autoretagged,
 	};
 
@@ -272,8 +272,14 @@ function onUpdateLog(data, results) {
 	// 	bot.sendChat(`This song was previously auto-retagged as "${song.name}"`);
 	// }
 
-	r.table('songs').get(song.id).update(update).run().
-		error(bot.errLog);
+	db.query(
+		`UPDATE songs SET recent_plays = ${update.recentPlays}, total_plays = ${update.totalPlays}, last_play = now(), retagged = $2 WHERE id = $1`,
+		[
+			song.id, // id
+			update.retagged,
+		],
+		bot.dbLog("Could not update song data on play")
+	);
 
 	checkAvailability(true, song);
 }
@@ -287,21 +293,14 @@ function onUpdate(data) {
 	}
 	onUpdateLastfm(data);
 
+	// Update the previous song score
 	if (data.lastPlay != null) {
-		r
-			.table("history")
-			.filter({ platform: "dubtrack", platformID: data.lastPlay.id })
-			.orderBy(r.desc("time"))
-			.limit(1)
-			.update({
-				score: {
-					up: data.lastPlay.score.updubs,
-					grab: data.lastPlay.score.grabs,
-					down: data.lastPlay.score.downdubs,
-				},
-			})
-			.run().
-			error(bot.errLog);
+		db.query(
+			"UPDATE history SET score_up = $2, score_grab = $3, score_down = $4 WHERE dub_id = $1",
+			[data.lastPlay.id, data.lastPlay.score.updubs, data.lastPlay.score.grabs, data.lastPlay.score.downdubs],
+			bot.dbLog("Could not update score of previously played song.")
+		)
+		
 	}
 
 	if (data.media == null) {
@@ -310,18 +309,16 @@ function onUpdate(data) {
 
 	botLogUser("info", "ROOM", "%s is now playing", data.user);
 
-	// First we get "all" the songs that match the fkid
-	r
-		.table('songs')
-		.getAll(data.media.fkid, { index: "fkid" })
-		.filter({ type: data.media.type }) // and the same type
-		.run().
-		then(results => onUpdateLog(data, results)).
-		error(bot.errLog);
+	// First we get the song that matches the fkid/type
+	db.query(
+		"SELECT * FROM songs WHERE fkid = $1 and type = $2",
+		[data.media.fkid, data.media.type],
+		(results, err) => onUpdateLog(err, data, results)
+	);
 }
 
 module.exports = receivedBot => {
 	bot = receivedBot;
-	r = bot.rethink;
+
 	bot.on("room_playlist-update", onUpdate);
 };
