@@ -238,7 +238,7 @@ Raffle.reload = () => {
 	db.query(
 		"SELECT * FROM settings WHERE name = 'raffle'", [],
 		(err, res) => {
-			if (db.checkError(err, "pgsql", "could not get raffle setting")) {
+			if (bot.checkError(err, "pgsql", "could not get raffle setting")) {
 				bot.sendChat("Internal error, could not get raffle settings. Tell @qaisjp")
 				return;
 			}
