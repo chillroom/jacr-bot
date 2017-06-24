@@ -1,7 +1,6 @@
 const db = require("../lib/db");
 
 module.exports = (bot, data) => {
-	const r = bot.rethink
 	const DJ = bot.getDJ();
 	const user = data.user.username;
 	const rank = data.user.role;

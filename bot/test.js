@@ -1,6 +1,5 @@
 // Copyright (c) Qais Patankar 2016 - MIT License
 
-let r;
 let bot;
 const event = require('./events/chat-message.js');
 
@@ -10,7 +9,6 @@ function onCommand() {
 
 module.exports.init = function init(receivedBot) {
 	bot = receivedBot;
-	r = bot.rethink;
 
 	event.AddCommand('test', onCommand);
 };
