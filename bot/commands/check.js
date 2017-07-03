@@ -56,7 +56,6 @@ module.exports = (bot, data) => {
 	}
 
 	const text = data.params.join(" ").toLowerCase().replace(matchOperatorsRe, '\\$&');
-	const r = bot.rethink;
 	const response = createResponse(bot, data, false);
 
 	db.query(
