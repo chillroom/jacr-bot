@@ -58,8 +58,7 @@ module.exports = (bot, data) => {
 		bot.sendChat("Awww shucks, your song has been voted by the community as unpopular. Please check theme for guidance on what to play. http://just-a-chill-room.net/rules/#theme");
 		break;
 	case "op":
-		skipReason = "op";
-		bot.sendChat("Song skipped for being op, check http://just-a-chill-room.net/op-forbidden-list/ next time please");
+		bot.sendChat("Song skipped for being op, check http://just-a-chill-room.net/op-forbidden-list/ next time please.");
 		lockskip = true;
 		break;
 	case "length":
