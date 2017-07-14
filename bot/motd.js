@@ -41,7 +41,7 @@ class MOTD {
 	}
 
 	addNotice(title, msg) {
-		db.query("INSERT INTO notices(title, message) VALUES ($1, $2)", [title, msg], (err, _) => {
+		return db.query("INSERT INTO notices(title, message) VALUES ($1, $2)", [title, msg], (err) => {
 			if (bot.checkError(err, "pgsql", 'could not add notice')) {
 				bot.sendChat("Could not add notice. Maybe that title already exists? Perhaps an internal error.");
 				return;
@@ -52,7 +52,7 @@ class MOTD {
 	}
 
 	delNotice(title) {
-		db.query("DELETE FROM notices WHERE title = $1", [title], (err, res) => {
+		return db.query("DELETE FROM notices WHERE title = $1", [title], (err, res) => {
 			if (bot.checkError(err, "pgsql", 'could not add notice')) {
 				bot.sendChat("Could not add notice, internal error.");
 				return;
@@ -65,6 +65,13 @@ class MOTD {
 
 			bot.sendChatTemp("Done.", null, 5000);
 		});
+	}
+
+	showNotice(title) {
+		const notice = this.messages.find(row => row.title === title);
+		if (notice != null) {
+			bot.sendChat(notice.message);
+		}
 	}
 
 	onCommand(data) {
@@ -88,7 +95,10 @@ class MOTD {
 			this.addNotice(data.params[1], data.params.slice(2).join(" "));
 			break;
 		case "del":
-			this.delNotice(data.params[1]);
+			this.reload().then(this.delNotice.bind(this, data.params[1]));
+			break;
+		case "show":
+			this.showNotice(data.params[1]);
 			break;
 		case "status":
 			bot.sendChat(`There are ${this.messages.length} messages. MOTD is ${this.settings.Enabled ? '' : 'not '}enabled. Interval: ${this.settings.Interval}. Next message: ${this.settings.NextMessage}. Last announce: ${this.settings.LastAnnounceTime}.`);
@@ -108,7 +118,7 @@ class MOTD {
 		}
 
 		this.messageCount = 0; // Reset messages counter
-		let currentMessage = this.messages[this.settings.NextMessage];
+		const currentMessage = this.messages[this.settings.NextMessage];
 
 		// Check if a currentMessage exists
 		if (currentMessage == null) {
@@ -154,7 +164,7 @@ class MOTD {
 		if (isNaN(rounded)) {
 			this.settings.Interval = 30;
 			changed = true;
-		} else if (rounded != this.settings.Interval) {
+		} else if (rounded !== this.settings.Interval) {
 			this.settings.Interval = rounded;
 			changed = true;
 		}
@@ -188,7 +198,7 @@ class MOTD {
 		this.settings = null;
 		this.messages = [];
 
-		db.query("SELECT * FROM notices; SELECT * FROM settings WHERE name = 'motd'", [], (err, res) => {
+		return db.query("SELECT * FROM notices; SELECT * FROM settings WHERE name = 'motd'", [], (err, res) => {
 			if (bot.checkError(err, "pgsql", 'could not receive notices')) {
 				bot.sendChat("Could not load notices.");
 				return;
