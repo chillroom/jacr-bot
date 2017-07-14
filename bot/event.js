@@ -63,7 +63,7 @@ function start(data) {
 			}
 		}
 	}
-	bot.sendChat(`Our event is beginning and the queue is now locked. ${suffix}`);
+	bot.sendChat(`@everyone Our event is beginning and the queue is now locked. ${suffix}`);
 	validateDB(true);
 }
 
