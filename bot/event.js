@@ -45,11 +45,11 @@ function start(data) {
 
 	bot.moderateLockQueue(true, () => {
 		// remove non artists
-		for (const queue of bot.getQueue()) {
-			if ((EventManager.state.user != null) && (queue.uid !== EventManager.state.user)) {
-				bot.moderateRemoveDJ(queue.uid);
-			}
-		}
+		// for (const queue of bot.getQueue()) {
+		// 	if ((EventManager.state.user != null) && (queue.uid !== EventManager.state.user)) {
+		// 		bot.moderateRemoveDJ(queue.uid);
+		// 	}
+		// }
 	});
 
 	let suffix = "Enjoy the event!";
