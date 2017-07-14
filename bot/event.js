@@ -91,8 +91,9 @@ function onCommand(_, data) {
 		bot.sendChat(`@${data.user.username}: !event (start @user1|stop|status)`);
 		break;
 	case 'start':
-		start(data);
+		bot.motd.setEnabled(false);
 		Raffle.setEnabled(false);
+		start(data);
 		break;
 	case 'stop':
 		if (!EventManager.state.started) {
@@ -104,6 +105,7 @@ function onCommand(_, data) {
 		bot.moderateLockQueue(false);
 		bot.sendChat("The event is now over, thanks for coming! Make sure you check out our Facebook page for upcoming events: https://fb.me/justachillroom");
 		Raffle.setEnabled(true);
+		bot.motd.setEnabled(true);
 		validateDB(true);
 		break;
 	case 'status':
