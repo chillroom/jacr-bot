@@ -107,7 +107,7 @@ function checkYouTube(song, shouldSkip, skip) {
 			}
 
 			if (!availability) {
-				bot.sendChat("This song appears to be unavailable. Please pick another song.");
+				bot.sendChat("This track appears to be unavailable. Please pick another track.");
 				if (shouldSkip) {
 					skip(null, true);
 				}
@@ -245,7 +245,7 @@ function onUpdateLog(err, data, results) {
 					return;
 				}
 
-				bot.sendChatTemp(`${data.user.username} has been rewarded 20 karma for playing a new song, and is now at ${res.rows[0].karma} karma!`, null, 60000); // 60000ms = 1 minute
+				bot.sendChatTemp(`${data.user.username} has been rewarded 20 karma for playing a new track, and is now at ${res.rows[0].karma} karma!`, null, 60000); // 60000ms = 1 minute
 			}
 		);
 
