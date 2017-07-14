@@ -6,7 +6,7 @@ module.exports = (bot, data) => {
 	const rank = data.user.role;
 	
 	if (bot.vips.indexOf(rank) === -1) {
-		bot.log("info", "SKIP", user + " tried to skip a song without the required permissions");
+		bot.log("info", "SKIP", user + " tried to skip a track without the required permissions");
 		return;
 	}
 
@@ -48,46 +48,46 @@ module.exports = (bot, data) => {
 	var media = bot.getMedia();
 
 	if (media == null) {
-		bot.sendChat("No song is currently playing.");
+		bot.sendChat("No track is currently playing.");
 		return;
 	}
 
 	switch (data.params[0]) {
 	case "unpop":
 	case "shit":
-		bot.sendChat("Awww shucks, your song has been voted by the community as unpopular. Please check theme for guidance on what to play. http://just-a-chill-room.net/rules/#theme");
+		bot.sendChat("Awww shucks, your track has been voted by the community as unpopular. Please check theme for guidance on what to play. http://just-a-chill-room.net/rules/#theme");
 		break;
 	case "op":
-		bot.sendChat("Song skipped for being op, check http://just-a-chill-room.net/op-forbidden-list/ next time please.");
+		bot.sendChat("Track skipped for being op, check http://just-a-chill-room.net/op-forbidden-list/ next time please.");
 		lockskip = true;
 		break;
 	case "length":
 	case "len":
-		bot.sendChat("Song has been skipped because it is too long.");
+		bot.sendChat("Track has been skipped because it is too long.");
 		break;
 	case "history":
 	case "hist":
-		bot.sendChat("Song was recently played, history can be viewed by clicking queue then room history.");
+		bot.sendChat("Track was recently played, history can be viewed by clicking queue then room history.");
 		lockskip = true;
 		break;
 	case "nsfw":
 		skipReason = "nsfw";
-		bot.sendChat("Song skipped for being NSFW, too much NSFW = ban!");
+		bot.sendChat("Track skipped for being NSFW, too much NSFW = ban!");
 		break;
 	case "theme":
 		skipReason = "theme";
-		bot.sendChat("Song does not fit the room theme.");
+		bot.sendChat("Track does not fit the room theme.");
 		break;
 	case "forbidden":
 		skipReason = "forbidden";
-		bot.sendChat("This song is on the forbidden list: http://just-a-chill-room.net/op-forbidden-list/");
+		bot.sendChat("This track is on the forbidden list: http://just-a-chill-room.net/op-forbidden-list/");
 		break;
 	case "na":
 	case "unv":
 	case "unav":
 	case "unavailable":
 		skipReason = "unavailable";
-		bot.sendChat("This song is not available to all users");
+		bot.sendChat("This track is not available to all users");
 		lockskip = true;
 		break;
 	case "troll":
