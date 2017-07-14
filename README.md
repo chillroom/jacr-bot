@@ -1,5 +1,5 @@
 # jacr-bot
-The bot issues repository for [Just A Chill Room](http://just-a-chill-room.net).
+The bot issues repository for [Just A Chill Room](http://just-a-chill-room.net). This is licensed under the GNU GPL v3, except where otherwise stated.
 
 # [Click here](https://github.com/chillroom/jacr-bot/issues/new) to create a new issue.
 You need a GitHub account for this.
