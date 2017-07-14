@@ -1,4 +1,3 @@
-// Copyright (c) Qais Patankar 2016 - MIT License
 let bot;
 const request = require("request");
 const event = require('./events/chat-message.js');

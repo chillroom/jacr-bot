@@ -1,4 +1,3 @@
-// Copyright (c) Qais Patankar 2016 - MIT License
 
 let r;
 let bot;

@@ -1,4 +1,3 @@
-// Copyright (c) Qais Patankar 2016 - MIT License
 const moment = require("moment");
 const db = require("./lib/db");
 

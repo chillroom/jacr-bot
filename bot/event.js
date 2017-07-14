@@ -1,5 +1,3 @@
-// Copyright (c) Qais Patankar 2016 - MIT License
-
 let bot;
 const db = require('./lib/db');
 const Raffle = require("./raffle.js");
