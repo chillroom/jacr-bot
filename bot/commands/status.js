@@ -16,5 +16,5 @@ module.exports = bot => {
 	message += format('motd', bot.motd.settings.Enabled, enabled);
 	message += format('queuelock', bot.getRoomMeta().lockQueue, enabled);
 
-	bot.sendChat(message);
+	bot.sendChatTemp(message, null, 5000);
 };
