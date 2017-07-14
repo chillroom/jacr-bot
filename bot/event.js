@@ -132,5 +132,8 @@ module.exports.init = function init(receivedBot) {
 };
 
 module.exports.isActive = function isActive() {
+	if (EventManager.state == null) {
+		return false;
+	}
 	return EventManager.state.started;
 };
