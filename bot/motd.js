@@ -94,7 +94,8 @@ class MOTD {
 			this.addNotice(data.params[1], data.params.slice(2).join(" "));
 			break;
 		case "del":
-			this.reload().then(this.delNotice.bind(this, data.params[1]));
+			this.delNotice(data.params[1]);
+			this.reload();
 			break;
 		case "show":
 			this.showNotice(data.params[1]);
