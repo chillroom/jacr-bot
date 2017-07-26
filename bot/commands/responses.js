@@ -4,7 +4,7 @@ function outputUsage(bot) {
 	bot.sendChat("Usage: https://github.com/chillroom/jacr-bot/wiki/Commands#responses");
 }
 
-function add(bot, cmd, message) {
+function add(bot, data, cmd, message) {
 	if (message === "") {
 		bot.sendChat("Empty message!");
 		return;
@@ -23,7 +23,9 @@ function add(bot, cmd, message) {
 				values ($1, (select id from resgroup))
 				`,
 				[cmd, message]
-			).catch(bot.errLog);
+			).then(() => {
+				bot.moderateDeleteChat(data.id);
+			}).catch(bot.errLog);
 
 			return;
 		}
@@ -31,11 +33,13 @@ function add(bot, cmd, message) {
 		db.query(
 			`update response_groups set messages = array_append(messages, $1) where id = $2`,
 			[message, res.rows[0].group]
-		).catch(bot.errLog);
+		).then(() => {
+			bot.moderateDeleteChat(data.id);
+		}).catch(bot.errLog);
 	}).catch(bot.errLog);
 }
 
-function del(bot, cmd, message) {
+function del(bot, data, cmd, message) {
 	if (message === "") {
 		bot.sendChat("Empty message!");
 		return;
@@ -51,17 +55,21 @@ function del(bot, cmd, message) {
 			from groups where (groups.id = response_groups.id)
 		`,
 		[cmd, message]
-	).catch(bot.errLog);
+	).then(() => {
+		bot.moderateDeleteChat(data.id);
+	}).catch(bot.errLog);
 }
 
-function delall(bot, cmd) {
+function delall(bot, data, cmd) {
 	db.query(
 		`delete from response_commands where name = $1`,
 		[cmd]
-	).catch(bot.errLog);
+	).then(() => {
+		bot.moderateDeleteChat(data.id);
+	}).catch(bot.errLog);
 }
 
-function link(bot, cmdA, cmdB) {
+function link(bot, data, cmdA, cmdB) {
 	// Look for commands that already exist
 	db.query(
 		`select * from response_commands where (name = $1) or (name = $2)`,
@@ -80,7 +88,9 @@ function link(bot, cmdA, cmdB) {
 		db.query(
 			`insert into response_commands (name, "group") values ($1, $2)`,
 			[newCmd, res.rows[0].group]
-		).catch(bot.errLog);
+		).then(() => {
+			bot.moderateDeleteChat(data.id);
+		}).catch(bot.errLog);
 	}).catch(bot.errLog);
 }
 
@@ -98,23 +108,23 @@ module.exports = (bot, data) => {
 	switch (data.params[0]) {
 	case 'add':
 		add(
-			bot,
+			bot, data,
 			data.params[1],
 			data.params.slice(2).join(" ")
 		);
 		break;
 	case 'del':
 		del(
-			bot,
+			bot, data,
 			data.params[1],
 			data.params.slice(2).join(" ")
 		);
 		break;
 	case 'delall':
-		delall(bot, data.params[1]);
+		delall(bot, data, data.params[1]);
 		break;
 	case 'link':
-		link(bot, data.params[1], data.params[2]);
+		link(bot, data, data.params[1], data.params[2]);
 		break;
 	default:
 		outputUsage(bot);
