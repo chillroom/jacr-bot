@@ -26,10 +26,10 @@ new DubAPI({
 		return log("error", "BOT", err);
 	}
 
-	/* Logs a simple RethinkDB error */
+	/* Logs a simple Postgres error */
 	bot.errLog = err => {
 		if (err) {
-			bot.log("error", "RETHINK", err);
+			bot.log("error", "POSTGRES", err);
 			return true;
 		}
 		return false;
