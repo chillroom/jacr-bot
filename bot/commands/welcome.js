@@ -6,4 +6,5 @@ module.exports = (bot, data) => {
 	}
 
 	bot.sendChat(`@everyone Please give a big JACR welcome our next DJ in today's line up @${username}!`);
+	bot.moderateDeleteChat(data.id);
 };
