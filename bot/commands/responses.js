@@ -11,31 +11,8 @@ function add(bot, data, cmd, message) {
 	}
 
 	// Does a group matching that name already exist?
-	db.query(`select "group" from response_commands WHERE name = $1 limit 1`, [cmd]).then(res => {
-		if (res.rowCount === 0) {
-			// Create a group and add a command with that id
-			db.query(
-				`
-				with resgroup as (
-					insert into response_groups(messages) values (array[$2]) returning id
-				)
-				insert into response_commands (name, "group")
-				values ($1, (select id from resgroup))
-				`,
-				[cmd, message]
-			).then(() => {
-				bot.moderateDeleteChat(data.id);
-			}).catch(bot.errLog);
-
-			return;
-		}
-
-		db.query(
-			`update response_groups set messages = array_append(messages, $1) where id = $2`,
-			[message, res.rows[0].group]
-		).then(() => {
-			bot.moderateDeleteChat(data.id);
-		}).catch(bot.errLog);
+	db.query(`select add_response_message($1, $2)`, [cmd, message]).then(() => {
+		bot.moderateDeleteChat(data.id);
 	}).catch(bot.errLog);
 }
 
