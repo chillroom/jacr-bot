@@ -317,6 +317,7 @@ function onUpdate(data) {
 		return;
 	}
 	onUpdateLastfm(data);
+	EventManager.onAdvance(data.lastPlay ? data.lastPlay.user : null, data.user);
 
 	// Update the previous song score
 	if (data.lastPlay != null) {

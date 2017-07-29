@@ -4,7 +4,7 @@ module.exports = (bot, data) => {
 	if (username.substr(0, 1) === "@") {
 		username = username.substr(1);
 	}
-
-	bot.sendChat(`@everyone Please give a big JACR welcome our next DJ in today's line up @${username}!`);
+	
 	bot.moderateDeleteChat(data.id);
+	bot.sendChat(`@everyone Please give a big JACR welcome to our next DJ in today's line up @${username}!`);
 };

@@ -50,7 +50,12 @@ new DubAPI({
 	};
 
 	bot.util = {};
-	bot.util.getUserIDFromName = function(name, callback) {
+	bot.util.getUserIDFromName = function(inName, callback) {
+		let name = inName;
+		if (name.substr(0, 1) === "@") {
+			name = name.substr(1);
+		}
+
 		const u = bot.getUserByName(name, true);
 		if (u != null) {
 			callback(null, u.id);
