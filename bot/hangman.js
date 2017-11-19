@@ -106,9 +106,9 @@ function onCommand(_, data) {
 	}
 
 	if (Hangman.state == null) {
-		request("http://randomword.setgetgo.com/get.php", (err, response, body) => {
+		request("http://setgetgo.com/randomword/get.php", (err, response, body) => {
 			if (err || response.statusCode !== 200) {
-				bot.sendChat("Hangman is broken or http://randomword.setgetgo.com/get.php is down. (Tell @qaisjp)");
+				bot.sendChat("Hangman is broken or http://setgetgo.com/randomword/get.php is down. (Tell @qaisjp)");
 				return;
 			}
 			
