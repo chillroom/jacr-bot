@@ -26,3 +26,4 @@ start.sh
 
 # Binaries
 bot/events/lastfm
+dev_backup/
