@@ -14,14 +14,6 @@ new DubAPI({
 }, function(err, bot) {
 	/* eslint no-param-reassign: ["error", { "props": false }]*/
 
-	if (config.google_api_key == null) {
-		bot.sendChat("YouTube checking is not enabled.");
-	}
-
-	if (config.soundcloud_api_key == null) {
-		bot.sendChat("Soundcloud checking is not enabled.");
-	}
-
 	if (err) {
 		return log("error", "BOT", err);
 	}
@@ -99,6 +91,14 @@ new DubAPI({
 			cb
 		);
 	};
+
+	if (config.google_api_key == null) {
+		bot.sendChat("YouTube checking is not enabled.");
+	}
+
+	if (config.soundcloud_api_key == null) {
+		bot.sendChat("Soundcloud checking is not enabled.");
+	}
 
 	// setup logger
 	bot.log = require("jethro");
