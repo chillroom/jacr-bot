@@ -1,7 +1,7 @@
 let bot;
 const request = require("request");
 const event = require('./events/chat-message.js');
-
+const randomWord = require('random-word');
 const Hangman = {
 	state: null,
 };
@@ -106,20 +106,14 @@ function onCommand(_, data) {
 	}
 
 	if (Hangman.state == null) {
-		request("http://setgetgo.com/randomword/get.php", (err, response, body) => {
-			if (err || response.statusCode !== 200) {
-				bot.sendChat("Hangman is broken or http://setgetgo.com/randomword/get.php is down. (Tell @qaisjp)");
-				return;
-			}
-			
-			Hangman.state = {
-				tempWord: Array(body.length + 1).join("◌ "),
-				word: body.toLowerCase(),
-				letters: [],
-			};
+        const body = randomWord();
+		Hangman.state = {
+			tempWord: Array(body.length + 1).join("◌ "),
+			word: body.toLowerCase(),
+			letters: [],
+		};
 
-			bot.sendChat(`We're playing Hangman: ${Hangman.state.tempWord} (${Hangman.state.word.length})! Use "!guess word" or "!guess letter" to play along!`);
-		});
+		bot.sendChat(`We're playing Hangman: ${Hangman.state.tempWord} (${Hangman.state.word.length})! Use "!guess word" or "!guess letter" to play along!`);
 		return;
 	}
 

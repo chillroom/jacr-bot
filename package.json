@@ -13,6 +13,7 @@
     "jethro": "^2.7.1",
     "moment": "^2.14.1",
     "pg": "^6.2.3",
+    "random-word": "^2.0.0",
     "request": "^2.74.0",
     "soupselect": "^0.2.0",
     "sprintf-js": "^1.0.3"
