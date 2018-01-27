@@ -86,7 +86,7 @@ function onGuess(_, data) {
 	}
 
 	const pos = bot.getQueuePosition(data.user.id);
-	const link = `https://dictionary.cambridge.org/dictionary/english/${Hangman.state.word}`;
+	const link = `https://en.wiktionary.org/wiki/${Hangman.state.word}`;
 	bot.sendChat(`Congratulations ${data.user.username}, you guessed "${Hangman.state.word}" correctly! ${(pos === -1) ? "" : "You get boosted a spot! "}Definition: ${link}`);
 	bot.moderateDeleteChat(data.id);
 
