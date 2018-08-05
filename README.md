@@ -9,3 +9,8 @@ You need a GitHub account for this.
 2. `node bot/index.js` to start the dubtrack bot.
 3. You need Go installed for Lastfm to work (bot will crash without the "lastfm" binary). Build bot/events/lastfm.go to the same directory. Currently hardcoded for qaisjp's system.
 
+## Discord integration
+
+```
+https://discordapp.com/oauth2/authorize?client_id=<client-id>&scope=bot&permissions=0x20000000
+```
