@@ -91,7 +91,7 @@ module.exports.onAdvance = data => {
 	embed.setDescription(description);
 	embed.setAuthor(data.user.username, data.user.profileImage.secure_url, `https://dubtrack.fm/${data.user.username}`);
 	embed.setFooter("Join us on Dubtrack at https://dubtrack.fm/join/just-a-chill-room.");
-	embed.addField("Duration", moment.utc(315000).format("H:mm:ss"));
+	embed.addField("Duration", moment.utc(data.media.songLength).format("H:mm:ss"));
 
 	chan.send("", { embed })
 		.catch(console.log);
