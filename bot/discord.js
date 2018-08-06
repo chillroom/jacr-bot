@@ -23,6 +23,12 @@ function updateToken() {
 			bot.log("error", "DISCORD", "Not connected to provided guild");
 			return;
 		}
+
+		if (!g.available) {
+			bot.log("error", "DISCORD", "Discord is down, try restarting the bot later");
+			bot.sendChat("Discord is down, please restart the bot later");
+			return;
+		}
 		
 		const chan = g.channels.get(config.discord.channel);
 		if (!chan) {
@@ -64,6 +70,14 @@ const emoji = {
 module.exports.onAdvance = data => {
 	// console.log(data);
 	const g = guild;
+
+	if (!g) {
+		return;
+	}
+
+	if (!g.available) {
+		return;
+	}
 
 	const chan = g.channels.get(config.discord.channel);
 	if (!chan) {
