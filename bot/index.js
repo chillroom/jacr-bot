@@ -218,6 +218,7 @@ function onReady(bot) {
 	// require("./tell.js").init(bot); // Disabled for a rewrite surrounding IDs
 	require("./test.js").init(bot);
 	require("./art.js").init(bot);
+	require("./discord.js").init(bot);
 	require("./hangman.js").init(bot);
 	return true;
 }

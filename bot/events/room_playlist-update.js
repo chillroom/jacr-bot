@@ -3,6 +3,7 @@ const sprintf = require("sprintf-js").sprintf;
 const request = require("request");
 const db = require("../lib/db");
 const EventManager = require("../event.js");
+const Discord = require("../discord.js");
 const config = require("../../config");
 
 let bot;
@@ -70,7 +71,7 @@ function addSongToHistory(data, songID) {
 	);
 }
 
-function checkYouTube(song, shouldSkip, skip) {
+function checkYouTube(song, shouldSkip, skip, eventData) {
 	if (config.google_api_key == null) {
 		return;
 	}
@@ -111,12 +112,16 @@ function checkYouTube(song, shouldSkip, skip) {
 				if (shouldSkip) {
 					skip(null, true);
 				}
+				return;
 			}
+
+			eventData.media.permalink_url = `https://youtu.be/${song.fkid}`;
+			Discord.onAdvance(eventData);
 		}
 	);
 }
 
-function checkSoundCloud(song, shouldSkip, skip) {
+function checkSoundCloud(song, shouldSkip, skip, eventData) {
 	if (config.soundcloud_api_key == null) {
 		return;
 	}
@@ -145,6 +150,10 @@ function checkSoundCloud(song, shouldSkip, skip) {
 			return;
 		}
 
+		const body = JSON.parse(unparsedBody);
+		eventData.media.permalink_url = body.permalink_url;
+		Discord.onAdvance(eventData);
+
 		if (song.retagged === true || song.autoretagged === true) {
 			return;
 		}
@@ -154,7 +163,6 @@ function checkSoundCloud(song, shouldSkip, skip) {
 			return;
 		}
 
-		const body = JSON.parse(unparsedBody);
 		const newTitle = `${body.user.username} - ${body.title}`;
 
 		// bot.sendChat(`This song has just been auto-retagged as "${newTitle}"`);
@@ -198,9 +206,9 @@ function onUpdateLog(err, data, results) {
 
 	const checkAvailability = (shouldSkip, song) => {
 		if (data.media.type === "youtube") {
-			checkYouTube(song, shouldSkip, skip);
+			checkYouTube(song, shouldSkip, skip, data);
 		} else if (data.media.type === "soundcloud") {
-			checkSoundCloud(song, shouldSkip, skip);
+			checkSoundCloud(song, shouldSkip, skip, data);
 		}
 	};
 
@@ -316,7 +324,7 @@ function onUpdate(data) {
 		bot.started = true;
 		return;
 	}
-	onUpdateLastfm(data);
+	onUpdateLastfm(data); // this must be here as it needs to perform on last play as well
 	EventManager.onAdvance(data.lastPlay ? data.lastPlay.user : null, data.user);
 
 	// Update the previous song score

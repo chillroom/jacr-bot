@@ -38,4 +38,10 @@ module.exports = {
 	google_api_key: process.env.GOOGLE_API_KEY,
 	soundcloud_api_key: process.env.SOUNDCLOUD_API_KEY,
 	weather_api_key: process.env.WEATheR_API_KEY,
+
+	discord: {
+		guild: process.env.DISCORD_GUILD,
+		token: process.env.DISCORD_TOKEN,
+		channel: process.env.DISCORD_CHANNEL,
+	},
 };
